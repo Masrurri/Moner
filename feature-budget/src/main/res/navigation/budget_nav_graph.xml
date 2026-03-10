@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/budget_nav"
+    app:startDestination="@id/budgetFragment">
+
+    <fragment
+        android:id="@+id/budgetFragment"
+        android:name="com.alviy.feature.budget.ui.BudgetFragment"
+        android:label="Budget"/>
+</navigation>

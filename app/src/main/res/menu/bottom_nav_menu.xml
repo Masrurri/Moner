@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/expend_journal_bottom_nav"
+        android:title="Journal"
+        android:icon="@drawable/ic_journal_nav_selector"/>
+
+    <item
+        android:id="@+id/budget_bottom_nav"
+        android:title="Budget"
+        android:icon="@drawable/ic_budget_nav_selector"/>
+
+    <item
+        android:id="@+id/setting_bottom_nav"
+        android:title="Setting"
+        android:icon="@drawable/ic_setting_nav_selector"/>
+
+</menu>

@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cv_total_expense"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="16dp"
+        app:cardCornerRadius="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/iv_icon"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:layout_marginVertical="20dp"
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/ic_expense"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_category_label"
+                style="@style/TextAppearance.Moner.Regular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:text="Makan Expense"
+                android:textColor="#636363"
+                android:textSize="12sp"
+                app:layout_constraintStart_toEndOf="@id/iv_icon"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_separator"
+                style="@style/TextAppearance.Moner.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="●"
+                android:textColor="#B3B3B3"
+                android:textSize="6sp"
+                app:layout_constraintBottom_toBottomOf="@id/tv_category_label"
+                app:layout_constraintStart_toEndOf="@id/tv_category_label"
+                app:layout_constraintTop_toTopOf="@id/tv_category_label" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_month"
+                style="@style/TextAppearance.Moner.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="January"
+                android:textColor="#B3B3B3"
+                android:textSize="12sp"
+                app:layout_constraintStart_toEndOf="@id/tv_separator"
+                app:layout_constraintTop_toTopOf="@id/tv_category_label" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_total_label"
+                style="@style/TextAppearance.Moner.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="@id/tv_category_label"
+                app:layout_constraintTop_toBottomOf="@id/tv_category_label" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_total_expense"
+                style="@style/TextAppearance.Moner.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="Rp 10.000.000"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@id/tv_category_label"
+                app:layout_constraintTop_toBottomOf="@id/tv_total_label" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cv_journal_expense"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginVertical="16dp"
+        app:cardCornerRadius="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cv_total_expense"
+        app:layout_constraintVertical_bias="0">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/iv_journal"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:src="@drawable/ic_journal_in"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textview.MaterialTextView
+                style="@style/TextAppearance.Moner.SemiBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="Makan Journal"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@id/iv_journal"
+                app:layout_constraintStart_toEndOf="@id/iv_journal"
+                app:layout_constraintTop_toTopOf="@id/iv_journal" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_see_all"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginHorizontal="16dp"
+                android:backgroundTint="#F6F6F6"
+                android:elevation="0dp"
+                android:gravity="center"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="0dp"
+                android:text="See All"
+                android:textAppearance="@style/TextAppearance.Moner.SemiBold"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@id/iv_journal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/iv_journal"
+                app:rippleColor="@color/colorRipple"
+                app:shapeAppearance="@style/Shape.RoundedButton" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_journal"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:paddingBottom="70dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="12dp"
+                android:clipToPadding="false"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/iv_journal"
+                app:layout_constraintVertical_bias="0"
+                tools:itemCount="2"
+                tools:listitem="@layout/item_journal" />
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="42dp"
+                app:layout_constraintBottom_toBottomOf="@id/rv_journal"
+                app:layout_constraintStart_toStartOf="@id/rv_journal"
+                app:layout_constraintEnd_toEndOf="@id/rv_journal"
+                android:background="@drawable/bottom_fade"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_add"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginBottom="16dp"
+                android:backgroundTint="@color/color_btn_primary"
+                android:elevation="0dp"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="14dp"
+                android:text="Add Journal"
+                android:textAppearance="@style/TextAppearance.Moner.Bold"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:icon="@drawable/ic_add_circle"
+                app:iconGravity="textStart"
+                app:iconPadding="12dp"
+                app:iconSize="32dp"
+                app:iconTint="@null"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintVertical_bias="1"
+                app:rippleColor="@color/colorRipple"
+                app:shapeAppearance="@style/Shape.RoundedButton" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

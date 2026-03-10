@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="TextAppearance">
+        <item name="fontFamily">@font/inter_family</item>
+    </style>
+
+    <style name="TextAppearance.Moner">
+        <item name="fontFamily">@font/inter_family</item>
+    </style>
+
+    <style name="TextAppearance.Moner.Thin" parent="TextAppearance.Moner">
+        <item name="android:textFontWeight">100</item>
+        <item name="android:textColor">@color/thin_text</item>
+    </style>
+
+    <style name="TextAppearance.Moner.Regular" parent="TextAppearance.Moner">
+        <item name="font">@font/inter</item>
+        <item name="android:textFontWeight">400</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="TextAppearance.Moner.Bold" parent="TextAppearance.Moner">
+        <item name="font">@font/inter_bold</item>
+        <item name="android:textFontWeight">700</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="TextAppearance.Moner.Medium" parent="TextAppearance.Moner">
+        <item name="font">@font/inter_medium</item>
+        <item name="android:textFontWeight">500</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="TextAppearance.Moner.SemiBold" parent="TextAppearance.Moner">
+        <item name="font">@font/inter_semibold</item>
+        <item name="android:textFontWeight">600</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Shape.RoundedButton" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="RoundedDialog" parent="Theme.Material3.Light.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowMinWidthMajor">0dp</item>
+        <item name="android:windowMinWidthMinor">0dp</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
+
+</resources>

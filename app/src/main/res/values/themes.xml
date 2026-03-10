@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.Moner" parent="Theme.Material3.Light.NoActionBar" >
+        <item name="colorPrimary">#F8F8F8</item>
+        <item name="colorSecondary">#A8909090</item>
+        <item name="materialCardViewStyle">@style/Widget.Moner.MaterialCardView</item>
+    </style>
+</resources>

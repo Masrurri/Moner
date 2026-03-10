@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_white_rounded"
+    android:padding="16dp">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:layout_constraintStart_toStartOf="@id/rv_wheel"
+        app:layout_constraintEnd_toEndOf="@id/rv_wheel"
+        app:layout_constraintTop_toTopOf="@id/rv_wheel"
+        app:layout_constraintBottom_toBottomOf="@id/rv_wheel"
+        android:src="@drawable/bg_item_wheel_selected"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_wheel"
+        android:layout_width="300dp"
+        android:layout_height="200dp"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:paddingTop="70dp"
+        android:paddingBottom="70dp"
+        android:layout_marginVertical="20dp"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toTopOf="@id/btn_select"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:itemCount="5"
+        tools:listitem="@layout/item_wheel" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_select"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/white"
+        android:elevation="0dp"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="14dp"
+        android:paddingVertical="0dp"
+        android:text="Select Time"
+        android:textAppearance="@style/TextAppearance.Moner.Bold"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="1"
+        app:rippleColor="@color/colorRipple"
+        app:shapeAppearance="@style/Shape.RoundedButton" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

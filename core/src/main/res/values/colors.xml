@@ -13,4 +13,6 @@
     <color name="colorPrimary">#E1FF01</color>
     <color name="colorBtnPressed">#B9D300</color>
     <color name="colorRipple">#52000000</color>
+    <color name="lightGrey">#F6F6F6</color>
+    <color name="strokeLightPills">#8A9D00</color>
 </resources>

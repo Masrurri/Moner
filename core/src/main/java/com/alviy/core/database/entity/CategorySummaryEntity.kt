@@ -1,16 +1,20 @@
 package com.alviy.core.database.entity
 
 import androidx.room.Entity
+import androidx.room.Index
 import java.math.BigDecimal
 
 @Entity(
     tableName = "category_summary",
-    primaryKeys = ["monthYear", "categoryId"]
+    primaryKeys = ["monthYear", "categoryId"],
+    indices = [
+        Index("categoryId"),
+        Index("monthYear")
+    ]
 )
-data class CategorySummariesEntity(
+data class CategorySummaryEntity(
     val monthYear: String,
     val categoryId: Int,
-    val categoryName: String,
     val totalExpense: BigDecimal,
     val latestTrxDate: String
 )

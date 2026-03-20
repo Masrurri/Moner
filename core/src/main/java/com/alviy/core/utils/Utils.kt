@@ -2,11 +2,12 @@ package com.alviy.core.utils
 
 import android.os.Bundle
 import android.view.View
+import android.widget.EditText
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.navigation.NavController
 import androidx.navigation.navOptions
-import com.alviy.core.database.entity.CategorySummariesEntity
+import com.alviy.core.database.entity.CategorySummaryEntity
 import com.alviy.core.database.entity.ExpenseCategoryEntity
 import com.alviy.core.database.entity.ExpenseCategoryWithTransactions
 import com.alviy.core.database.entity.ExpenseSummaryEntity
@@ -14,9 +15,9 @@ import com.alviy.core.model.CategorySummaryData
 import com.alviy.core.model.ExpenseItem
 import com.alviy.core.model.ExpenseSummary
 import com.alviy.core.model.TransactionItem
-import kotlinx.coroutines.flow.map
+import java.math.BigDecimal
+import java.text.NumberFormat
 import java.time.LocalDateTime
-import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
@@ -50,14 +51,15 @@ object Utils {
 
     fun View.getColor(@ColorRes resId: Int) = context.getColor(resId)
 
-    fun LocalDateTime.toDateFullMonthYear(locale: Locale = Locale.getDefault()): String {
-        val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy", locale)
+    fun LocalDateTime.toDateMonthYear(locale: Locale = Locale.getDefault()): String {
+        val formatter = DateTimeFormatter.ofPattern("dd/MM/yy", locale)
         return this.format(formatter)
     }
 
     fun LocalDateTime.toFullMonthYear(locale: Locale = Locale.getDefault()): String {
         return this.format(fullMonthYearFormatter(locale))
     }
+
     fun String.toLocalDateTime(pattern: String = "yyyy-MM-dd HH:mm:ss"): LocalDateTime {
         val formatter = DateTimeFormatter.ofPattern(pattern)
         return LocalDateTime.parse(this, formatter)
@@ -68,12 +70,11 @@ object Utils {
             categoryId = category.categoryId,
             categoryName = category.categoryName,
             monthYear = category.monthYear,
-            totalExpense = category.totalExpense,
+            totalExpense = totalExpenseCategory,
             dateCreated = category.dateCreated,
             transactions = transactions.map {
                 TransactionItem(
                     categoryId = it.categoryId,
-                    categoryName = it.categoryName,
                     date = it.date,
                     desc = it.desc,
                     source = it.source,
@@ -86,7 +87,6 @@ object Utils {
     fun ExpenseCategoryEntity.toExpenseItem(): ExpenseItem {
         return ExpenseItem(
             categoryName = this.categoryName,
-            totalExpense = this.totalExpense,
             dateCreated = this.dateCreated,
             transactions = null
         )
@@ -102,12 +102,11 @@ object Utils {
         )
     }
 
-    fun CategorySummariesEntity?.toCategorySummaryData(): CategorySummaryData {
+    fun CategorySummaryEntity?.toCategorySummaryData(): CategorySummaryData {
         return if (this == null) CategorySummaryData()
         else CategorySummaryData(
             monthYear = this.monthYear,
             categoryId = this.categoryId,
-            categoryName = this.categoryName,
             totalExpense = this.totalExpense,
             latestTrxDate = this.latestTrxDate
         )
@@ -115,6 +114,26 @@ object Utils {
 
     fun List<ExpenseCategoryWithTransactions>.toListExpenseItem(): List<ExpenseItem> {
         return map { expenseData -> expenseData.toExpenseItem() }
+    }
+
+    fun BigDecimal?.toIDR(): String {
+        val localeID = Locale("in", "ID")
+        val formatter = NumberFormat.getNumberInstance(localeID)
+        formatter.maximumFractionDigits = 0
+
+        return if (this == null) "Rp 0" else "Rp ${formatter.format(this)}"
+    }
+
+    fun EditText.enableIDRFormat() {
+        this.addTextChangedListener(TextWatcherIDR(this))
+    }
+
+    fun String.IdrToBigDecimal(): BigDecimal {
+        val clean = this
+            .replace("Rp", "")
+            .replace("[^\\d]".toRegex(), "")
+
+        return clean.toBigDecimalOrNull() ?: BigDecimal.ZERO
     }
 
 }

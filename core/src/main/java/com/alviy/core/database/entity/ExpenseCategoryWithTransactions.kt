@@ -2,6 +2,7 @@ package com.alviy.core.database.entity
 
 import androidx.room.Embedded
 import androidx.room.Relation
+import java.math.BigDecimal
 
 data class ExpenseCategoryWithTransactions(
 
@@ -13,4 +14,9 @@ data class ExpenseCategoryWithTransactions(
         entityColumn = "categoryId"
     )
     val transactions: List<TransactionEntity>
-)
+){
+    val totalExpenseCategory: BigDecimal
+        get() = transactions.fold(BigDecimal.ZERO) { total, trx ->
+            total + trx.amount
+        }
+}

@@ -3,7 +3,7 @@ package com.alviy.core.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.alviy.core.database.entity.CategorySummariesEntity
+import com.alviy.core.database.entity.CategorySummaryEntity
 import com.alviy.core.database.entity.ExpenseCategoryEntity
 import com.alviy.core.database.entity.ExpenseSummaryEntity
 import com.alviy.core.database.entity.ProfileEntity
@@ -15,9 +15,9 @@ import com.alviy.core.database.entity.TransactionEntity
         ExpenseCategoryEntity::class,
         TransactionEntity::class,
         ExpenseSummaryEntity::class,
-        CategorySummariesEntity::class
+        CategorySummaryEntity::class
     ],
-    version = 9
+    version = 11
 )
 @TypeConverters(Converters::class)
 abstract class MonerDatabase : RoomDatabase() {

@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_marginBottom="8dp">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cv_total_expense"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="32dp"
-        app:cardBackgroundColor="#F6F6F6"
-        android:layout_marginBottom="8dp"
-        android:elevation="0dp"
         android:clickable="true"
+        android:elevation="0dp"
         android:focusable="true"
-        app:rippleColor="@color/colorRipple"
-        android:outlineSpotShadowColor="@color/transparent"
         android:outlineAmbientShadowColor="@color/transparent"
+        android:outlineSpotShadowColor="@color/transparent"
+        app:cardBackgroundColor="@color/lightGrey"
+        app:cardCornerRadius="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:rippleColor="@color/colorRipple">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -30,8 +30,8 @@
                 android:id="@+id/iv_icon"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:layout_marginLeft="16dp"
                 android:layout_marginVertical="16dp"
+                android:layout_marginLeft="16dp"
                 android:src="@drawable/ic_expense"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -49,16 +49,6 @@
                 app:layout_constraintStart_toEndOf="@id/iv_icon"
                 app:layout_constraintTop_toTopOf="@id/iv_icon" />
 
-            <ImageView
-                android:id="@+id/iv_see_details"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
-                android:src="@drawable/ic_arrow_right"
-                android:layout_marginEnd="16dp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_expense_amount"
                 style="@style/TextAppearance.Moner.Bold"
@@ -66,10 +56,11 @@
                 android:layout_height="wrap_content"
                 android:text="Rp 10.000.000"
                 android:textSize="16sp"
-                app:layout_constraintEnd_toStartOf="@id/iv_see_details"
+                android:layout_marginHorizontal="4dp"
+                app:layout_constraintBottom_toBottomOf="@id/iv_icon"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/barrier_desc"
-                app:layout_constraintTop_toTopOf="@id/iv_icon"
-                app:layout_constraintBottom_toBottomOf="@id/iv_icon"/>
+                app:layout_constraintTop_toTopOf="@id/iv_icon" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_source"
@@ -79,10 +70,10 @@
                 android:text="Qris"
                 android:textColor="#B3B3B3"
                 android:textSize="12sp"
-                app:layout_constraintVertical_bias="0"
                 app:layout_constraintBottom_toBottomOf="@id/iv_icon"
                 app:layout_constraintStart_toStartOf="@id/tv_title"
-                app:layout_constraintTop_toBottomOf="@id/tv_title" />
+                app:layout_constraintTop_toBottomOf="@id/tv_title"
+                app:layout_constraintVertical_bias="0" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_separator"
@@ -94,8 +85,8 @@
                 android:textColor="#B3B3B3"
                 android:textSize="6sp"
                 app:layout_constraintBottom_toBottomOf="@id/tv_source"
-                app:layout_constraintTop_toTopOf="@id/tv_source"
-                app:layout_constraintStart_toEndOf="@id/tv_source"/>
+                app:layout_constraintStart_toEndOf="@id/tv_source"
+                app:layout_constraintTop_toTopOf="@id/tv_source" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_date"
@@ -103,19 +94,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:text="Sep 18, 2026"
+                android:text="18/09/26"
                 android:textColor="#B3B3B3"
                 android:textSize="12sp"
-                app:layout_constraintStart_toEndOf="@id/tv_separator"
                 app:layout_constraintBottom_toBottomOf="@id/tv_source"
-                app:layout_constraintTop_toTopOf="@id/tv_source"/>
+                app:layout_constraintStart_toEndOf="@id/tv_separator"
+                app:layout_constraintTop_toTopOf="@id/tv_source" />
 
             <androidx.constraintlayout.widget.Barrier
                 android:id="@+id/barrier_desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:barrierDirection="end"
-                app:constraint_referenced_ids="tv_title, tv_date"/>
+                app:constraint_referenced_ids="tv_title, tv_date" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

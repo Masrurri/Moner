@@ -4,17 +4,14 @@ import androidx.lifecycle.viewModelScope
 import com.alviy.core.base.BaseViewModel
 import com.alviy.core.model.CategorySummaryData
 import com.alviy.core.model.ExpenseItem
-import com.alviy.core.model.ExpenseSummaries
+import com.alviy.core.model.ExpenseSummary
 import com.alviy.core.model.Profile
 import com.alviy.core.model.TransactionItem
 import com.alviy.core.repository.ExpenseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.math.BigDecimal
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,7 +20,6 @@ class ExpendJournalViewModel @Inject constructor(
 ): BaseViewModel() {
 
     var selectedMonthYear = ""
-    var totalExpenseSelectedCategory: CategorySummaryData? = CategorySummaryData()
     var listCategory: List<String> = emptyList()
     private val _profile = MutableStateFlow(Profile())
     val profile: StateFlow<Profile> = _profile
@@ -34,12 +30,12 @@ class ExpendJournalViewModel @Inject constructor(
     private val _categoriesData = MutableStateFlow(emptyList<ExpenseItem>())
     val categoriesData: StateFlow<List<ExpenseItem>> = _categoriesData
 
-    private val _expenseSummaries = MutableStateFlow(ExpenseSummaries())
-    val expenseSummaries: StateFlow<ExpenseSummaries> = _expenseSummaries
+    private val _expenseSummaries = MutableStateFlow(ExpenseSummary())
+    val expenseSummaries: StateFlow<ExpenseSummary> = _expenseSummaries
 
-    fun getExpenseSummaries(monthYear: String) {
+    fun getExpenseSummary(monthYear: String) {
         viewModelScope.launch {
-            expenseRepository.getExpenseSummaries(monthYear).collect {
+            expenseRepository.getExpenseSummary(monthYear).collect {
                 _expenseSummaries.value = it
             }
         }
@@ -55,7 +51,7 @@ class ExpendJournalViewModel @Inject constructor(
 
     fun getDistinctMonthYears() {
         viewModelScope.launch {
-            expenseRepository.getDistinctMonthYears().collect {
+            expenseRepository.getMonthYears().collect {
                 _monthYearListData.value = it
             }
         }
@@ -79,5 +75,13 @@ class ExpendJournalViewModel @Inject constructor(
 
     fun addCategory(name: String) = viewModelScope.launch { expenseRepository.insertCategory(name) }
 
-    fun addTransaction(transaction: TransactionItem) = viewModelScope.launch { expenseRepository.insertTransactionWithSummaries(transaction) }
+    fun addTransaction(transaction: TransactionItem) = viewModelScope.launch {
+        expenseRepository.addExpense(
+            transaction.categoryName,
+            transaction.date,
+            transaction.desc,
+            transaction.source,
+            transaction.amount,
+            )
+    }
 }

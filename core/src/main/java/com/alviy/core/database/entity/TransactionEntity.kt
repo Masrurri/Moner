@@ -16,13 +16,15 @@ import java.math.BigDecimal
             onDelete = ForeignKey.CASCADE
         )
     ],
-    indices = [Index("categoryId")]
+    indices = [
+        Index("categoryId"),
+        Index("date")
+    ]
 )
 data class TransactionEntity(
     @PrimaryKey(autoGenerate = true)
     val transactionId: Int = 0,
-    val categoryId: Int = 0,
-    val categoryName: String,
+    val categoryId: Int,
     val date: String,
     val desc: String,
     val source: String,

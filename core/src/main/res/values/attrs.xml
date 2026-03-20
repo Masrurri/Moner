@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="CustomTextField">
+        <attr name="hintText" format="string" />
+        <attr name="android:inputType" />
+    </declare-styleable>
+
+</resources>

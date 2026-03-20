@@ -1,8 +1,5 @@
 package com.alviy.feature.expend.journal.ui
 
-import android.graphics.Color
-import android.view.View.VISIBLE
-import android.widget.EdgeEffect
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -11,21 +8,19 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
-import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.alviy.app.feature.expend.journal.databinding.FragmentExpendJournalBinding
 import com.alviy.core.base.BaseFragment
+import com.alviy.core.designsystem.TextFieldDialog
+import com.alviy.core.designsystem.AddJournalDialog
 import com.alviy.core.designsystem.WheelDialog
-import com.alviy.core.model.ExpenseItem
 import com.alviy.core.model.TransactionItem
-import com.alviy.core.utils.Utils.fullMonthYearFormatter
+import com.alviy.core.utils.Utils.toIDR
 import com.alviy.feature.expend.journal.viewmodel.ExpendJournalViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import java.time.YearMonth
-import java.time.format.DateTimeFormatter
-import java.util.Locale
+import java.time.LocalDateTime
 import kotlin.getValue
 
 @AndroidEntryPoint
@@ -45,6 +40,9 @@ class ExpendJournalFragment : BaseFragment<FragmentExpendJournalBinding>(
         binding?.btnSelectTime?.setOnClickListener {
             if (viewModel.listCategory.isNotEmpty()) showDialogSelectTime()
         }
+        binding?.btnAddCategory?.setOnClickListener {
+            showDialogAddCategory()
+        }
     }
 
     private fun showDialogSelectTime() {
@@ -56,6 +54,27 @@ class ExpendJournalFragment : BaseFragment<FragmentExpendJournalBinding>(
             binding?.btnSelectTime?.text = selected
             viewModel.getCategories(selected)
         }.show(parentFragmentManager, "wheelDialog")
+    }
+
+    private fun showDialogAddJournal(categoryName: String) {
+        AddJournalDialog.newInstance(
+            titleLabel = "$categoryName Journal",
+            descLabel = "Description",
+            amountLabel = "Amount",
+            primaryLabel = "Input Journal",
+            secondaryLabel = "Cancel"
+        ).apply {
+            onClickPrimaryBtn = { data ->
+                viewModel.addTransaction(
+                    TransactionItem( categoryName = categoryName, date = LocalDateTime.now().toString(), amount = data.third.toBigDecimal(), desc = data.first, source = data.second)
+                )
+                this.dismissAllowingStateLoss()
+            }
+        }.show(childFragmentManager, "dialogAddJournal")
+    }
+
+    private fun showDialogAddCategory() {
+        TextFieldDialog.newInstance{ viewModel.addCategory(it) }.show(parentFragmentManager, "categoryDialog")
     }
 
     override fun observeData() {
@@ -86,14 +105,7 @@ class ExpendJournalFragment : BaseFragment<FragmentExpendJournalBinding>(
     private fun setupRvJournalSection() {
         val pagerSnapHelper = PagerSnapHelper()
         journalSectionAdapter = JournalSectionAdapter { id, name ->
-
-            //for Mock
-            val monthYearString = binding?.btnSelectTime?.text
-            val yearMonth = YearMonth.parse(monthYearString, fullMonthYearFormatter())
-            val dateTime = yearMonth.atDay(1).atStartOfDay()
-            viewModel.addTransaction(
-                TransactionItem(id, name, dateTime.toString(), "Mock $name", "Mock", 20000.toBigDecimal())
-            )
+            showDialogAddJournal(name)
         }
         binding?.rvJournalSection?.adapter = journalSectionAdapter
         binding?.rvJournalSection?.layoutManager = LinearLayoutManager(
@@ -114,7 +126,7 @@ class ExpendJournalFragment : BaseFragment<FragmentExpendJournalBinding>(
                 if (categoryNameSection.isNullOrEmpty()) return
                 val index = categoryAdapter?.currentList?.indexOfFirst { it == categoryNameSection } ?: return
                 if (index != -1) {
-                    categoryAdapter?.setSelected(index)
+                    categoryAdapter?.setSelected(categoryNameSection)
                     binding?.rvCategory?.smoothScrollToPosition(index)
                 }
             }
@@ -124,10 +136,8 @@ class ExpendJournalFragment : BaseFragment<FragmentExpendJournalBinding>(
         private fun observeExpenseSummaries() = viewLifecycleOwner.lifecycleScope.launch {
         repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.expenseSummaries.collect {
-                if (it.expenseSummary != null) {
-                    binding?.tvTotalAmount?.text = it.expenseSummary?.totalExpense.toString()
-                    binding?.tvLatestExpense?.text = "+${it.expenseSummary?.latestExpense}"
-                }
+                binding?.tvTotalAmount?.text = it.totalExpense.toIDR()
+                binding?.tvLatestExpense?.text = "+${it.latestExpense.toIDR()}"
             }
         }
     }
@@ -136,7 +146,7 @@ class ExpendJournalFragment : BaseFragment<FragmentExpendJournalBinding>(
         repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.expenseJournalData.collect {
                 if (it.isNotEmpty()) {
-                    journalSectionAdapter?.submitList(it)
+                    journalSectionAdapter?.submitList(it.sortedBy { it.categoryName })
                     binding?.rvJournalSection?.isVisible = true
                 }
             }
@@ -147,10 +157,11 @@ class ExpendJournalFragment : BaseFragment<FragmentExpendJournalBinding>(
         repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.categoriesData.collect {
                 if (it.isNotEmpty()) {
-                    categoryAdapter?.resetSelectedPos()
-                    categoryAdapter?.submitList(it.map { expenseItem -> expenseItem.categoryName })
+                    val categoryList = it.map { expenseItem -> expenseItem.categoryName }.sorted()
+                    categoryAdapter?.submitList(categoryList)
+                    categoryAdapter?.setSelected(categoryList.first())
                     binding?.rvCategory?.isVisible = categoryAdapter?.currentList.isNullOrEmpty().not()
-                    viewModel.getExpenseSummaries(viewModel.selectedMonthYear)
+                    viewModel.getExpenseSummary(viewModel.selectedMonthYear)
                     viewModel.getExpenseJournal(viewModel.selectedMonthYear)
                 }
             }

@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="16dp"
-        app:cardCornerRadius="24dp"
+        app:cardCornerRadius="18dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -22,9 +22,9 @@
 
             <ImageView
                 android:id="@+id/iv_icon"
-                android:layout_width="46dp"
-                android:layout_height="46dp"
-                android:layout_marginVertical="20dp"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginVertical="12dp"
                 android:layout_marginLeft="20dp"
                 android:src="@drawable/ic_expense"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -33,13 +33,12 @@
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_category_label"
-                style="@style/TextAppearance.Moner.Regular"
+                style="@style/TextAppearance.Moner.Medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="12dp"
                 android:text="Makan Expense"
-                android:textColor="#636363"
                 android:textSize="12sp"
                 app:layout_constraintStart_toEndOf="@id/iv_icon"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -70,26 +69,17 @@
                 app:layout_constraintTop_toTopOf="@id/tv_category_label" />
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_total_label"
-                style="@style/TextAppearance.Moner.Medium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Total"
-                android:textSize="12sp"
-                app:layout_constraintStart_toStartOf="@id/tv_category_label"
-                app:layout_constraintTop_toBottomOf="@id/tv_category_label" />
-
-            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_total_expense"
-                style="@style/TextAppearance.Moner.Medium"
+                style="@style/TextAppearance.Moner.SemiBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="12dp"
                 android:text="Rp 10.000.000"
-                android:textSize="16sp"
+                android:textSize="18sp"
+                app:layout_constraintVertical_bias="0"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@id/tv_category_label"
-                app:layout_constraintTop_toBottomOf="@id/tv_total_label" />
+                app:layout_constraintTop_toBottomOf="@id/tv_category_label" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -123,6 +113,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_transaction_section_label"
                 style="@style/TextAppearance.Moner.SemiBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -138,7 +129,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="36dp"
                 android:layout_marginHorizontal="16dp"
-                android:backgroundTint="#F6F6F6"
+                android:backgroundTint="@color/lightGrey"
                 android:elevation="0dp"
                 android:gravity="center"
                 android:paddingHorizontal="16dp"

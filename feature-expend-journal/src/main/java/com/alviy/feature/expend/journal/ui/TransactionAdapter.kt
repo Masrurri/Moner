@@ -7,20 +7,21 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.alviy.app.feature.expend.journal.databinding.ItemJournalBinding
 import com.alviy.core.model.TransactionItem
+import com.alviy.core.utils.Utils.toDateMonthYear
 import com.alviy.core.utils.Utils.toFullMonthYear
+import com.alviy.core.utils.Utils.toIDR
 import java.time.LocalDateTime
 
 class TransactionAdapter : ListAdapter<TransactionItem, TransactionAdapter.TransactionViewHolder>(DIFF_CALLBACK) {
-
     inner class TransactionViewHolder(
         private val binding: ItemJournalBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: TransactionItem) {
             binding.tvTitle.text = item.desc
-            binding.tvDate.text = LocalDateTime.parse(item.date).toFullMonthYear()
+            binding.tvDate.text = LocalDateTime.parse(item.date).toDateMonthYear()
             binding.tvSource.text = item.source
-            binding.tvExpenseAmount.text = item.amount.toPlainString()
+            binding.tvExpenseAmount.text = item.amount.toIDR()
         }
     }
 
@@ -43,14 +44,14 @@ class TransactionAdapter : ListAdapter<TransactionItem, TransactionAdapter.Trans
                 oldItem: TransactionItem,
                 newItem: TransactionItem
             ): Boolean {
-                return oldItem.desc == newItem.desc
+                return oldItem.categoryId == newItem.categoryId && oldItem.categoryName == newItem.categoryName
             }
 
             override fun areContentsTheSame(
                 oldItem: TransactionItem,
                 newItem: TransactionItem
             ): Boolean {
-                return oldItem.desc == newItem.desc
+                return oldItem.categoryId == newItem.categoryId && oldItem.categoryName == newItem.categoryName
             }
         }
     }

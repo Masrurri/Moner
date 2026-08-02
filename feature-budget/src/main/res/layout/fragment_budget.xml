@@ -40,7 +40,7 @@
                 app:iconGravity="textEnd"
                 app:iconSize="18dp"
                 app:iconTint="@color/color_text_primary"
-                tools:text="August" />
+                tools:text="Select Date" />
 
         </LinearLayout>
 

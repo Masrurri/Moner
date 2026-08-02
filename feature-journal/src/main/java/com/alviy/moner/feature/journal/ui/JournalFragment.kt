@@ -11,6 +11,7 @@ import com.alviy.moner.core.common.ext.toIDR
 import com.alviy.moner.core.designsystem.AddExpenseDialog
 import com.alviy.moner.core.designsystem.TextFieldDialog
 import com.alviy.moner.core.designsystem.WheelDialog
+import com.alviy.moner.feature.journal.R
 import com.alviy.moner.feature.journal.databinding.FragmentJournalBinding
 import com.alviy.moner.feature.journal.viewmodel.JournalViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,7 +32,7 @@ class JournalFragment : BaseFragment<FragmentJournalBinding>(
         setupRvCategory()
         setupRvTransactions()
 
-        binding?.btnSelectTime?.setOnClickListener { showDialogSelectTime() }
+        binding?.tvSelectedDate?.setOnClickListener { showDialogSelectTime() }
         binding?.fabAddExpense?.setOnClickListener { showAddExpenseDialog() }
     }
 
@@ -91,8 +92,8 @@ class JournalFragment : BaseFragment<FragmentJournalBinding>(
     private fun observeMonthYears() = viewLifecycleOwner.lifecycleScope.launch {
         repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.selectedMonthYear.collect { selected ->
-                binding?.btnSelectTime?.text = selected
-                    ?: getString(com.alviy.moner.feature.journal.R.string.journal_select_time_default)
+                binding?.tvSelectedDate?.text = selected
+                    ?: getString(R.string.journal_select_time_default)
             }
         }
     }
@@ -101,10 +102,10 @@ class JournalFragment : BaseFragment<FragmentJournalBinding>(
         repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.profile.collect { profile ->
                 val name = profile.name.ifBlank {
-                    getString(com.alviy.moner.feature.journal.R.string.journal_greeting_default_name)
+                    getString(R.string.journal_greeting_default_name)
                 }
                 binding?.tvGreeting?.text =
-                    getString(com.alviy.moner.feature.journal.R.string.journal_greeting_format, name)
+                    getString(R.string.journal_greeting_format, name)
             }
         }
     }
@@ -125,7 +126,7 @@ class JournalFragment : BaseFragment<FragmentJournalBinding>(
                             isVisible = true
                             val sign = if (delta >= 0) "+" else "-"
                             text = getString(
-                                com.alviy.moner.feature.journal.R.string.journal_delta_format,
+                                R.string.journal_delta_format,
                                 sign,
                                 abs(delta)
                             )

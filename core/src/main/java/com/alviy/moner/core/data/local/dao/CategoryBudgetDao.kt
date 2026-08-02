@@ -12,11 +12,11 @@ interface CategoryBudgetDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertCategoryBudget(entity: CategoryBudgetEntity)
 
-    @Query("SELECT * FROM category_budget ORDER BY categoryName")
-    fun getCategoryBudgets(): Flow<List<CategoryBudgetEntity>>
+    @Query("SELECT * FROM category_budget WHERE monthYear = :monthYear ORDER BY categoryName")
+    fun getCategoryBudgets(monthYear: String): Flow<List<CategoryBudgetEntity>>
 
-    @Query("DELETE FROM category_budget WHERE categoryName = :categoryName")
-    suspend fun deleteCategoryBudget(categoryName: String)
+    @Query("DELETE FROM category_budget WHERE categoryName = :categoryName AND monthYear = :monthYear")
+    suspend fun deleteCategoryBudget(categoryName: String, monthYear: String)
 
     @Query("DELETE FROM category_budget")
     suspend fun clearCategoryBudgets()

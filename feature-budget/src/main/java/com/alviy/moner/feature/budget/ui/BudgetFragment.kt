@@ -65,7 +65,9 @@ class BudgetFragment : BaseFragment<FragmentBudgetBinding>(
                 launch {
                     viewModel.categoryBudgets.collect { list ->
                         categoryBudgetAdapter.submitList(list)
-                        binding.tvEmptyState.visibility =
+                        binding.cvCategoryBudgets.visibility =
+                            if (list.isEmpty()) View.GONE else View.VISIBLE
+                        binding.cvEmptyState.visibility =
                             if (list.isEmpty()) View.VISIBLE else View.GONE
                     }
                 }

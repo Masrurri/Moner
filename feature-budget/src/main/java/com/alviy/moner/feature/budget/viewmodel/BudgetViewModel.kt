@@ -62,10 +62,12 @@ class BudgetViewModel @Inject constructor(
         period: BudgetPeriod,
         notifyAt80Percent: Boolean
     ) = launchSafely {
-        budgetRepository.upsertCategoryBudget(categoryName, monthlyLimit, period, notifyAt80Percent)
+        budgetRepository.upsertCategoryBudget(
+            _selectedMonthYear.value, categoryName, monthlyLimit, period, notifyAt80Percent
+        )
     }
 
     fun deleteCategoryBudget(categoryName: String) = launchSafely {
-        budgetRepository.deleteCategoryBudget(categoryName)
+        budgetRepository.deleteCategoryBudget(_selectedMonthYear.value, categoryName)
     }
 }

@@ -4,6 +4,7 @@ import androidx.room.withTransaction
 import com.alviy.moner.core.common.ext.fullMonthYearFormatter
 import com.alviy.moner.core.common.ext.toFullMonthYear
 import com.alviy.moner.core.data.local.MonerDatabase
+import com.alviy.moner.core.data.local.dao.CategoryBudgetDao
 import com.alviy.moner.core.data.local.dao.CategorySummaryDao
 import com.alviy.moner.core.data.local.dao.ExpenseCategoryDao
 import com.alviy.moner.core.data.local.dao.ExpenseSummaryDao
@@ -31,12 +32,13 @@ class ExpenseRepositoryImpl @Inject constructor(
     private val expenseCategoryDao: ExpenseCategoryDao,
     private val transactionDao: TransactionDao,
     private val expenseSummaryDao: ExpenseSummaryDao,
-    private val categorySummaryDao: CategorySummaryDao
+    private val categorySummaryDao: CategorySummaryDao,
+    private val categoryBudgetDao: CategoryBudgetDao
 ) : ExpenseRepository {
 
     override fun getProfile(): Flow<Profile> =
-        profileDao.getProfile().map { entity ->
-            Profile(entity?.name.orEmpty())
+        profileDao.getProfile().map {
+            Profile(it?.name.orEmpty())
         }
 
     override fun getCategories(monthYear: String) =
@@ -150,5 +152,6 @@ class ExpenseRepositoryImpl @Inject constructor(
         profileDao.clearProfiles()
         expenseSummaryDao.clearExpenseSummary()
         categorySummaryDao.clearCategorySummary()
+        categoryBudgetDao.clearCategoryBudgets()
     }
 }

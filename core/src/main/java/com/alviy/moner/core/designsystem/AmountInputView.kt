@@ -3,6 +3,7 @@ package com.alviy.moner.core.designsystem
 import android.content.Context
 import android.text.InputType
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.core.widget.addTextChangedListener
 import com.alviy.moner.core.common.ext.IdrToBigDecimal
@@ -11,8 +12,10 @@ import com.alviy.moner.core.databinding.ViewAmountInputBinding
 import java.math.BigDecimal
 
 /**
- * Large, plain-text tappable amount display ("Rp 0") backed by a hidden EditText,
- * matching the design's "amountPlainText" pattern shared by Add Expense and Add Category Budget.
+ * Large, centered amount input ("Rp 0") matching the design's "amountPlainText"
+ * pattern shared by Add Expense and Add Category Budget. Backed by a single
+ * visible EditText so the caret renders and stays in sync with the live
+ * thousand-separator formatting (no shadow/hidden view to fall out of sync).
  */
 class AmountInputView @JvmOverloads constructor(
     context: Context,
@@ -21,7 +24,7 @@ class AmountInputView @JvmOverloads constructor(
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
     private val binding = ViewAmountInputBinding.inflate(
-        android.view.LayoutInflater.from(context), this, true
+        LayoutInflater.from(context), this, true
     )
 
     var onAmountChanged: ((BigDecimal) -> Unit)? = null
@@ -30,15 +33,7 @@ class AmountInputView @JvmOverloads constructor(
         binding.editAmount.inputType = InputType.TYPE_CLASS_NUMBER
         binding.editAmount.enableIDRFormat()
         binding.editAmount.addTextChangedListener {
-            binding.tvAmountDisplay.text = it?.toString().orEmpty()
             onAmountChanged?.invoke(amount)
-        }
-        binding.tvAmountDisplay.setOnClickListener {
-            binding.editAmount.requestFocus()
-            binding.editAmount.setSelection(binding.editAmount.text?.length ?: 0)
-            val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE)
-                    as android.view.inputmethod.InputMethodManager
-            imm.showSoftInput(binding.editAmount, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT)
         }
     }
 
@@ -47,5 +42,9 @@ class AmountInputView @JvmOverloads constructor(
 
     fun setAmount(value: BigDecimal) {
         binding.editAmount.setText("Rp ${value.toBigInteger()}")
+    }
+
+    fun requestAmountFocus() {
+        binding.editAmount.requestFocus()
     }
 }

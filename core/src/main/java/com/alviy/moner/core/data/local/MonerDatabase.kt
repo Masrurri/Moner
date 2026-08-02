@@ -25,7 +25,7 @@ import com.alviy.moner.core.data.local.entity.TransactionEntity
         CategorySummaryEntity::class,
         CategoryBudgetEntity::class
     ],
-    version = 12
+    version = 13
 )
 @TypeConverters(Converters::class)
 abstract class MonerDatabase : RoomDatabase() {

@@ -1,32 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_amount_display"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:text="Rp 0"
-        style="@style/TextAppearance.Moner.AmountDisplay"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
     <EditText
         android:id="@+id/edit_amount"
-        android:layout_width="1dp"
-        android:layout_height="1dp"
-        android:alpha="0"
+        style="@style/TextAppearance.Moner.AmountDisplay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:background="@null"
-        android:cursorVisible="false"
-        android:maxLines="1"
+        android:cursorVisible="true"
+        android:gravity="center"
         android:importantForAutofill="no"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        android:inputType="number"
+        android:maxLines="1"
+        android:text="Rp 0" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

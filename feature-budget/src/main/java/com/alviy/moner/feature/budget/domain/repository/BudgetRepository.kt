@@ -13,11 +13,12 @@ interface BudgetRepository {
     fun getBudgetSummary(monthYear: String): Flow<BudgetSummary>
 
     suspend fun upsertCategoryBudget(
+        monthYear: String,
         categoryName: String,
         monthlyLimit: BigDecimal,
         period: BudgetPeriod,
         notifyAt80Percent: Boolean
     )
 
-    suspend fun deleteCategoryBudget(categoryName: String)
+    suspend fun deleteCategoryBudget(monthYear: String, categoryName: String)
 }

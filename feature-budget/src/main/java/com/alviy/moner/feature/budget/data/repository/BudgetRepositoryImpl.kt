@@ -23,7 +23,7 @@ class BudgetRepositoryImpl @Inject constructor(
 ) : BudgetRepository {
 
     override fun getCategoryBudgetsWithSpend(monthYear: String): Flow<List<CategoryBudgetProgress>> =
-        categoryBudgetDao.getCategoryBudgets().map { budgets ->
+        categoryBudgetDao.getCategoryBudgets(monthYear).map { budgets ->
             budgets.map { budget ->
                 val period = runCatching { BudgetPeriod.valueOf(budget.period) }
                     .getOrDefault(BudgetPeriod.MONTHLY)
@@ -58,6 +58,7 @@ class BudgetRepositoryImpl @Inject constructor(
         }
 
     override suspend fun upsertCategoryBudget(
+        monthYear: String,
         categoryName: String,
         monthlyLimit: BigDecimal,
         period: BudgetPeriod,
@@ -66,6 +67,7 @@ class BudgetRepositoryImpl @Inject constructor(
         categoryBudgetDao.upsertCategoryBudget(
             CategoryBudgetEntity(
                 categoryName = categoryName,
+                monthYear = monthYear,
                 monthlyLimit = monthlyLimit,
                 period = period.name,
                 notifyAt80Percent = notifyAt80Percent,
@@ -74,8 +76,8 @@ class BudgetRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun deleteCategoryBudget(categoryName: String) =
-        categoryBudgetDao.deleteCategoryBudget(categoryName)
+    override suspend fun deleteCategoryBudget(monthYear: String, categoryName: String) =
+        categoryBudgetDao.deleteCategoryBudget(categoryName, monthYear)
 
     private fun currentWeekRange(): Pair<String, String> {
         val now = LocalDateTime.now()

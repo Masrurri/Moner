@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_bg_app"
-    tools:context="com.alviy.moner.feature.journal.ui.ExpendJournalFragment">
+    tools:context="com.alviy.moner.feature.journal.ui.JournalFragment">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -87,8 +87,9 @@
                 android:layout_marginBottom="12dp"
                 android:textAppearance="@style/TextAppearance.Moner.SemiBold"
                 android:textColor="@color/color_text_primary"
-                app:icon="@drawable/ic_arrow_right"
+                app:icon="@drawable/ic_chevron_right"
                 app:iconGravity="textEnd"
+                app:iconSize="18dp"
                 app:iconTint="@color/color_text_primary"
                 tools:text="This Month" />
 

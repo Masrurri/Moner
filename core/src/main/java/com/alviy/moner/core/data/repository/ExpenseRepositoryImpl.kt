@@ -35,8 +35,8 @@ class ExpenseRepositoryImpl @Inject constructor(
 ) : ExpenseRepository {
 
     override fun getProfile(): Flow<Profile> =
-        profileDao.getProfile().map {
-            Profile(it.name)
+        profileDao.getProfile().map { entity ->
+            Profile(entity?.name.orEmpty())
         }
 
     override fun getCategories(monthYear: String) =

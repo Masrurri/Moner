@@ -11,17 +11,17 @@ import com.alviy.moner.core.common.ext.toIDR
 import com.alviy.moner.core.designsystem.AddExpenseDialog
 import com.alviy.moner.core.designsystem.TextFieldDialog
 import com.alviy.moner.core.designsystem.WheelDialog
-import com.alviy.moner.feature.journal.databinding.FragmentExpendJournalBinding
-import com.alviy.moner.feature.journal.viewmodel.ExpendJournalViewModel
+import com.alviy.moner.feature.journal.databinding.FragmentJournalBinding
+import com.alviy.moner.feature.journal.viewmodel.JournalViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 @AndroidEntryPoint
-class ExpendJournalFragment : BaseFragment<FragmentExpendJournalBinding>(
-    FragmentExpendJournalBinding::inflate
+class JournalFragment : BaseFragment<FragmentJournalBinding>(
+    FragmentJournalBinding::inflate
 ) {
-    private val viewModel: ExpendJournalViewModel by viewModels()
+    private val viewModel: JournalViewModel by viewModels()
     private var categoryAdapter: CategoryAdapter? = null
     private var transactionAdapter: RecentTransactionAdapter? = null
 

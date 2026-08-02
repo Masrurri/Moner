@@ -4,16 +4,16 @@
     <item
         android:id="@+id/journal_bottom_nav"
         android:title="Journal"
-        android:icon="@drawable/ic_journal_nav_selector"/>
+        android:icon="@drawable/ic_journal_nav"/>
 
     <item
         android:id="@+id/budget_bottom_nav"
         android:title="Budget"
-        android:icon="@drawable/ic_budget_nav_selector"/>
+        android:icon="@drawable/ic_budget_nav"/>
 
     <item
         android:id="@+id/settings_bottom_nav"
         android:title="Settings"
-        android:icon="@drawable/ic_setting_nav_selector"/>
+        android:icon="@drawable/ic_settings_nav"/>
 
 </menu>

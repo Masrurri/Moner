@@ -121,14 +121,16 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/settings_currency"
-                        android:textAppearance="@style/TextAppearance.Moner.Medium" />
+                        android:textAppearance="@style/TextAppearance.Moner.Medium"
+                        android:textSize="15sp" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/settings_currency_value"
                         android:textAppearance="@style/TextAppearance.Moner.Regular"
-                        android:textColor="@color/color_text_secondary" />
+                        android:textColor="@color/color_text_secondary"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <View style="@style/Widget.Moner.Hairline" />
@@ -145,7 +147,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/settings_dark_mode"
-                        android:textAppearance="@style/TextAppearance.Moner.Medium" />
+                        android:textAppearance="@style/TextAppearance.Moner.Medium"
+                        android:textSize="15sp" />
 
                     <com.google.android.material.materialswitch.MaterialSwitch
                         android:id="@+id/switch_dark_mode"
@@ -169,7 +172,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/settings_notifications"
-                        android:textAppearance="@style/TextAppearance.Moner.Medium" />
+                        android:textAppearance="@style/TextAppearance.Moner.Medium"
+                        android:textSize="15sp" />
 
                     <com.google.android.material.materialswitch.MaterialSwitch
                         android:id="@+id/switch_notifications"
@@ -222,7 +226,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/settings_import_excel"
-                        android:textAppearance="@style/TextAppearance.Moner.Medium" />
+                        android:textAppearance="@style/TextAppearance.Moner.Medium"
+                        android:textSize="15sp" />
 
                     <ImageView
                         android:layout_width="16dp"
@@ -249,7 +254,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/settings_export_excel"
-                        android:textAppearance="@style/TextAppearance.Moner.Medium" />
+                        android:textAppearance="@style/TextAppearance.Moner.Medium"
+                        android:textSize="15sp" />
 
                     <ImageView
                         android:layout_width="16dp"
@@ -276,7 +282,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/settings_backup_restore"
-                        android:textAppearance="@style/TextAppearance.Moner.Medium" />
+                        android:textAppearance="@style/TextAppearance.Moner.Medium"
+                        android:textSize="15sp" />
 
                     <ImageView
                         android:layout_width="16dp"
@@ -305,7 +312,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/settings_generate_sample_data"
-                        android:textAppearance="@style/TextAppearance.Moner.Medium" />
+                        android:textAppearance="@style/TextAppearance.Moner.Medium"
+                        android:textSize="15sp" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
@@ -365,7 +373,8 @@
                     android:layout_weight="1"
                     android:text="@string/settings_clear_database"
                     android:textAppearance="@style/TextAppearance.Moner.SemiBold"
-                    android:textColor="@color/color_danger" />
+                    android:textColor="@color/color_danger"
+                    android:textSize="15sp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 

@@ -36,8 +36,9 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.Moner.SemiBold"
                 android:textColor="@color/color_text_primary"
-                app:icon="@drawable/ic_arrow_right"
+                app:icon="@drawable/ic_chevron_right"
                 app:iconGravity="textEnd"
+                app:iconSize="18dp"
                 app:iconTint="@color/color_text_primary"
                 tools:text="August" />
 

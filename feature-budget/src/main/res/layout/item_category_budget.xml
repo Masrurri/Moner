@@ -10,7 +10,7 @@
         android:id="@+id/iv_category_icon"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:background="@drawable/bg_pill_unselected"
+        android:background="@drawable/bg_icon_badge"
         android:padding="8dp"
         android:contentDescription="@null"
         app:layout_constraintTop_toTopOf="parent"

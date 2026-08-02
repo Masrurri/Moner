@@ -13,8 +13,8 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/feature-budget" />
-            <option value="$PROJECT_DIR$/feature-expend-journal" />
-            <option value="$PROJECT_DIR$/feature-setting" />
+            <option value="$PROJECT_DIR$/feature-journal" />
+            <option value="$PROJECT_DIR$/feature-settings" />
           </set>
         </option>
       </GradleProjectSettings>

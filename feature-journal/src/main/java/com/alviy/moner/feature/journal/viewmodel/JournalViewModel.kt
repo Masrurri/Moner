@@ -29,7 +29,7 @@ import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
-class ExpendJournalViewModel @Inject constructor(
+class JournalViewModel @Inject constructor(
     private val expenseRepository: ExpenseRepository
 ) : BaseViewModel() {
 

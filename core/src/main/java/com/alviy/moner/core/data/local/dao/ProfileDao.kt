@@ -15,7 +15,7 @@ interface ProfileDao {
 
     @Transaction
     @Query("SELECT * FROM profile LIMIT 1")
-    fun getProfile(): Flow<ProfileEntity>
+    fun getProfile(): Flow<ProfileEntity?>
 
     @Query("DELETE FROM profile")
     suspend fun clearProfiles()

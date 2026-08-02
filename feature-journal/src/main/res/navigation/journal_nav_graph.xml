@@ -7,6 +7,6 @@
 
     <fragment
         android:id="@+id/journalFragment"
-        android:name="com.alviy.moner.feature.journal.ui.ExpendJournalFragment"
+        android:name="com.alviy.moner.feature.journal.ui.JournalFragment"
         android:label="Journal"/>
 </navigation>

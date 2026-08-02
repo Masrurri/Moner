@@ -1,12 +1,171 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/color_bg_app"
+    android:clipToPadding="false"
+    android:paddingBottom="96dp">
 
-    <com.google.android.material.textview.MaterialTextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:textSize="100dp"
-        android:text="Budget"/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/budget_title"
+                android:textAppearance="@style/TextAppearance.Moner.Bold"
+                android:textSize="26sp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_select_month"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.Moner.SemiBold"
+                android:textColor="@color/color_text_primary"
+                app:icon="@drawable/ic_arrow_right"
+                app:iconGravity="textEnd"
+                app:iconTint="@color/color_text_primary"
+                tools:text="August" />
+
+        </LinearLayout>
+
+        <!-- Spent of budget -->
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.Moner.MaterialCardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            app:cardBackgroundColor="@color/color_surface_ink"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_spent_label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:letterSpacing="0.08"
+                    android:text="@string/budget_spent_of_budget"
+                    android:textAppearance="@style/TextAppearance.Moner.SemiBold"
+                    android:textColor="@color/color_text_on_ink"
+                    android:textSize="12sp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/progress_ring" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_spent_amount"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textAppearance="@style/TextAppearance.Moner.Bold"
+                    android:textColor="@color/color_text_on_ink"
+                    android:textSize="26sp"
+                    app:layout_constraintTop_toBottomOf="@id/tv_spent_label"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/progress_ring"
+                    tools:text="Rp 3.100.000" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_limit_amount"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textAppearance="@style/TextAppearance.Moner.Regular"
+                    android:textColor="#B3FFFFFF"
+                    android:textSize="14sp"
+                    app:layout_constraintTop_toBottomOf="@id/tv_spent_amount"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/progress_ring"
+                    tools:text="/ Rp 5.000.000" />
+
+                <com.alviy.moner.core.designsystem.CircularProgressView
+                    android:id="@+id/progress_ring"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    app:cpv_progressColor="@color/color_accent_neon"
+                    app:cpv_trackColor="#33FFFFFF"
+                    app:cpv_strokeWidth="6dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/budget_category_budgets"
+            android:textAppearance="@style/TextAppearance.Moner.SemiBold"
+            android:textSize="16sp" />
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.Moner.MaterialCardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_category_budgets"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="4dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:itemCount="2"
+                tools:listitem="@layout/item_category_budget" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_empty_state"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:gravity="center"
+            android:padding="12dp"
+            android:text="@string/budget_empty_state"
+            android:textAppearance="@style/TextAppearance.Moner.Regular"
+            android:textColor="@color/color_text_secondary"
+            android:visibility="gone" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_add_category_budget"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="12dp"
+            android:text="@string/budget_add_category_budget"
+            android:textAppearance="@style/TextAppearance.Moner.SemiBold"
+            android:textColor="@color/color_text_primary"
+            app:cornerRadius="16dp"
+            app:icon="@drawable/ic_plus"
+            app:iconTint="@color/color_text_primary"
+            app:strokeColor="@color/color_stroke_hairline" />
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

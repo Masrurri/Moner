@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8F8F8">
+    android:background="@color/color_bg_app">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host"
@@ -19,6 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        app:cardBackgroundColor="@color/color_nav_bg"
         style="@style/Widget.MaterialComponents.CardView.Cut">
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_nav"
@@ -26,9 +27,13 @@
             android:layout_height="70dp"
             app:itemRippleColor="@null"
             app:labelVisibilityMode="labeled"
-            app:itemIconSize="26dp"
-            app:itemActiveIndicatorStyle="@color/transparent"
-            android:background="@color/transparent"
+            app:itemIconSize="24dp"
+            app:itemIconTint="@color/color_nav_icon"
+            app:itemTextColor="@color/color_nav_text"
+            app:itemTextAppearanceActive="@style/TextAppearance.Moner.SemiBold"
+            app:itemTextAppearanceInactive="@style/TextAppearance.Moner.Medium"
+            app:itemActiveIndicatorStyle="@style/Widget.Moner.BottomNav.ActiveIndicator"
+            android:background="@color/color_nav_bg"
             app:menu="@menu/bottom_nav_menu" />
     </com.google.android.material.card.MaterialCardView>
 

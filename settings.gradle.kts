@@ -18,6 +18,6 @@ rootProject.name = "Moner"
 
 include(":app")
 include(":core")
-include(":feature-expend-journal")
+include(":feature-journal")
 include(":feature-budget")
-include(":feature-setting")
+include(":feature-settings")

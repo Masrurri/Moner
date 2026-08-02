@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:gravity="center"
+            android:text="@string/add_expense_title"
+            android:textAppearance="@style/TextAppearance.Moner.Bold"
+            android:textSize="18sp" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:letterSpacing="0.08"
+            android:text="@string/add_expense_amount"
+            android:textAppearance="@style/TextAppearance.Moner.SemiBold"
+            android:textColor="@color/color_text_secondary"
+            android:textSize="12sp" />
+
+        <com.alviy.moner.core.designsystem.AmountInputView
+            android:id="@+id/amount_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp" />
+
+        <com.alviy.moner.core.designsystem.CustomTextField
+            android:id="@+id/tf_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            app:hintText="@string/add_expense_title_hint" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/add_expense_category"
+            android:textAppearance="@style/TextAppearance.Moner.SemiBold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal"
+            tools:listitem="@layout/item_pills" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_new_category"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="@string/add_expense_new_category"
+            android:textAppearance="@style/TextAppearance.Moner.SemiBold"
+            android:textColor="@color/color_text_primary"
+            app:icon="@drawable/ic_plus"
+            app:iconTint="@color/color_text_primary" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/add_expense_payment_source"
+            android:textAppearance="@style/TextAppearance.Moner.SemiBold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_source"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal"
+            tools:listitem="@layout/item_pills" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/add_expense_date"
+            android:textAppearance="@style/TextAppearance.Moner.SemiBold" />
+
+        <LinearLayout
+            android:id="@+id/row_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/bg_pill_unselected"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="14dp">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_calendar"
+                android:contentDescription="@null" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:textAppearance="@style/TextAppearance.Moner.Medium"
+                tools:text="Today, 2 Aug 2026" />
+
+            <ImageView
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:src="@drawable/ic_arrow_right"
+                android:contentDescription="@null" />
+
+        </LinearLayout>
+
+        <com.alviy.moner.core.designsystem.CustomTextField
+            android:id="@+id/tf_note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:minLines="2"
+            app:hintText="@string/add_expense_note_hint" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_save_expense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/color_btn_primary"
+            android:elevation="0dp"
+            android:paddingVertical="16dp"
+            android:text="@string/add_expense_save"
+            android:textAppearance="@style/TextAppearance.Moner.Bold"
+            android:textColor="@color/color_text_btn_primary"
+            app:cornerRadius="16dp"
+            app:rippleColor="@color/color_ripple" />
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

@@ -1,18 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="thin_text">#B3B3B3</color>
+    <!-- Base -->
+    <color name="black">#111111</color>
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>
-    <color name="shadow">#29000000</color>
-    <color name="colorPrimary">#E1FF01</color>
-    <color name="colorBtnPressed">#B9D300</color>
-    <color name="colorRipple">#52000000</color>
-    <color name="lightGrey">#F6F6F6</color>
+
+    <!-- Surfaces -->
+    <color name="color_bg_app">#F7F7F5</color>
+    <color name="color_bg_surface">#FFFFFF</color>
+    <color name="color_surface_ink">#111111</color>
+    <color name="color_stroke_hairline">#EAEAEA</color>
+    <color name="color_shadow">#29000000</color>
+    <color name="color_ripple">#1F000000</color>
+
+    <!-- Text -->
+    <color name="color_text_primary">#111111</color>
+    <color name="color_text_secondary">#6E6E6E</color>
+    <color name="color_text_tertiary">#A0A0A0</color>
+    <color name="color_text_on_ink">#FFFFFF</color>
+    <color name="thin_text">#A0A0A0</color>
+
+    <!-- Accent -->
+    <color name="color_accent_neon">#D6FF3F</color>
+    <color name="color_on_neon">#111111</color>
+    <color name="color_accent_ink">#111111</color>
+    <color name="color_danger">#E4483C</color>
+
+    <!-- Buttons / FAB (flip with theme) -->
+    <color name="color_button_primary_bg">#111111</color>
+    <color name="color_button_primary_bg_pressed">#2B2B2B</color>
+    <color name="color_button_primary_text">#FFFFFF</color>
+
+    <!-- Pills / chips -->
+    <color name="color_pill_bg_unselected">#F1F1EF</color>
+    <color name="color_pill_text_unselected">#111111</color>
+    <color name="color_pill_stroke_selected">#8A9D00</color>
+
+    <!-- Bottom nav -->
+    <color name="color_nav_bg">#FFFFFF</color>
+    <color name="color_nav_icon_inactive">#A0A0A0</color>
+    <color name="color_nav_active_pill_bg">#111111</color>
+    <color name="color_nav_active_content">#FFFFFF</color>
+
+    <!-- Legacy aliases kept for widgets not yet migrated -->
+    <color name="lightGrey">#F1F1EF</color>
+    <color name="colorPrimary">#111111</color>
+    <color name="colorBtnPressed">#2B2B2B</color>
+    <color name="colorRipple">#1F000000</color>
     <color name="strokeLightPills">#8A9D00</color>
+    <color name="shadow">#29000000</color>
 </resources>

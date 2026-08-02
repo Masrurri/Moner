@@ -1,8 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.hilt.android)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -44,15 +44,15 @@ android {
 dependencies {
     implementation(project(":core"))
     implementation(project(":feature-budget"))
-    implementation(project(":feature-expend-journal"))
-    implementation(project(":feature-setting"))
+    implementation(project(":feature-journal"))
+    implementation(project(":feature-settings"))
 
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
 
     // Injection
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
 
     // Jetpack Bundles
     implementation(libs.bundles.lifecycle)
@@ -64,15 +64,10 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.google.material)
     implementation(libs.androidx.constraintlayout)
-    implementation(libs.glide)
-    implementation(libs.lottie)
-    implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.kotlinx.coroutines)
     implementation(libs.gson)
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
 
     // Testing
     testImplementation(libs.junit)

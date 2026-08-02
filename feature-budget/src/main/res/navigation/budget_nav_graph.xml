@@ -7,6 +7,6 @@
 
     <fragment
         android:id="@+id/budgetFragment"
-        android:name="com.alviy.feature.budget.ui.BudgetFragment"
+        android:name="com.alviy.moner.feature.budget.ui.BudgetFragment"
         android:label="Budget"/>
 </navigation>

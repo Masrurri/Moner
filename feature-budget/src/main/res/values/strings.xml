@@ -11,7 +11,7 @@
     <string name="add_category_budget_title">Add Category Budget</string>
     <string name="add_category_budget_monthly_limit">MONTHLY LIMIT *</string>
     <string name="add_category_budget_category">Category *</string>
-    <string name="add_category_budget_new_category">+ New</string>
+    <string name="add_category_budget_new_category">New</string>
     <string name="add_category_budget_period">Period *</string>
     <string name="add_category_budget_monthly">Monthly</string>
     <string name="add_category_budget_weekly">Weekly</string>

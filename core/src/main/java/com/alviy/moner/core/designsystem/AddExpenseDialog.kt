@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alviy.moner.core.databinding.DialogAddExpenseBinding
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -81,9 +82,20 @@ class AddExpenseDialog : FullScreenSheetDialogFragment() {
             val source = selectedSource
             val amount = binding.amountInput.amount
 
-            if (category.isNullOrBlank() || title.isBlank() || source.isNullOrBlank() ||
-                amount == BigDecimal.ZERO
-            ) {
+            if (category.isNullOrBlank()) {
+                showValidationError(com.alviy.moner.core.R.string.add_expense_error_category)
+                return@setOnClickListener
+            }
+            if (title.isBlank()) {
+                showValidationError(com.alviy.moner.core.R.string.add_expense_error_title)
+                return@setOnClickListener
+            }
+            if (source.isNullOrBlank()) {
+                showValidationError(com.alviy.moner.core.R.string.add_expense_error_source)
+                return@setOnClickListener
+            }
+            if (amount == BigDecimal.ZERO) {
+                showValidationError(com.alviy.moner.core.R.string.add_expense_error_amount)
                 return@setOnClickListener
             }
 
@@ -99,6 +111,10 @@ class AddExpenseDialog : FullScreenSheetDialogFragment() {
             )
             dismissAllowingStateLoss()
         }
+    }
+
+    private fun showValidationError(@androidx.annotation.StringRes messageRes: Int) {
+        Toast.makeText(requireContext(), messageRes, Toast.LENGTH_SHORT).show()
     }
 
     fun setAvailableCategories(categories: List<String>) {

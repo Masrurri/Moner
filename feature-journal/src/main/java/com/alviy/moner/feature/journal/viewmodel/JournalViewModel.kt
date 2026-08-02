@@ -2,6 +2,7 @@ package com.alviy.moner.feature.journal.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.alviy.moner.core.common.base.BaseViewModel
+import com.alviy.moner.core.common.mergeWithDefaultCategories
 import com.alviy.moner.core.domain.model.ExpenseItem
 import com.alviy.moner.core.domain.model.ExpenseSummary
 import com.alviy.moner.core.domain.model.Profile
@@ -42,8 +43,12 @@ class JournalViewModel @Inject constructor(
     val profile: StateFlow<Profile> = expenseRepository.getProfile()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), Profile())
 
-    val availableCategories: StateFlow<List<String>> = expenseRepository.getDistinctCategoryNames()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    val availableCategories: StateFlow<List<String>> = _selectedMonthYear
+        .flatMapLatest { monthYear ->
+            if (monthYear == null) flowOf(emptyList()) else expenseRepository.getCategoryNamesForMonth(monthYear)
+        }
+        .map { mergeWithDefaultCategories(it) }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, mergeWithDefaultCategories(emptyList()))
 
     private val _selectedCategoryFilter = MutableStateFlow(ALL_CATEGORIES)
     val selectedCategoryFilter: StateFlow<String> = _selectedCategoryFilter.asStateFlow()

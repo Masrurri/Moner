@@ -65,35 +65,8 @@
                         android:textSize="12sp" />
                 </LinearLayout>
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_notifications"
-                    style="@style/Widget.Material3.Button.IconButton"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:backgroundTint="@color/color_bg_surface"
-                    app:icon="@drawable/ic_bell"
-                    app:iconGravity="textStart"
-                    app:iconPadding="0dp"
-                    app:iconTint="@color/color_text_primary"
-                    app:shapeAppearance="@style/Shape.RoundedButton" />
-
             </LinearLayout>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_select_time"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:textAppearance="@style/TextAppearance.Moner.SemiBold"
-                android:textColor="@color/color_text_primary"
-                app:icon="@drawable/ic_chevron_right"
-                app:iconGravity="textEnd"
-                app:iconSize="18dp"
-                app:iconTint="@color/color_text_primary"
-                tools:text="This Month" />
-
-            <!-- Total expense -->
             <com.google.android.material.card.MaterialCardView
                 style="@style/Widget.Moner.MaterialCardView"
                 android:layout_width="match_parent"
@@ -107,6 +80,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="20dp">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_select_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:textAppearance="@style/TextAppearance.Moner.SemiBold"
+                        android:textColor="@color/color_text_on_ink"
+                        app:icon="@drawable/ic_chevron_right"
+                        app:iconGravity="textEnd"
+                        app:iconSize="18dp"
+                        android:textSize="12sp"
+                        app:iconTint="@color/color_text_on_ink"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        tools:text="This Month" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_total_label"

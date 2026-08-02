@@ -3,6 +3,7 @@ package com.alviy.moner.feature.budget.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.alviy.moner.core.common.base.BaseViewModel
 import com.alviy.moner.core.common.ext.toFullMonthYear
+import com.alviy.moner.core.common.mergeWithDefaultCategories
 import com.alviy.moner.core.domain.repository.ExpenseRepository
 import com.alviy.moner.feature.budget.domain.model.BudgetPeriod
 import com.alviy.moner.feature.budget.domain.model.BudgetSummary
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -31,7 +33,7 @@ class BudgetViewModel @Inject constructor(
     val selectedMonthYear: StateFlow<String> = _selectedMonthYear.asStateFlow()
 
     val monthYears: StateFlow<List<String>> = expenseRepository.getMonthYears()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val categoryBudgets: StateFlow<List<CategoryBudgetProgress>> = _selectedMonthYear
         .flatMapLatest { budgetRepository.getCategoryBudgetsWithSpend(it) }
@@ -41,8 +43,10 @@ class BudgetViewModel @Inject constructor(
         .flatMapLatest { budgetRepository.getBudgetSummary(it) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), BudgetSummary())
 
-    val availableCategories: StateFlow<List<String>> = expenseRepository.getDistinctCategoryNames()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    val availableCategories: StateFlow<List<String>> = _selectedMonthYear
+        .flatMapLatest { monthYear -> expenseRepository.getCategoryNamesForMonth(monthYear) }
+        .map { mergeWithDefaultCategories(it) }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, mergeWithDefaultCategories(emptyList()))
 
     fun selectMonthYear(monthYear: String) {
         _selectedMonthYear.value = monthYear

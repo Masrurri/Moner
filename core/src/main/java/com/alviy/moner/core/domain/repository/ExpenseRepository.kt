@@ -18,7 +18,7 @@ interface ExpenseRepository {
 
     fun getMonthYears(): Flow<List<String>>
 
-    fun getDistinctCategoryNames(): Flow<List<String>>
+    fun getCategoryNamesForMonth(monthYear: String): Flow<List<String>>
 
     suspend fun addExpense(
         categoryName: String,

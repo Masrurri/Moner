@@ -46,10 +46,11 @@ interface ExpenseCategoryDao {
         """
         SELECT DISTINCT categoryName
         FROM expense_category
+        WHERE monthYear = :monthYear
         ORDER BY categoryName
         """
     )
-    fun getDistinctCategoryNames(): Flow<List<String>>
+    fun getCategoryNamesForMonth(monthYear: String): Flow<List<String>>
 
     @Query(
         """

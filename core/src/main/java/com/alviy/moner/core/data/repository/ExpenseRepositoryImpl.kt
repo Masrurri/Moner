@@ -42,8 +42,8 @@ class ExpenseRepositoryImpl @Inject constructor(
     override fun getCategories(monthYear: String) =
         expenseCategoryDao.getCategories(monthYear).map { list -> list.map { it.toExpenseItem() } }
 
-    override fun getDistinctCategoryNames(): Flow<List<String>> =
-        expenseCategoryDao.getDistinctCategoryNames()
+    override fun getCategoryNamesForMonth(monthYear: String): Flow<List<String>> =
+        expenseCategoryDao.getCategoryNamesForMonth(monthYear)
 
     override suspend fun insertCategory(
         name: String,

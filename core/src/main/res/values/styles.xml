@@ -11,30 +11,35 @@
     <style name="TextAppearance.Moner.Thin" parent="TextAppearance.Moner">
         <item name="android:textFontWeight">100</item>
         <item name="android:textColor">@color/color_text_tertiary</item>
+        <item name="android:textSize">12sp</item>
     </style>
 
     <style name="TextAppearance.Moner.Regular" parent="TextAppearance.Moner">
         <item name="font">@font/inter</item>
         <item name="android:textFontWeight">400</item>
         <item name="android:textColor">@color/color_text_primary</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="TextAppearance.Moner.Bold" parent="TextAppearance.Moner">
         <item name="font">@font/inter_bold</item>
         <item name="android:textFontWeight">700</item>
         <item name="android:textColor">@color/color_text_primary</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <style name="TextAppearance.Moner.Medium" parent="TextAppearance.Moner">
         <item name="font">@font/inter_medium</item>
         <item name="android:textFontWeight">500</item>
         <item name="android:textColor">@color/color_text_primary</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="TextAppearance.Moner.SemiBold" parent="TextAppearance.Moner">
         <item name="font">@font/inter_semibold</item>
         <item name="android:textFontWeight">600</item>
         <item name="android:textColor">@color/color_text_primary</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="TextAppearance.Moner.AmountDisplay" parent="TextAppearance.Moner">
@@ -115,12 +120,17 @@
     </style>
 
     <!-- Monthly / Weekly style segmented control (2 fixed options via MaterialButtonToggleGroup) -->
+    <style name="ShapeAppearance.Moner.Pill" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
     <style name="Widget.Moner.SegmentedControl.Button" parent="Widget.Material3.Button.OutlinedButton">
         <item name="android:textAppearance">@style/TextAppearance.Moner.SemiBold</item>
         <item name="android:textColor">@color/color_pill_text</item>
         <item name="backgroundTint">@color/color_pill_bg</item>
         <item name="strokeWidth">0dp</item>
-        <item name="cornerRadius">50dp</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.Moner.Pill</item>
         <item name="rippleColor">@color/color_ripple</item>
     </style>
 

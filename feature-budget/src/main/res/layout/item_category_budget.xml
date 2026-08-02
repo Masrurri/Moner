@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingVertical="12dp">
+
+    <ImageView
+        android:id="@+id/iv_category_icon"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:background="@drawable/bg_pill_unselected"
+        android:padding="8dp"
+        android:contentDescription="@null"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:src="@drawable/ic_food" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_category_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:textAppearance="@style/TextAppearance.Moner.SemiBold"
+        app:layout_constraintTop_toTopOf="@id/iv_category_icon"
+        app:layout_constraintStart_toEndOf="@id/iv_category_icon"
+        app:layout_constraintEnd_toStartOf="@id/tv_spent_limit"
+        tools:text="Food &amp; Drink" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_spent_limit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Moner.SemiBold"
+        app:layout_constraintTop_toTopOf="@id/iv_category_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="1.2jt / 1.5jt" />
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progress_bar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:trackCornerRadius="4dp"
+        app:trackThickness="6dp"
+        app:indicatorColor="@color/color_accent_neon"
+        app:trackColor="@color/color_pill_bg_unselected"
+        app:layout_constraintTop_toBottomOf="@id/iv_category_icon"
+        app:layout_constraintStart_toStartOf="@id/tv_category_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:progress="80" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_over_budget"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:drawablePadding="4dp"
+        android:textAppearance="@style/TextAppearance.Moner.Medium"
+        android:textColor="@color/color_danger"
+        android:textSize="12sp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/progress_bar"
+        app:layout_constraintStart_toStartOf="@id/tv_category_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Over by Rp 120.000"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

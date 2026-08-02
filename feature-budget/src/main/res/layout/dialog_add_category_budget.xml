@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:gravity="center"
+            android:text="@string/add_category_budget_title"
+            android:textAppearance="@style/TextAppearance.Moner.Bold"
+            android:textSize="18sp" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:letterSpacing="0.08"
+            android:text="@string/add_category_budget_monthly_limit"
+            android:textAppearance="@style/TextAppearance.Moner.SemiBold"
+            android:textColor="@color/color_text_secondary"
+            android:textSize="12sp" />
+
+        <com.alviy.moner.core.designsystem.AmountInputView
+            android:id="@+id/amount_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/add_category_budget_category"
+            android:textAppearance="@style/TextAppearance.Moner.SemiBold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal"
+            tools:listitem="@layout/item_pills" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_new_category"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="@string/add_category_budget_new_category"
+            android:textAppearance="@style/TextAppearance.Moner.SemiBold"
+            android:textColor="@color/color_text_primary"
+            app:icon="@drawable/ic_plus"
+            app:iconTint="@color/color_text_primary" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/add_category_budget_period"
+            android:textAppearance="@style/TextAppearance.Moner.SemiBold" />
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/toggle_period"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            app:checkedButton="@id/btn_period_monthly"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_period_monthly"
+                style="@style/Widget.Moner.SegmentedControl.Button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/add_category_budget_monthly" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_period_weekly"
+                style="@style/Widget.Moner.SegmentedControl.Button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/add_category_budget_weekly" />
+
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_category_budget_notify"
+                    android:textAppearance="@style/TextAppearance.Moner.SemiBold" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_category_budget_notify_desc"
+                    android:textAppearance="@style/TextAppearance.Moner.Regular"
+                    android:textColor="@color/color_text_secondary"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/switch_notify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                app:thumbTint="@color/color_switch_thumb"
+                app:trackTint="@color/color_switch_track" />
+
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_save_budget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/color_btn_primary"
+            android:elevation="0dp"
+            android:paddingVertical="16dp"
+            android:text="@string/add_category_budget_save"
+            android:textAppearance="@style/TextAppearance.Moner.Bold"
+            android:textColor="@color/color_text_btn_primary"
+            app:cornerRadius="16dp"
+            app:rippleColor="@color/color_ripple" />
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

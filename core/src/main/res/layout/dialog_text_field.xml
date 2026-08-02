@@ -19,7 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <com.alviy.core.designsystem.CustomTextField
+    <com.alviy.moner.core.designsystem.CustomTextField
         android:id="@+id/tf_category_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

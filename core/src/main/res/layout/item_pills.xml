@@ -5,17 +5,17 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginHorizontal="4dp"
-    android:background="@drawable/bg_pills_light">
+    android:background="@drawable/bg_pill">
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_category"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="LinkAja"
-        android:textSize="12sp"
-        android:layout_marginVertical="4dp"
-        android:layout_marginHorizontal="10dp"
-        style="@style/TextAppearance.Moner.Medium"
+        android:textSize="13sp"
+        android:textColor="@color/color_pill_text"
+        android:duplicateParentState="true"
+        style="@style/TextAppearance.Moner.SemiBold"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

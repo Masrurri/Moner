@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name_short">Moner</string>
+
+    <string name="add_expense_title">Add Expense</string>
+    <string name="add_expense_amount">AMOUNT *</string>
+    <string name="add_expense_title_hint">e.g. Nasi Padang</string>
+    <string name="add_expense_category">Category *</string>
+    <string name="add_expense_new_category">+ New</string>
+    <string name="add_expense_payment_source">Payment Source *</string>
+    <string name="add_expense_date">Date *</string>
+    <string name="add_expense_note_hint">Add a note...</string>
+    <string name="add_expense_save">Save Expense</string>
+    <string name="add_expense_today_format">Today, %1$s</string>
+    <string name="add_expense_new_category_hint">Category name</string>
+</resources>

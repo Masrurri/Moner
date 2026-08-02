@@ -6,8 +6,8 @@ import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.alviy.app.moner.databinding.ActivityMainBinding
-import com.alviy.core.base.BaseActivity
-import com.alviy.core.utils.Utils.navigateTo
+import com.alviy.moner.core.common.base.BaseActivity
+import com.alviy.moner.core.common.ext.navigateTo
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -15,7 +15,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(
     ActivityMainBinding::inflate
 ) {
     private lateinit var navController: NavController
-    private var activeBottomNav: CharSequence? = null
+    private var activeGraphId: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,34 +34,35 @@ class MainActivity : BaseActivity<ActivityMainBinding>(
         binding.bottomNav.setupWithNavController(navController)
         binding.bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
+                R.id.journal_bottom_nav -> navController.navigateTo(
+                    resId = com.alviy.moner.feature.journal.R.id.journal_nav,
+                    popUpToId = com.alviy.moner.feature.journal.R.id.journal_nav
+                )
                 R.id.budget_bottom_nav -> navController.navigateTo(
-                    resId = com.alviy.app.feature.budget.R.id.budget_nav,
-                    popUpToId = com.alviy.app.feature.budget.R.id.budget_nav
+                    resId = com.alviy.moner.feature.budget.R.id.budget_nav,
+                    popUpToId = com.alviy.moner.feature.budget.R.id.budget_nav
                 )
-                R.id.expend_journal_bottom_nav -> navController.navigateTo(
-                    resId = com.alviy.app.feature.expend.journal.R.id.exepnd_journal_nav,
-                    popUpToId = com.alviy.app.feature.expend.journal.R.id.exepnd_journal_nav
-                )
-                R.id.setting_bottom_nav -> navController.navigateTo(
-                    resId = com.alviy.app.feature.setting.R.id.setting_nav,
-                    popUpToId = com.alviy.app.feature.setting.R.id.setting_nav
+                R.id.settings_bottom_nav -> navController.navigateTo(
+                    resId = com.alviy.moner.feature.settings.R.id.settings_nav,
+                    popUpToId = com.alviy.moner.feature.settings.R.id.settings_nav
                 )
                 else -> return@setOnItemSelectedListener false
             }
             true
         }
-        navController.addOnDestinationChangedListener { controller, destination, arguments ->
+        navController.addOnDestinationChangedListener { _, destination, _ ->
             observeActiveBottomNav(destination)
         }
     }
 
     private fun observeActiveBottomNav(destination: NavDestination) {
-        if (destination.label == activeBottomNav) return
-        activeBottomNav = destination.label
-        binding.bottomNav.selectedItemId = when(activeBottomNav) {
-            "Budget" -> R.id.budget_bottom_nav
-            "Journal" -> R.id.expend_journal_bottom_nav
-            else -> R.id.setting_bottom_nav
+        val graphId = destination.parent?.id ?: return
+        if (graphId == activeGraphId) return
+        activeGraphId = graphId
+        binding.bottomNav.selectedItemId = when (graphId) {
+            com.alviy.moner.feature.budget.R.id.budget_nav -> R.id.budget_bottom_nav
+            com.alviy.moner.feature.settings.R.id.settings_nav -> R.id.settings_bottom_nav
+            else -> R.id.journal_bottom_nav
         }
     }
 

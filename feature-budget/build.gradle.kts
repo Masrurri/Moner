@@ -1,12 +1,12 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.hilt.android)
+    alias(libs.plugins.ksp)
 }
 
 android {
-    namespace = "com.alviy.app.feature.budget"
+    namespace = "com.alviy.moner.feature.budget"
     compileSdk = 34
 
     defaultConfig {
@@ -35,7 +35,7 @@ dependencies {
 
     // Injection
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
 
     // Lifecycle
     implementation(libs.androidx.fragment.ktx)

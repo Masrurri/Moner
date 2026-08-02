@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_title">Settings</string>
+    <string name="settings_profile_initials">JR</string>
+    <string name="settings_profile_name_placeholder">Jarot Ramadhan</string>
+    <string name="settings_profile_email_placeholder">jarot@email.com</string>
+
+    <string name="settings_section_preferences">PREFERENCES</string>
+    <string name="settings_currency">Currency</string>
+    <string name="settings_currency_value">IDR (Rp)</string>
+    <string name="settings_dark_mode">Dark Mode</string>
+    <string name="settings_notifications">Notifications</string>
+
+    <string name="settings_section_tools">TOOLS</string>
+    <string name="settings_import_excel">Import from Excel</string>
+    <string name="settings_export_excel">Export to Excel</string>
+    <string name="settings_backup_restore">Backup &amp; Restore</string>
+    <string name="settings_generate_sample_data">Generate Sample Data</string>
+    <string name="settings_dev_tag">DEV</string>
+
+    <string name="settings_section_danger_zone">DANGER ZONE</string>
+    <string name="settings_clear_database">Clear Database</string>
+
+    <string name="settings_clear_database_confirm_title">Clear database?</string>
+    <string name="settings_clear_database_confirm_message">This permanently deletes all transactions, categories, and budgets. This cannot be undone.</string>
+    <string name="settings_clear_database_confirm_positive">Clear</string>
+    <string name="settings_clear_database_confirm_negative">Cancel</string>
+
+    <string name="app_version_format">Moner v%1$s</string>
+</resources>

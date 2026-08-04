@@ -5,224 +5,206 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_bg_app"
-    tools:context="com.alviy.moner.feature.journal.ui.JournalFragment">
+    android:padding="20dp"
+    tools:context=".ui.JournalFragment">
 
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:clipToPadding="false"
-        android:paddingBottom="96dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <!-- Greeting header -->
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_avatar"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:background="@drawable/bg_avatar_circle"
+        android:gravity="center"
+        android:text="@string/journal_avatar_initials"
+        android:textAppearance="@style/TextAppearance.Moner.Bold"
+        android:textColor="@color/color_text_on_ink"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_greeting"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:textAppearance="@style/TextAppearance.Moner.SemiBold"
+        android:textSize="16sp"
+        tools:text="Hey, Moner"
+        app:layout_constraintStart_toEndOf="@id/tv_avatar"
+        app:layout_constraintTop_toTopOf="@id/tv_avatar"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_welcome"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="2dp"
+        android:text="@string/journal_welcome_back"
+        android:textAppearance="@style/TextAppearance.Moner.Regular"
+        android:textColor="@color/color_text_secondary"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@id/tv_avatar"
+        app:layout_constraintTop_toBottomOf="@id/tv_greeting"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Total expense card -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_total"
+        style="@style/Widget.Moner.MaterialCardView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="20dp"
+        app:cardBackgroundColor="@color/color_surface_ink"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_avatar">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:padding="20dp">
 
-            <!-- Greeting header -->
-            <LinearLayout
-                android:layout_width="match_parent"
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_total_label"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_avatar"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:background="@drawable/bg_avatar_circle"
-                    android:gravity="center"
-                    android:text="@string/journal_avatar_initials"
-                    android:textAppearance="@style/TextAppearance.Moner.Bold"
-                    android:textColor="@color/color_text_on_ink" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/tv_greeting"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearance.Moner.SemiBold"
-                        android:textSize="16sp"
-                        tools:text="Hey, Jarot" />
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/journal_welcome_back"
-                        android:textAppearance="@style/TextAppearance.Moner.Regular"
-                        android:textColor="@color/color_text_secondary"
-                        android:textSize="12sp" />
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <com.google.android.material.card.MaterialCardView
-                style="@style/Widget.Moner.MaterialCardView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                app:cardBackgroundColor="@color/color_surface_ink"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="0dp">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="20dp">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/tv_total_label"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:letterSpacing="0.08"
-                        android:text="@string/journal_total_expense"
-                        android:textAppearance="@style/TextAppearance.Moner.SemiBold"
-                        android:textColor="@color/color_text_on_ink"
-                        android:textSize="12sp"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/progress_ring" />
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/tv_total_amount"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:textAppearance="@style/TextAppearance.Moner.Bold"
-                        android:textColor="@color/color_text_on_ink"
-                        android:textSize="26sp"
-                        app:layout_constraintTop_toBottomOf="@id/tv_total_label"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/progress_ring"
-                        tools:text="Rp 4.250.000" />
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/cl_selected_date"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:background="@drawable/bg_pill"
-                        android:paddingHorizontal="12dp"
-                        android:paddingVertical="6dp"
-                        app:layout_constraintTop_toBottomOf="@id/tv_total_amount"
-                        app:layout_constraintStart_toStartOf="parent">
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:id="@+id/tv_selected_date"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Select Date"
-                            android:textAppearance="@style/TextAppearance.Moner.SemiBold"
-                            android:textColor="@color/color_surface_ink"
-                            android:textSize="13sp"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent"/>
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/tv_delta"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:textAppearance="@style/TextAppearance.Moner.Regular"
-                        android:textColor="#B3FFFFFF"
-                        android:textSize="13sp"
-                        android:layout_marginStart="12dp"
-                        app:layout_constraintTop_toBottomOf="@id/tv_total_amount"
-                        app:layout_constraintStart_toEndOf="@id/cl_selected_date"
-                        app:layout_constraintEnd_toStartOf="@id/progress_ring"
-                        tools:text="+12% vs last month" />
-
-                    <com.alviy.moner.core.designsystem.CircularProgressView
-                        android:id="@+id/progress_ring"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        app:cpv_progressColor="@color/color_accent_neon"
-                        app:cpv_trackColor="#33FFFFFF"
-                        app:cpv_strokeWidth="6dp"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Category filter pills -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_category"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:clipToPadding="false"
-                android:orientation="horizontal"
-                tools:itemCount="4"
-                tools:listitem="@layout/item_pills" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/journal_recent_transactions"
-                    android:textAppearance="@style/TextAppearance.Moner.SemiBold"
-                    android:textSize="16sp" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_see_all"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:padding="4dp"
-                    android:text="@string/journal_see_all"
-                    android:textAppearance="@style/TextAppearance.Moner.SemiBold"
-                    android:textColor="@color/color_text_secondary"
-                    android:textSize="13sp" />
-
-            </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_transactions"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
-                tools:itemCount="4"
-                tools:listitem="@layout/item_journal" />
+                android:letterSpacing="0.08"
+                android:text="@string/journal_total_expense"
+                android:textAppearance="@style/TextAppearance.Moner.SemiBold"
+                android:textColor="@color/color_text_on_ink"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toStartOf="@id/progress_ring"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_empty_state"
-                android:layout_width="match_parent"
+                android:id="@+id/tv_total_amount"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:padding="24dp"
-                android:text="@string/journal_empty_state"
+                android:layout_marginTop="8dp"
+                android:textAppearance="@style/TextAppearance.Moner.Bold"
+                android:textColor="@color/color_text_on_ink"
+                android:textSize="26sp"
+                app:layout_constraintEnd_toStartOf="@id/progress_ring"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_total_label"
+                tools:text="Rp 4.250.000" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_delta"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:textAppearance="@style/TextAppearance.Moner.Regular"
-                android:textColor="@color/color_text_secondary"
-                android:visibility="gone" />
+                android:textColor="#B3FFFFFF"
+                android:textSize="13sp"
+                app:layout_constraintEnd_toStartOf="@id/progress_ring"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_total_amount"
+                tools:text="5% vs last month" />
 
-        </LinearLayout>
+            <com.alviy.moner.core.designsystem.CircularProgressView
+                android:id="@+id/progress_ring"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                app:cpv_progressColor="@color/color_accent_neon"
+                app:cpv_trackColor="#33FFFFFF"
+                app:cpv_strokeWidth="6dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    </androidx.core.widget.NestedScrollView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
 
+    <!-- Category filter pills -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_category"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="16dp"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card_total"
+        tools:itemCount="4"
+        tools:listitem="@layout/item_pills" />
+
+    <!-- Recent transactions header row -->
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_recent_header"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/journal_recent_transactions"
+        android:textAppearance="@style/TextAppearance.Moner.SemiBold"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/cl_selected_date"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/cl_selected_date"
+        app:layout_constraintTop_toTopOf="@id/cl_selected_date" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_selected_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bg_pill"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="6dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rv_category">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_selected_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select Date"
+            android:textAppearance="@style/TextAppearance.Moner.SemiBold"
+            android:textColor="@color/color_surface_ink"
+            android:textSize="13sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Transactions RecyclerView — only scrollable element -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_transactions"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:nestedScrollingEnabled="false"
+        android:paddingBottom="96dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cl_selected_date"
+        tools:itemCount="4"
+        tools:listitem="@layout/item_journal" />
+
+    <!-- Empty state (overlaps rv_transactions area) -->
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_empty_state"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="24dp"
+        android:text="@string/journal_empty_state"
+        android:textAppearance="@style/TextAppearance.Moner.Regular"
+        android:textColor="@color/color_text_secondary"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/rv_transactions"
+        app:layout_constraintEnd_toEndOf="@id/rv_transactions"
+        app:layout_constraintStart_toStartOf="@id/rv_transactions"
+        app:layout_constraintTop_toTopOf="@id/rv_transactions" />
+
+    <!-- FAB -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_add_expense"
         android:layout_width="wrap_content"

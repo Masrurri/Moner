@@ -33,7 +33,7 @@ class JournalFragment : BaseFragment<FragmentJournalBinding>(
         setupRvTransactions()
 
         binding?.tvSelectedDate?.setOnClickListener { showDialogSelectTime() }
-        binding?.fabAddExpense?.setOnClickListener { showAddExpenseDialog() }
+        binding?.btnSpend?.setOnClickListener { showAddExpenseDialog() }
     }
 
     private fun setupRvCategory() {

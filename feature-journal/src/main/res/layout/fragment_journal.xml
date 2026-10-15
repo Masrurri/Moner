@@ -4,121 +4,114 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_bg_app"
-    android:padding="20dp"
+    android:background="#121212"
     tools:context=".ui.JournalFragment">
 
-    <!-- Greeting header -->
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_avatar"
-        android:layout_width="44dp"
-        android:layout_height="44dp"
-        android:background="@drawable/bg_avatar_circle"
-        android:gravity="center"
-        android:text="@string/journal_avatar_initials"
-        android:textAppearance="@style/TextAppearance.Moner.Bold"
-        android:textColor="@color/color_text_on_ink"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_greeting"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:textAppearance="@style/TextAppearance.Moner.SemiBold"
-        android:textSize="16sp"
-        tools:text="Hey, Moner"
-        app:layout_constraintStart_toEndOf="@id/tv_avatar"
-        app:layout_constraintTop_toTopOf="@id/tv_avatar"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_welcome"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="2dp"
-        android:text="@string/journal_welcome_back"
-        android:textAppearance="@style/TextAppearance.Moner.Regular"
-        android:textColor="@color/color_text_secondary"
-        android:textSize="12sp"
-        app:layout_constraintStart_toEndOf="@id/tv_avatar"
-        app:layout_constraintTop_toBottomOf="@id/tv_greeting"
-        app:layout_constraintEnd_toEndOf="parent" />
-
     <!-- Total expense card -->
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card_total"
-        style="@style/Widget.Moner.MaterialCardView"
-        android:layout_width="0dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_header"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="20dp"
-        app:cardBackgroundColor="@color/color_surface_ink"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/bg_rounded_bottom"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_avatar">
+        app:layout_constraintEnd_toEndOf="parent"
+        android:padding="16dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_greeting"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="20dp">
+            android:textAppearance="@style/TextAppearance.Moner.SemiBold"
+            android:textSize="16sp"
+            tools:text="Hey, Moner"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:ignore="MissingConstraints" />
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_total_label"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:letterSpacing="0.08"
-                android:text="@string/journal_total_expense"
-                android:textAppearance="@style/TextAppearance.Moner.SemiBold"
-                android:textColor="@color/color_text_on_ink"
-                android:textSize="12sp"
-                app:layout_constraintEnd_toStartOf="@id/progress_ring"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_welcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="@string/journal_welcome_back"
+            android:textAppearance="@style/TextAppearance.Moner.Regular"
+            android:textColor="@color/color_text_secondary"
+            android:textSize="12sp"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_greeting"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_total_amount"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:textAppearance="@style/TextAppearance.Moner.Bold"
-                android:textColor="@color/color_text_on_ink"
-                android:textSize="26sp"
-                app:layout_constraintEnd_toStartOf="@id/progress_ring"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_total_label"
-                tools:text="Rp 4.250.000" />
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_total_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:letterSpacing="0.08"
+            android:layout_marginTop="16dp"
+            android:text="@string/journal_total_expense"
+            android:textAppearance="@style/TextAppearance.Moner.SemiBold"
+            android:textColor="@color/color_text_secondary"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toStartOf="@id/progress_ring"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_welcome" />
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_delta"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:textAppearance="@style/TextAppearance.Moner.Regular"
-                android:textColor="#B3FFFFFF"
-                android:textSize="13sp"
-                app:layout_constraintEnd_toStartOf="@id/progress_ring"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_total_amount"
-                tools:text="5% vs last month" />
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_total_amount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textAppearance="@style/TextAppearance.Moner.Bold"
+            android:textColor="#121212"
+            android:textSize="26sp"
+            app:layout_constraintEnd_toStartOf="@id/progress_ring"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_total_label"
+            tools:text="Rp 4.250.000" />
 
-            <com.alviy.moner.core.designsystem.CircularProgressView
-                android:id="@+id/progress_ring"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                app:cpv_progressColor="@color/color_accent_neon"
-                app:cpv_trackColor="#33FFFFFF"
-                app:cpv_strokeWidth="6dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_delta"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Moner.Regular"
+            android:textColor="@color/color_text_secondary"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toStartOf="@id/progress_ring"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_total_amount"
+            tools:text="5% vs last month" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.card.MaterialCardView>
+        <com.alviy.moner.core.designsystem.CircularProgressView
+            android:id="@+id/progress_ring"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            app:cpv_progressColor="@color/color_accent_neon"
+            app:cpv_trackColor="#33858585"
+            app:cpv_strokeWidth="6dp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_delta"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_total_label" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_spend"
+            android:layout_width="wrap_content"
+            android:layout_height="38dp"
+            android:background="@drawable/bg_pill"
+            android:backgroundTint="@color/white"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/black"
+            android:drawableTint="@color/black"
+            android:textAppearance="@style/TextAppearance.Moner.SemiBold"
+            android:text="Spend"
+            android:drawablePadding="8dp"
+            android:drawableStart="@drawable/ic_arrow_right"
+            app:layout_constraintTop_toBottomOf="@id/tv_delta"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Category filter pills -->
     <androidx.recyclerview.widget.RecyclerView
@@ -127,11 +120,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="16dp"
+        android:layout_marginHorizontal="16dp"
         android:clipToPadding="false"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card_total"
+        app:layout_constraintTop_toBottomOf="@id/cl_header"
         tools:itemCount="4"
         tools:listitem="@layout/item_pills" />
 
@@ -143,6 +137,8 @@
         android:text="@string/journal_recent_transactions"
         android:textAppearance="@style/TextAppearance.Moner.SemiBold"
         android:textSize="16sp"
+        android:textColor="@color/white"
+        android:layout_marginStart="16dp"
         app:layout_constraintBottom_toBottomOf="@id/cl_selected_date"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/cl_selected_date"
@@ -156,6 +152,7 @@
         android:background="@drawable/bg_pill"
         android:paddingHorizontal="12dp"
         android:paddingVertical="6dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rv_category">
 
@@ -181,6 +178,7 @@
         android:clipToPadding="false"
         android:nestedScrollingEnabled="false"
         android:paddingBottom="96dp"
+        android:layout_marginHorizontal="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -203,20 +201,5 @@
         app:layout_constraintEnd_toEndOf="@id/rv_transactions"
         app:layout_constraintStart_toStartOf="@id/rv_transactions"
         app:layout_constraintTop_toTopOf="@id/rv_transactions" />
-
-    <!-- FAB -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_add_expense"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
-        android:contentDescription="@string/journal_add_expense_cd"
-        app:backgroundTint="@color/color_button_primary_bg"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:maxImageSize="20dp"
-        app:srcCompat="@drawable/ic_plus"
-        app:tint="@null" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

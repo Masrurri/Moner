@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.alviy.moner.core.R
 import com.alviy.moner.core.databinding.DialogAddExpenseBinding
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.math.BigDecimal
@@ -83,19 +84,19 @@ class AddExpenseDialog : FullScreenSheetDialogFragment() {
             val amount = binding.amountInput.amount
 
             if (category.isNullOrBlank()) {
-                showValidationError(com.alviy.moner.core.R.string.add_expense_error_category)
+                showValidationError(R.string.add_expense_error_category)
                 return@setOnClickListener
             }
             if (title.isBlank()) {
-                showValidationError(com.alviy.moner.core.R.string.add_expense_error_title)
+                showValidationError(R.string.add_expense_error_title)
                 return@setOnClickListener
             }
             if (source.isNullOrBlank()) {
-                showValidationError(com.alviy.moner.core.R.string.add_expense_error_source)
+                showValidationError(R.string.add_expense_error_source)
                 return@setOnClickListener
             }
             if (amount == BigDecimal.ZERO) {
-                showValidationError(com.alviy.moner.core.R.string.add_expense_error_amount)
+                showValidationError(R.string.add_expense_error_amount)
                 return@setOnClickListener
             }
 
@@ -139,7 +140,7 @@ class AddExpenseDialog : FullScreenSheetDialogFragment() {
         val isToday = selectedDate.toLocalDate() == LocalDateTime.now().toLocalDate()
         binding.tvDate.text = if (isToday) {
             getString(
-                com.alviy.moner.core.R.string.add_expense_today_format,
+                R.string.add_expense_today_format,
                 selectedDate.toLocalDate().format(formatter)
             )
         } else {

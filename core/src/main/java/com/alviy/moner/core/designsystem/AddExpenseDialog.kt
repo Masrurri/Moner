@@ -14,21 +14,8 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Locale
-
-data class NewExpenseInput(
-    val categoryName: String,
-    val title: String,
-    val source: String,
-    val amount: BigDecimal,
-    val date: LocalDateTime,
-    val note: String?
-)
-
 class AddExpenseDialog : FullScreenSheetDialogFragment() {
-
-    private var _binding: DialogAddExpenseBinding? = null
-    private val binding get() = _binding!!
-
+    private lateinit var binding: DialogAddExpenseBinding
     private var selectedCategory: String? = null
     private var selectedSource: String? = null
     private var selectedDate: LocalDateTime = LocalDateTime.now()
@@ -45,7 +32,7 @@ class AddExpenseDialog : FullScreenSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = DialogAddExpenseBinding.inflate(inflater, container, false)
+        binding = DialogAddExpenseBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -150,7 +137,6 @@ class AddExpenseDialog : FullScreenSheetDialogFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
     }
 
     companion object {
@@ -159,5 +145,14 @@ class AddExpenseDialog : FullScreenSheetDialogFragment() {
         fun newInstance(availableCategories: List<String>) = AddExpenseDialog().apply {
             categories = availableCategories
         }
+
+        data class NewExpenseInput(
+            val categoryName: String,
+            val title: String,
+            val source: String,
+            val amount: BigDecimal,
+            val date: LocalDateTime,
+            val note: String?
+        )
     }
 }

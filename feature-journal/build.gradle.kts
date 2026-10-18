@@ -29,6 +29,7 @@ android {
 
 dependencies {
     implementation(project(":core"))
+    implementation(project(":api-gmail"))
 
     // Navigation
     implementation(libs.bundles.navigation)
@@ -51,5 +52,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.google.material)
+
+    implementation(libs.google.play.services.auth)
 
 }

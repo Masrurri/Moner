@@ -20,7 +20,7 @@ abstract class FullScreenSheetDialogFragment(
         val dialog = BottomSheetDialog(requireContext(), theme)
         dialog.setOnShowListener {
             val sheet = dialog.findViewById<android.widget.FrameLayout>(
-                com.google.android.material.R.id.design_bottom_sheet
+                R.id.design_bottom_sheet
             )
             sheet?.let {
                 val behavior = BottomSheetBehavior.from(it)

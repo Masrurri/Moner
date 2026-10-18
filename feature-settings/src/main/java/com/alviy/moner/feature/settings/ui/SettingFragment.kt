@@ -8,8 +8,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.viewModels
+import com.alviy.moner.core.BuildConfig
 import com.alviy.moner.core.common.base.BaseFragment
-import com.alviy.moner.feature.settings.BuildConfig
 import com.alviy.moner.feature.settings.R
 import com.alviy.moner.feature.settings.databinding.FragmentSettingBinding
 import com.alviy.moner.feature.settings.viewmodel.SettingViewModel

@@ -1,7 +1,10 @@
 package com.alviy.moner.feature.journal.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import com.alviy.app.gmail.data.repository.GmailRepository
+import com.alviy.app.gmail.model.GmailReceiptTransaction
 import com.alviy.moner.core.common.base.BaseViewModel
+import com.alviy.moner.core.common.entity.ErrorCodes
 import com.alviy.moner.core.common.mergeWithDefaultCategories
 import com.alviy.moner.core.domain.model.ExpenseItem
 import com.alviy.moner.core.domain.model.ExpenseSummary
@@ -11,6 +14,9 @@ import com.alviy.moner.feature.journal.ui.model.JournalRow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import com.alviy.moner.core.common.entity.Result
+import com.alviy.moner.core.network.GoogleAuthTokenHolder
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -31,7 +37,9 @@ import javax.inject.Inject
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class JournalViewModel @Inject constructor(
-    private val expenseRepository: ExpenseRepository
+    private val expenseRepository: ExpenseRepository,
+    private val gmailRepository: GmailRepository,
+    private val googleAuthTokens: GoogleAuthTokenHolder,
 ) : BaseViewModel() {
 
     private val _selectedMonthYear = MutableStateFlow<String?>(null)
@@ -71,6 +79,25 @@ class JournalViewModel @Inject constructor(
 
     private val _monthOverMonthDeltaPercent = MutableStateFlow<Double?>(null)
     val monthOverMonthDeltaPercent: StateFlow<Double?> = _monthOverMonthDeltaPercent.asStateFlow()
+
+    // null = nothing requested yet; the fragment ignores it, so no callback fires until a fetch starts.
+    private val _receipts = MutableStateFlow<Result<List<GmailReceiptTransaction>>?>(null )
+    val receipts: StateFlow<Result<List<GmailReceiptTransaction>>?> = _receipts.asStateFlow()
+
+    fun onAuthorized(accessToken: String) {
+        googleAuthTokens.accessToken = accessToken
+        load()
+    }
+
+    fun onAuthFailed(message: String?) {
+        _receipts.value = Result.error(ErrorCodes.GENERAL, "Authorization failed", message ?: "Authorization failed")
+    }
+
+    fun load() {
+        _receipts.loadFrom(gmailRepository.getGmailReceipts()) { result ->
+            if (result.code == ErrorCodes.UNAUTHORIZED) googleAuthTokens.accessToken = null // expired
+        }
+    }
 
     val journalRows: StateFlow<List<JournalRow>> = combine(
         currentMonthExpenseJournal,

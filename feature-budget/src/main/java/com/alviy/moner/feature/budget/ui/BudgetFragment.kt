@@ -1,6 +1,8 @@
 package com.alviy.moner.feature.budget.ui
 
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -15,18 +17,19 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class BudgetFragment : BaseFragment<FragmentBudgetBinding>(
-    FragmentBudgetBinding::inflate
-) {
+class BudgetFragment : BaseFragment<FragmentBudgetBinding>() {
 
     private val viewModel: BudgetViewModel by viewModels()
     private lateinit var categoryBudgetAdapter: CategoryBudgetAdapter
 
     override val injectedFragment = this
 
-    override fun initView() {
-        val binding = binding ?: return
+    override fun initBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ) = FragmentBudgetBinding.inflate(inflater, container, false)
 
+    override fun initView() {
         categoryBudgetAdapter = CategoryBudgetAdapter { }
         binding.rvCategoryBudgets.layoutManager = LinearLayoutManager(requireContext())
         binding.rvCategoryBudgets.adapter = categoryBudgetAdapter
@@ -46,8 +49,6 @@ class BudgetFragment : BaseFragment<FragmentBudgetBinding>(
     }
 
     override fun observeData() {
-        val binding = binding ?: return
-
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {

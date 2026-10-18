@@ -13,4 +13,12 @@
         <attr name="cpv_progressColor" format="color" />
     </declare-styleable>
 
+
+    <declare-styleable name="LinearProgressView">
+        <attr name="lpv_progress" format="float" />
+        <attr name="lpv_strokeWidth" format="dimension" />
+        <attr name="lpv_trackColor" format="color" />
+        <attr name="lpv_progressColor" format="color" />
+    </declare-styleable>
+
 </resources>

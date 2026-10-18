@@ -1,7 +1,9 @@
 package com.alviy.moner.feature.settings.ui
 
 import android.content.pm.PackageManager
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
@@ -14,17 +16,18 @@ import com.alviy.moner.feature.settings.viewmodel.SettingViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SettingFragment : BaseFragment<FragmentSettingBinding>(
-    FragmentSettingBinding::inflate
-) {
+class SettingFragment : BaseFragment<FragmentSettingBinding>() {
 
     private val viewModel: SettingViewModel by viewModels()
 
     override val injectedFragment = this
 
-    override fun initView() {
-        val binding = binding ?: return
+    override fun initBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ) = FragmentSettingBinding.inflate(inflater, container, false)
 
+    override fun initView() {
         binding.rowGenerateSample.isVisible(BuildConfig.DEBUG)
         binding.dividerGenerateSample.isVisible(BuildConfig.DEBUG)
 

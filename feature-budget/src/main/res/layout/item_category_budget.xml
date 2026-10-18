@@ -14,8 +14,7 @@
         android:padding="8dp"
         android:contentDescription="@null"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:src="@drawable/ic_food" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_category_name"

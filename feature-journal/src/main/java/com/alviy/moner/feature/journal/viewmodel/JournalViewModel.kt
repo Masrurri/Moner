@@ -169,9 +169,9 @@ class JournalViewModel @Inject constructor(
         val date = runCatching { LocalDateTime.parse(dateIso).toLocalDate() }.getOrNull() ?: return ""
         val today = LocalDate.now()
         return when (date) {
-            today -> "TODAY"
-            today.minusDays(1) -> "YESTERDAY"
-            else -> date.format(DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.getDefault())).uppercase()
+            today -> "Today"
+            today.minusDays(1) -> "Yesterday"
+            else -> date.format(DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.getDefault()))
         }
     }
 

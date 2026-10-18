@@ -4,6 +4,7 @@
     <color name="black">#111111</color>
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>
+    <color name="white_grey">#E6E6E6</color>
 
     <!-- Surfaces -->
     <color name="color_bg_app">#F7F7F5</color>

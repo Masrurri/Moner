@@ -9,6 +9,6 @@
     <string name="journal_empty_state">No transactions yet. Tap + to add your first expense.</string>
     <string name="journal_add_expense_cd">Add expense</string>
     <string name="journal_greeting_format">Hey, %1$s</string>
-    <string name="journal_greeting_default_name">there</string>
+    <string name="journal_greeting_default_name">Punk</string>
     <string name="journal_select_time_default">This Month</string>
 </resources>

@@ -1,5 +1,8 @@
 package com.alviy.moner.feature.journal.ui
 
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.core.content.ContextCompat.getColor
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -7,6 +10,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alviy.moner.core.common.base.BaseFragment
+import com.alviy.moner.core.common.ext.getColor
+import com.alviy.moner.core.common.ext.setStatusBarColor
 import com.alviy.moner.core.common.ext.toIDR
 import com.alviy.moner.core.designsystem.AddExpenseDialog
 import com.alviy.moner.core.designsystem.TextFieldDialog
@@ -19,36 +24,37 @@ import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 @AndroidEntryPoint
-class JournalFragment : BaseFragment<FragmentJournalBinding>(
-    FragmentJournalBinding::inflate
-) {
+class JournalFragment : BaseFragment<FragmentJournalBinding>() {
     private val viewModel: JournalViewModel by viewModels()
     private var categoryAdapter: CategoryAdapter? = null
     private var transactionAdapter: RecentTransactionAdapter? = null
 
     override val injectedFragment = this
 
+    override fun initBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ) = FragmentJournalBinding.inflate(inflater, container, false)
+
     override fun initView() {
         setupRvCategory()
         setupRvTransactions()
 
-        binding?.tvSelectedDate?.setOnClickListener { showDialogSelectTime() }
-        binding?.btnSpend?.setOnClickListener { showAddExpenseDialog() }
+        binding.btnSelectedMonth.setOnClickListener { showDialogSelectTime() }
+        binding.btnSpend.setOnClickListener { showAddExpenseDialog() }
+        setStatusBarColor(binding.getColor(com.alviy.moner.core.R.color.white_grey))
     }
 
     private fun setupRvCategory() {
         categoryAdapter = CategoryAdapter { category ->
             viewModel.selectCategoryFilter(category)
         }
-        binding?.rvCategory?.adapter = categoryAdapter
-        binding?.rvCategory?.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
     }
 
     private fun setupRvTransactions() {
         transactionAdapter = RecentTransactionAdapter()
-        binding?.rvTransactions?.adapter = transactionAdapter
-        binding?.rvTransactions?.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvTransactions.adapter = transactionAdapter
+        binding.rvTransactions.layoutManager = LinearLayoutManager(requireContext())
     }
 
     private fun showDialogSelectTime() {
@@ -92,7 +98,7 @@ class JournalFragment : BaseFragment<FragmentJournalBinding>(
     private fun observeMonthYears() = viewLifecycleOwner.lifecycleScope.launch {
         repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.selectedMonthYear.collect { selected ->
-                binding?.tvSelectedDate?.text = selected
+                binding.btnSelectedMonth.text = selected
                     ?: getString(R.string.journal_select_time_default)
             }
         }
@@ -104,7 +110,7 @@ class JournalFragment : BaseFragment<FragmentJournalBinding>(
                 val name = profile.name.ifBlank {
                     getString(R.string.journal_greeting_default_name)
                 }
-                binding?.tvGreeting?.text =
+                binding.tvGreeting.text =
                     getString(R.string.journal_greeting_format, name)
             }
         }
@@ -114,12 +120,12 @@ class JournalFragment : BaseFragment<FragmentJournalBinding>(
         repeatOnLifecycle(Lifecycle.State.STARTED) {
             launch {
                 viewModel.expenseSummary.collect { summary ->
-                    binding?.tvTotalAmount?.text = summary.totalExpense.toIDR()
+                    binding.tvTotalAmount.text = summary.totalExpense.toIDR()
                 }
             }
             launch {
                 viewModel.monthOverMonthDeltaPercent.collect { delta ->
-                    binding?.tvDelta?.apply {
+                    binding.tvDelta.apply {
                         if (delta == null) {
                             isVisible = false
                         } else {
@@ -156,8 +162,8 @@ class JournalFragment : BaseFragment<FragmentJournalBinding>(
         repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.journalRows.collect { rows ->
                 transactionAdapter?.submitList(rows)
-                binding?.tvEmptyState?.isVisible = rows.isEmpty()
-                binding?.rvTransactions?.isVisible = rows.isNotEmpty()
+                binding.tvEmptyState.isVisible = rows.isEmpty()
+                binding.rvTransactions.isVisible = rows.isNotEmpty()
             }
         }
     }

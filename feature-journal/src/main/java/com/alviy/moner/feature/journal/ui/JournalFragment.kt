@@ -6,9 +6,6 @@ import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -30,7 +27,6 @@ import com.google.android.gms.auth.api.identity.AuthorizationRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.common.api.Scope
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 @AndroidEntryPoint
@@ -150,76 +146,53 @@ class JournalFragment : BaseFragment<FragmentJournalBinding>() {
         }
     }
 
-    private fun observeMonthYears() = viewLifecycleOwner.lifecycleScope.launch {
-        repeatOnLifecycle(Lifecycle.State.STARTED) {
-            viewModel.selectedMonthYear.collect { selected ->
-                binding.btnSelectedMonth.text = selected
-                    ?: getString(R.string.journal_select_time_default)
-            }
+    private fun observeMonthYears() {
+        observeState(viewModel.selectedMonthYear) { selected ->
+            binding.btnSelectedMonth.text = selected
+                ?: getString(R.string.journal_select_time_default)
         }
     }
 
-    private fun observeGreeting() = viewLifecycleOwner.lifecycleScope.launch {
-        repeatOnLifecycle(Lifecycle.State.STARTED) {
-            viewModel.profile.collect { profile ->
-                val name = profile.name.ifBlank {
-                    getString(R.string.journal_greeting_default_name)
-                }
-                binding.tvGreeting.text =
-                    getString(R.string.journal_greeting_format, name)
+    private fun observeGreeting() {
+        observeState(viewModel.profile) { profile ->
+            val name = profile.name.ifBlank {
+                getString(R.string.journal_greeting_default_name)
             }
+            binding.tvGreeting.text = getString(R.string.journal_greeting_format, name)
         }
     }
 
-    private fun observeTotalExpense() = viewLifecycleOwner.lifecycleScope.launch {
-        repeatOnLifecycle(Lifecycle.State.STARTED) {
-            launch {
-                viewModel.expenseSummary.collect { summary ->
-                    binding.tvTotalAmount.text = summary.totalExpense.toIDR()
-                }
-            }
-            launch {
-                viewModel.monthOverMonthDeltaPercent.collect { delta ->
-                    binding.tvDelta.apply {
-                        if (delta == null) {
-                            isVisible = false
-                        } else {
-                            isVisible = true
-                            val sign = if (delta >= 0) "+" else "-"
-                            text = getString(
-                                R.string.journal_delta_format,
-                                sign,
-                                abs(delta)
-                            )
-                        }
-                    }
+    private fun observeTotalExpense() {
+        observeState(viewModel.expenseSummary) { summary ->
+            binding.tvTotalAmount.text = summary.totalExpense.toIDR()
+        }
+        observeState(viewModel.monthOverMonthDeltaPercent) { delta ->
+            binding.tvDelta.apply {
+                if (delta == null) {
+                    isVisible = false
+                } else {
+                    isVisible = true
+                    val sign = if (delta >= 0) "+" else "-"
+                    text = getString(R.string.journal_delta_format, sign, abs(delta))
                 }
             }
         }
     }
 
-    private fun observeCategoryFilters() = viewLifecycleOwner.lifecycleScope.launch {
-        repeatOnLifecycle(Lifecycle.State.STARTED) {
-            launch {
-                viewModel.categoryFilterOptions.collect { options ->
-                    categoryAdapter?.submitList(options)
-                }
-            }
-            launch {
-                viewModel.selectedCategoryFilter.collect { selected ->
-                    categoryAdapter?.setSelected(selected)
-                }
-            }
+    private fun observeCategoryFilters() {
+        observeState(viewModel.categoryFilterOptions) { options ->
+            categoryAdapter?.submitList(options)
+        }
+        observeState(viewModel.selectedCategoryFilter) { selected ->
+            categoryAdapter?.setSelected(selected)
         }
     }
 
-    private fun observeTransactions() = viewLifecycleOwner.lifecycleScope.launch {
-        repeatOnLifecycle(Lifecycle.State.STARTED) {
-            viewModel.journalRows.collect { rows ->
-                transactionAdapter?.submitList(rows)
-                binding.tvEmptyState.isVisible = rows.isEmpty()
-                binding.rvTransactions.isVisible = rows.isNotEmpty()
-            }
+    private fun observeTransactions() {
+        observeState(viewModel.journalRows) { rows ->
+            transactionAdapter?.submitList(rows)
+            binding.tvEmptyState.isVisible = rows.isEmpty()
+            binding.rvTransactions.isVisible = rows.isNotEmpty()
         }
     }
 

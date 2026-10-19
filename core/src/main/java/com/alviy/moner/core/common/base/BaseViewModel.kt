@@ -22,8 +22,9 @@ open class BaseViewModel : ViewModel() {
     private val _navEvents = Channel<NavCommand>(Channel.BUFFERED)
     internal val navEvents = _navEvents.receiveAsFlow()
 
-    // One running job per key, so independent loads (e.g. "list" vs "detail") don't cancel each other.
-    private val jobs = ConcurrentHashMap<String, Job>()
+    // One running job per key, so independent loads don't cancel each other. collectFlow keys by its
+    // target state (identity), so each MutableStateFlow has at most one active collector.
+    private val jobs = ConcurrentHashMap<Any, Job>()
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         onError(throwable)
@@ -41,7 +42,7 @@ open class BaseViewModel : ViewModel() {
 
     /** Cancels the previous job with the same [key], then launches [block] in viewModelScope. */
     protected fun launchSingle(
-        key: String = DEFAULT_KEY,
+        key: Any = DEFAULT_KEY,
         block: suspend CoroutineScope.() -> Unit,
     ): Job {
         jobs[key]?.cancel()
@@ -53,16 +54,16 @@ open class BaseViewModel : ViewModel() {
 
     /**
      * Collects this flow (Room DAO, repository, or Retrofit-backed [Result] flow) into [target] in viewModelScope.
-     * Calling it again with the same [key] cancels the previous collection, so re-observing with new
-     * arguments (e.g. another month) replaces the old stream — no flatMapLatest / stateIn needed.
+     * The job is tracked per [target]: collecting into the same target again cancels the previous collector
+     * (latest request wins, e.g. switching month), while different targets run independently — so the same
+     * API called with different requests just needs a separate state. No keys, flatMapLatest or stateIn needed.
      * Upstream errors go to [onError] instead of crashing the scope; [onEach] runs after [target] is updated.
      */
     protected fun <T> Flow<T>.collectFlow(
         target: MutableStateFlow<in T>,
-        key: String = DEFAULT_KEY,
         onError: (Throwable) -> Unit = ::onError,
         onEach: suspend (T) -> Unit = {},
-    ): Job = launchSingle(key) {
+    ): Job = launchSingle(target) {
         this@collectFlow
             .onEach { value ->
                 target.value = value
@@ -72,7 +73,8 @@ open class BaseViewModel : ViewModel() {
             .collect()
     }
 
-    protected fun cancelJob(key: String = DEFAULT_KEY) {
+    /** Cancels the job for [key]; pass a collectFlow target to stop observing into it. */
+    protected fun cancelJob(key: Any = DEFAULT_KEY) {
         jobs.remove(key)?.cancel()
     }
 

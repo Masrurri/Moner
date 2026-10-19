@@ -130,6 +130,24 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
     }
 
     /**
+     * Observe a plain *state* (e.g. a ViewModel StateFlow<T> fed by a DAO through collectFlow).
+     * Collects only while the view is at least [minState] and re-renders the latest value on return,
+     * so [onChange] should be idempotent UI rendering.
+     */
+    protected fun <T> observeState(
+        flow: StateFlow<T>,
+        minState: Lifecycle.State = Lifecycle.State.STARTED,
+        onChange: (T) -> Unit,
+    ): Job {
+        val owner = viewLifecycleOwner
+        return owner.lifecycleScope.launch {
+            owner.repeatOnLifecycle(minState) {
+                flow.collect { onChange(it) }
+            }
+        }
+    }
+
+    /**
      * Run a *one-shot* cold flow (e.g. repository.getX()) safely and return its [Job] so the
      * caller can cancel it.
      *  - runs once: unlike observeStateFlow it is NOT restarted when the view re-enters STARTED,

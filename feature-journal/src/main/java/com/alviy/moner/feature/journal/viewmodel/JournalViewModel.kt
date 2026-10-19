@@ -66,8 +66,8 @@ class JournalViewModel @Inject constructor(
     val receipts = _receipts.asStateFlow()
 
     init {
-        expenseRepository.getProfile().collectFlow(_profile, KEY_PROFILE)
-        expenseRepository.getMonthYears().collectFlow(_monthYears, KEY_MONTH_YEARS) { months ->
+        expenseRepository.getProfile().collectFlow(_profile)
+        expenseRepository.getMonthYears().collectFlow(_monthYears) { months ->
             if (_selectedMonthYear.value == null && months.isNotEmpty()) {
                 selectMonthYear(months.first())
             }
@@ -84,7 +84,7 @@ class JournalViewModel @Inject constructor(
     }
 
     fun load() {
-        gmailRepository.getGmailReceipts().collectFlow(_receipts, KEY_RECEIPTS) { result ->
+        gmailRepository.getGmailReceipts().collectFlow(_receipts) { result ->
             if (result.code == ErrorCodes.UNAUTHORIZED) googleAuthTokens.accessToken = null // expired
         }
     }
@@ -93,15 +93,15 @@ class JournalViewModel @Inject constructor(
         _selectedMonthYear.value = monthYear
         _selectedCategoryFilter.value = ALL_CATEGORIES
 
-        // Same keys on every call: switching month cancels the previous month's DAO observers.
-        expenseRepository.getExpenseJournal(monthYear).collectFlow(currentMonthExpenseJournal, KEY_JOURNAL) { items ->
+        // Same targets on every call: switching month replaces the previous month's DAO observers.
+        expenseRepository.getExpenseJournal(monthYear).collectFlow(currentMonthExpenseJournal) { items ->
             _categoryFilterOptions.value = listOf(ALL_CATEGORIES) + items.map { it.categoryName }.distinct().sorted()
             refreshJournalRows()
         }
         expenseRepository.getCategoryNamesForMonth(monthYear)
             .map { mergeWithDefaultCategories(it) }
-            .collectFlow(_availableCategories, KEY_CATEGORIES)
-        expenseRepository.getExpenseSummary(monthYear).collectFlow(_expenseSummary, KEY_SUMMARY)
+            .collectFlow(_availableCategories)
+        expenseRepository.getExpenseSummary(monthYear).collectFlow(_expenseSummary)
 
         recomputeMonthOverMonthDelta(monthYear)
     }
@@ -193,12 +193,5 @@ class JournalViewModel @Inject constructor(
 
     companion object {
         const val ALL_CATEGORIES = "All"
-
-        private const val KEY_PROFILE = "profile"
-        private const val KEY_MONTH_YEARS = "monthYears"
-        private const val KEY_JOURNAL = "journal"
-        private const val KEY_CATEGORIES = "categories"
-        private const val KEY_SUMMARY = "summary"
-        private const val KEY_RECEIPTS = "receipts"
     }
 }

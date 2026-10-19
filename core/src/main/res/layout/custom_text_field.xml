@@ -7,17 +7,17 @@
     android:layout_height="wrap_content"
     android:padding="0dp"
     android:singleLine="true"
-    android:textColorHint="@color/thin_text"
-    app:boxBackgroundColor="@color/lightGrey"
-    app:boxCornerRadiusBottomEnd="14dp"
-    app:boxCornerRadiusBottomStart="14dp"
-    app:boxCornerRadiusTopEnd="14dp"
-    app:boxCornerRadiusTopStart="14dp"
+    android:textColorHint="@color/color_text_tertiary"
+    app:boxBackgroundColor="@color/color_bg_field"
+    app:boxCornerRadiusBottomEnd="@dimen/radius_field"
+    app:boxCornerRadiusBottomStart="@dimen/radius_field"
+    app:boxCornerRadiusTopEnd="@dimen/radius_field"
+    app:boxCornerRadiusTopStart="@dimen/radius_field"
     app:boxStrokeWidth="0dp"
     app:boxStrokeWidthFocused="0dp"
     app:cursorColor="@color/color_text_primary"
     app:endIconMode="clear_text"
-    app:hintTextColor="@color/thin_text"
+    app:hintTextColor="@color/color_text_tertiary"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent">
@@ -29,7 +29,8 @@
         android:fontFamily="@font/inter_medium"
         android:inputType="text"
         android:textColor="@color/black"
-        android:textSize="18sp"
-        android:textFontWeight="500" />
+        android:textSize="@dimen/text_size_xl"
+        android:textFontWeight="500"
+        android:theme="@style/ThemeOverlay.Moner.DarkCursor" />
 
 </com.google.android.material.textfield.TextInputLayout>

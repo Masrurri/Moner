@@ -15,7 +15,8 @@
         android:importantForAutofill="no"
         android:inputType="number"
         android:maxLines="1"
-        android:text="Rp 0"
-        android:textCursorDrawable="@drawable/cursor_dark" />
+        android:text="@string/amount_zero"
+        android:textCursorDrawable="@drawable/cursor_dark"
+        android:theme="@style/ThemeOverlay.Moner.DarkCursor" />
 
 </FrameLayout>

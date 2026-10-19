@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.viewModels
 import com.alviy.moner.core.BuildConfig
 import com.alviy.moner.core.common.base.BaseFragment
@@ -30,15 +29,6 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>() {
     override fun initView() {
         binding.rowGenerateSample.isVisible(BuildConfig.DEBUG)
         binding.dividerGenerateSample.isVisible(BuildConfig.DEBUG)
-
-        binding.switchDarkMode.setOnCheckedChangeListener(null)
-        binding.switchDarkMode.isChecked = viewModel.appPreferences.isDarkModeEnabled
-        binding.switchDarkMode.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.appPreferences.isDarkModeEnabled = isChecked
-            AppCompatDelegate.setDefaultNightMode(
-                if (isChecked) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
-            )
-        }
 
         binding.switchNotifications.setOnCheckedChangeListener(null)
         binding.switchNotifications.isChecked = viewModel.appPreferences.isNotificationsEnabled

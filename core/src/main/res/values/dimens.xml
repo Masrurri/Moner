@@ -1,4 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Shared spacing, radius and text-size tokens. Odd one-off sizes stay inline in their layout. -->
 <resources>
+    <!-- Spacing (margins / paddings) -->
+    <dimen name="spacing_2xs">2dp</dimen>
+    <dimen name="spacing_xs">4dp</dimen>
+    <dimen name="spacing_sm">8dp</dimen>
+    <dimen name="spacing_md">12dp</dimen>
+    <dimen name="spacing_lg">16dp</dimen>
+    <dimen name="spacing_xl">20dp</dimen>
+    <dimen name="spacing_2xl">24dp</dimen>
+
+    <!-- Corner radius -->
+    <dimen name="radius_field">14dp</dimen>
+    <dimen name="radius_md">16dp</dimen>
+
+    <!-- Text sizes -->
+    <dimen name="text_size_xs">10sp</dimen>
+    <dimen name="text_size_sm">12sp</dimen>
+    <dimen name="text_size_md">14sp</dimen>
+    <dimen name="text_size_body">15sp</dimen>
+    <dimen name="text_size_lg">16sp</dimen>
+    <dimen name="text_size_xl">18sp</dimen>
+    <dimen name="text_size_display_sm">26sp</dimen>
+    <dimen name="text_size_display">30sp</dimen>
+    <dimen name="text_size_display_lg">40sp</dimen>
+
+    <!-- Components -->
     <dimen name="category_dialog_margin_horizontal">24dp</dimen>
 </resources>

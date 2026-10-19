@@ -10,16 +10,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:padding="@dimen/spacing_2xl">
 
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="@dimen/spacing_2xl"
             android:gravity="center"
             android:text="@string/add_expense_title"
             android:textAppearance="@style/TextAppearance.Moner.Bold"
-            android:textSize="18sp" />
+            android:textSize="@dimen/text_size_xl" />
 
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="match_parent"
@@ -29,25 +29,25 @@
             android:text="@string/add_expense_amount"
             android:textAppearance="@style/TextAppearance.Moner.SemiBold"
             android:textColor="@color/color_text_secondary"
-            android:textSize="12sp" />
+            android:textSize="@dimen/text_size_sm" />
 
         <com.alviy.moner.core.designsystem.AmountInputView
             android:id="@+id/amount_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp" />
+            android:layout_marginBottom="@dimen/spacing_xl" />
 
         <com.alviy.moner.core.designsystem.CustomTextField
             android:id="@+id/tf_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="@dimen/spacing_xl"
             app:hintText="@string/add_expense_title_hint" />
 
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="@dimen/spacing_sm"
             android:text="@string/add_expense_category"
             android:textAppearance="@style/TextAppearance.Moner.SemiBold" />
 
@@ -55,14 +55,14 @@
             android:id="@+id/rv_category"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="@dimen/spacing_xl"
             android:orientation="horizontal"
             tools:listitem="@layout/item_pills" />
 
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="@dimen/spacing_sm"
             android:text="@string/add_expense_payment_source"
             android:textAppearance="@style/TextAppearance.Moner.SemiBold" />
 
@@ -70,14 +70,14 @@
             android:id="@+id/rv_source"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="@dimen/spacing_xl"
             android:orientation="horizontal"
             tools:listitem="@layout/item_pills" />
 
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="@dimen/spacing_sm"
             android:text="@string/add_expense_date"
             android:textAppearance="@style/TextAppearance.Moner.SemiBold" />
 
@@ -85,7 +85,7 @@
             android:id="@+id/row_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="@dimen/spacing_xl"
             android:background="@drawable/bg_pill_unselected"
             android:clickable="true"
             android:focusable="true"
@@ -120,22 +120,16 @@
             android:id="@+id/tf_note"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="@dimen/spacing_2xl"
             android:minLines="2"
             app:hintText="@string/add_expense_note_hint" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_save_spend"
+            style="@style/Widget.Moner.Button.Primary.Block"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/color_btn_primary"
-            android:elevation="0dp"
-            android:paddingVertical="16dp"
-            android:text="@string/add_expense_save"
-            android:textAppearance="@style/TextAppearance.Moner.Bold"
-            android:textColor="@color/color_text_btn_primary"
-            app:cornerRadius="16dp"
-            app:rippleColor="@color/color_ripple" />
+            android:text="@string/add_expense_save" />
 
     </LinearLayout>
 

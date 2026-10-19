@@ -8,7 +8,6 @@
     <string name="settings_section_preferences">PREFERENCES</string>
     <string name="settings_currency">Currency</string>
     <string name="settings_currency_value">IDR (Rp)</string>
-    <string name="settings_dark_mode">Dark Mode</string>
     <string name="settings_notifications">Notifications</string>
 
     <string name="settings_section_tools">TOOLS</string>

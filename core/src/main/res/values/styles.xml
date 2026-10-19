@@ -11,42 +11,48 @@
     <style name="TextAppearance.Moner.Thin" parent="TextAppearance.Moner">
         <item name="android:textFontWeight">100</item>
         <item name="android:textColor">@color/color_text_tertiary</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">@dimen/text_size_sm</item>
     </style>
 
     <style name="TextAppearance.Moner.Regular" parent="TextAppearance.Moner">
         <item name="font">@font/inter</item>
         <item name="android:textFontWeight">400</item>
         <item name="android:textColor">@color/color_text_primary</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">@dimen/text_size_md</item>
     </style>
 
     <style name="TextAppearance.Moner.Bold" parent="TextAppearance.Moner">
         <item name="font">@font/inter_bold</item>
         <item name="android:textFontWeight">700</item>
         <item name="android:textColor">@color/color_text_primary</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">@dimen/text_size_lg</item>
     </style>
 
     <style name="TextAppearance.Moner.Medium" parent="TextAppearance.Moner">
         <item name="font">@font/inter_medium</item>
         <item name="android:textFontWeight">500</item>
         <item name="android:textColor">@color/color_text_primary</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">@dimen/text_size_md</item>
     </style>
 
     <style name="TextAppearance.Moner.SemiBold" parent="TextAppearance.Moner">
         <item name="font">@font/inter_semibold</item>
         <item name="android:textFontWeight">600</item>
         <item name="android:textColor">@color/color_text_primary</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">@dimen/text_size_md</item>
     </style>
 
     <style name="TextAppearance.Moner.AmountDisplay" parent="TextAppearance.Moner">
         <item name="font">@font/inter_bold</item>
         <item name="android:textFontWeight">700</item>
         <item name="android:textColor">@color/color_text_primary</item>
-        <item name="android:textSize">40sp</item>
+        <item name="android:textSize">@dimen/text_size_display_lg</item>
+    </style>
+
+    <!-- Dark cursor and text-selection handles for input fields (theme colorPrimary is the light app background). -->
+    <style name="ThemeOverlay.Moner.DarkCursor" parent="">
+        <item name="colorControlActivated">@color/color_text_primary</item>
+        <item name="colorPrimary">@color/color_text_primary</item>
     </style>
 
     <style name="Shape.RoundedButton" parent="">
@@ -82,11 +88,11 @@
 
     <style name="ShapeAppearance.Moner.NavActivePill" parent="">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">16dp</item>
+        <item name="cornerSize">@dimen/radius_md</item>
     </style>
 
     <style name="Widget.Moner.BottomNav.ActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
-        <item name="android:color">#333333</item>
+        <item name="android:color">@color/color_nav_active_indicator</item>
         <item name="android:width">90dp</item>
         <item name="android:height">40dp</item>
         <item name="marginHorizontal">2dp</item>
@@ -108,8 +114,8 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>
         <item name="android:background">@drawable/bg_row_hairline</item>
-        <item name="android:layout_marginStart">16dp</item>
-        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:layout_marginStart">@dimen/spacing_lg</item>
+        <item name="android:layout_marginEnd">@dimen/spacing_lg</item>
     </style>
 
     <style name="Widget.Moner.MaterialCardView" parent="Widget.Material3.CardView.Elevated">
@@ -142,22 +148,62 @@
         <item name="android:insetBottom">0dp</item>
         <item name="android:minWidth">0dp</item>
         <item name="android:minHeight">0dp</item>
-        <item name="android:paddingStart">12dp</item>
-        <item name="android:paddingEnd">12dp</item>
+        <item name="android:paddingStart">@dimen/spacing_md</item>
+        <item name="android:paddingEnd">@dimen/spacing_md</item>
         <item name="android:paddingTop">6dp</item>
         <item name="android:paddingBottom">6dp</item>
-        <item name="android:backgroundTint">#1C1C1C</item>
+        <item name="android:backgroundTint">@color/color_surface_dark</item>
         <item name="android:textAppearance">@style/TextAppearance.Moner.SemiBold</item>
         <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">@dimen/text_size_sm</item>
         <item name="backgroundTint">@color/white</item>
-        <item name="cornerRadius">16dp</item>
+        <item name="cornerRadius">@dimen/radius_md</item>
         <item name="iconGravity">textEnd</item>
         <item name="iconPadding">6dp</item>
         <item name="iconSize">12dp</item>
         <item name="iconTint">@color/white</item>
-        <item name="rippleColor">#33C1C1C1</item>
+        <item name="rippleColor">@color/color_ripple_light</item>
         <item name="elevation">0dp</item>
+    </style>
+
+    <!-- Primary (dark) button shared by dialogs and sheets -->
+    <style name="Widget.Moner.Button.Primary" parent="Widget.Material3.Button">
+        <item name="android:backgroundTint">@color/color_btn_primary</item>
+        <item name="android:elevation">0dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.Moner.Bold</item>
+        <item name="android:textColor">@color/color_text_btn_primary</item>
+        <item name="rippleColor">@color/color_ripple</item>
+    </style>
+
+    <!-- Full-width save button at the bottom of a sheet -->
+    <style name="Widget.Moner.Button.Primary.Block">
+        <item name="android:paddingTop">@dimen/spacing_lg</item>
+        <item name="android:paddingBottom">@dimen/spacing_lg</item>
+        <item name="cornerRadius">@dimen/radius_md</item>
+    </style>
+
+    <!-- Centered pill button of a small dialog -->
+    <style name="Widget.Moner.Button.Primary.Dialog">
+        <item name="android:gravity">center</item>
+        <item name="android:paddingStart">36dp</item>
+        <item name="android:paddingEnd">36dp</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:textSize">@dimen/text_size_lg</item>
+        <item name="shapeAppearance">@style/Shape.RoundedButton</item>
+    </style>
+
+    <!-- Small stat card (label over value) -->
+    <style name="Widget.Moner.StatLabel" parent="">
+        <item name="android:textAppearance">@style/TextAppearance.Moner.Regular</item>
+        <item name="android:textColor">@color/color_text_secondary</item>
+        <item name="android:textSize">@dimen/text_size_xs</item>
+    </style>
+
+    <style name="Widget.Moner.StatValue" parent="">
+        <item name="android:textAppearance">@style/TextAppearance.Moner.Bold</item>
+        <item name="android:textColor">@color/color_text_heading</item>
+        <item name="android:textSize">@dimen/text_size_md</item>
     </style>
 
 </resources>

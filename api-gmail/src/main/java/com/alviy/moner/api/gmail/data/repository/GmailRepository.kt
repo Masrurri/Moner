@@ -1,6 +1,6 @@
-package com.alviy.app.gmail.data.repository
+package com.alviy.moner.api.gmail.data.repository
 
-import com.alviy.app.gmail.model.ReceiptTransaction
+import com.alviy.moner.api.gmail.model.ReceiptTransaction
 import com.alviy.moner.core.common.entity.Result
 import kotlinx.coroutines.flow.Flow
 

@@ -1,7 +1,7 @@
-package com.alviy.app.gmail.di
+package com.alviy.moner.api.gmail.di
 
-import com.alviy.app.gmail.data.repository.GmailRepository
-import com.alviy.app.gmail.data.repository.GmailRepositoryImpl
+import com.alviy.moner.api.gmail.data.repository.GmailRepository
+import com.alviy.moner.api.gmail.data.repository.GmailRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

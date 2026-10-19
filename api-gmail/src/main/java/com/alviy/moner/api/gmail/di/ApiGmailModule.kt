@@ -1,6 +1,6 @@
-package com.alviy.app.gmail.di
+package com.alviy.moner.api.gmail.di
 
-import com.alviy.app.gmail.data.remote.api.GmailApi
+import com.alviy.moner.api.gmail.data.remote.api.GmailApi
 import com.alviy.moner.core.network.ApiBaseUrl
 import com.alviy.moner.core.network.RetrofitFactory
 import dagger.Module

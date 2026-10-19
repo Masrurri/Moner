@@ -1,7 +1,7 @@
-package com.alviy.app.gmail.data.remote.api
+package com.alviy.moner.api.gmail.data.remote.api
 
-import com.alviy.app.gmail.model.GmailListResponse
-import com.alviy.app.gmail.model.GmailMessage
+import com.alviy.moner.api.gmail.model.GmailListResponse
+import com.alviy.moner.api.gmail.model.GmailMessage
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path

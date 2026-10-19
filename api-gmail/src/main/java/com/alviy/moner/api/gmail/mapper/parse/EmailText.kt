@@ -1,4 +1,4 @@
-package com.alviy.app.gmail.mapper.parse
+package com.alviy.moner.api.gmail.mapper.parse
 
 /**
  * An email body as rows of cells, so label/value tables survive:

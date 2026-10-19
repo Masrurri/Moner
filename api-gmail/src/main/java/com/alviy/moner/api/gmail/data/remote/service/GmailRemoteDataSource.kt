@@ -1,16 +1,15 @@
-package com.alviy.app.gmail.data.remote.service
+package com.alviy.moner.api.gmail.data.remote.service
 
-import com.alviy.app.gmail.data.remote.api.GmailApi
-import com.alviy.app.gmail.model.GmailListResponse
-import com.alviy.app.gmail.model.GmailMessage
-import com.alviy.app.gmail.model.GoogleErrorEnvelope
+import com.alviy.moner.api.gmail.data.remote.api.GmailApi
+import com.alviy.moner.api.gmail.model.GmailListResponse
+import com.alviy.moner.api.gmail.model.GmailMessage
+import com.alviy.moner.api.gmail.model.GoogleErrorEnvelope
 import com.alviy.moner.core.common.base.BaseDataSource
 import com.alviy.moner.core.common.entity.ErrorResponse
+import com.alviy.moner.core.common.entity.Result
 import com.google.gson.Gson
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.jvm.java
-import com.alviy.moner.core.common.entity.Result
 
 @Singleton
 class GmailRemoteDataSource @Inject constructor(

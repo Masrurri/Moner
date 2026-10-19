@@ -1,8 +1,8 @@
 package com.alviy.moner.feature.journal.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import com.alviy.app.gmail.data.repository.GmailRepository
-import com.alviy.app.gmail.model.ReceiptTransaction
+import com.alviy.moner.api.gmail.data.repository.GmailRepository
+import com.alviy.moner.api.gmail.model.ReceiptTransaction
 import com.alviy.moner.core.common.base.BaseViewModel
 import com.alviy.moner.core.common.entity.ErrorCodes
 import com.alviy.moner.core.common.entity.Result

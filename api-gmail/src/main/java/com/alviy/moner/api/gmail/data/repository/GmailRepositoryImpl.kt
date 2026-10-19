@@ -1,9 +1,9 @@
-package com.alviy.app.gmail.data.repository
+package com.alviy.moner.api.gmail.data.repository
 
-import com.alviy.app.gmail.data.remote.service.GmailRemoteDataSource
-import com.alviy.app.gmail.mapper.GmailReceiptParser
-import com.alviy.app.gmail.model.MessageRef
-import com.alviy.app.gmail.model.ReceiptTransaction
+import com.alviy.moner.api.gmail.data.remote.service.GmailRemoteDataSource
+import com.alviy.moner.api.gmail.mapper.GmailReceiptParser
+import com.alviy.moner.api.gmail.model.MessageRef
+import com.alviy.moner.api.gmail.model.ReceiptTransaction
 import com.alviy.moner.core.common.entity.ErrorCodes
 import com.alviy.moner.core.common.entity.Result
 import com.alviy.moner.core.common.entity.flatMap

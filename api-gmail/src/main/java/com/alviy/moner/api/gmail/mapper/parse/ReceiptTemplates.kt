@@ -1,7 +1,8 @@
-package com.alviy.app.gmail.mapper.parse
+package com.alviy.moner.api.gmail.mapper.parse
 
-import com.alviy.app.gmail.model.PaymentMethod
-import com.alviy.app.gmail.model.ReceiptTransaction
+import com.alviy.moner.api.gmail.model.PaymentMethod
+import com.alviy.moner.api.gmail.model.ReceiptTransaction
+
 
 class MessageContext(
     val id: String,                 // Gmail message id

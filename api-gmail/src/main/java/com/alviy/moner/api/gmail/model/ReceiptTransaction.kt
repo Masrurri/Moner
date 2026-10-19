@@ -1,4 +1,4 @@
-package com.alviy.app.gmail.model
+package com.alviy.moner.api.gmail.model
 
 import java.math.BigDecimal
 

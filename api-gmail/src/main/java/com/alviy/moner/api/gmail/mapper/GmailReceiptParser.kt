@@ -1,14 +1,14 @@
-package com.alviy.app.gmail.mapper
+package com.alviy.moner.api.gmail.mapper
 
 import android.util.Base64
 import android.util.Log
-import com.alviy.app.gmail.mapper.parse.EmailText
-import com.alviy.app.gmail.mapper.parse.MessageContext
-import com.alviy.app.gmail.mapper.parse.ReceiptSourceConfig
-import com.alviy.app.gmail.mapper.parse.ReceiptSourceRegistry
-import com.alviy.app.gmail.model.GmailMessage
-import com.alviy.app.gmail.model.MessagePart
-import com.alviy.app.gmail.model.ReceiptTransaction
+import com.alviy.moner.api.gmail.mapper.parse.EmailText
+import com.alviy.moner.api.gmail.mapper.parse.MessageContext
+import com.alviy.moner.api.gmail.mapper.parse.ReceiptSourceConfig
+import com.alviy.moner.api.gmail.mapper.parse.ReceiptSourceRegistry
+import com.alviy.moner.api.gmail.model.GmailMessage
+import com.alviy.moner.api.gmail.model.MessagePart
+import com.alviy.moner.api.gmail.model.ReceiptTransaction
 import javax.inject.Inject
 import javax.inject.Singleton
 

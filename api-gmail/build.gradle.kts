@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.alviy.moner.core"
+    namespace = "com.alviy.moner.api.gmail"
     compileSdk = 34
 
     defaultConfig {

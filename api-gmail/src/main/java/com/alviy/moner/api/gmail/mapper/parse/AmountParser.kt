@@ -1,4 +1,4 @@
-package com.alviy.app.gmail.mapper.parse
+package com.alviy.moner.api.gmail.mapper.parse
 
 import java.math.BigDecimal
 

@@ -137,7 +137,7 @@
             app:hintText="@string/add_expense_note_hint" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_save_expense"
+            android:id="@+id/btn_save_spend"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/color_btn_primary"

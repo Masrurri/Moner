@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="journal_avatar_initials">JR</string>
-    <string name="journal_welcome_back">Welcome back</string>
-    <string name="journal_total_expense">Total Spending</string>
-    <string name="journal_delta_format">%1$s%2$.0f%% vs last month</string>
-    <string name="journal_recent_transactions">Recent Transactions</string>
-    <string name="journal_see_all">See all</string>
-    <string name="journal_empty_state">No transactions yet. Tap + to add your first expense.</string>
-    <string name="journal_add_expense_cd">Add expense</string>
-    <string name="journal_greeting_format">Hey, %1$s</string>
-    <string name="journal_greeting_default_name">Punk</string>
-    <string name="journal_select_time_default">This Month</string>
+    <string name="home_welcome_back">Welcome back</string>
+    <string name="home_total_spend">Total Spending</string>
+    <string name="home_recent_transactions">Recent Transactions</string>
+    <string name="home_empty_state">No transactions this month. Tap Spend to add one.</string>
+    <string name="home_select_time_default">This Month</string>
+    <string name="home_limit_not_set">Tap to set</string>
+    <string name="home_limit_of">of %1$s</string>
+    <string name="home_limit_over">Over %1$s</string>
+    <string name="home_set_limit_title">Monthly Spending Limit</string>
+    <string name="home_set_limit_button">Save Limit</string>
 </resources>

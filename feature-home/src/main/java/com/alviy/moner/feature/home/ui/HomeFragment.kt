@@ -1,4 +1,4 @@
-package com.alviy.moner.feature.journal.ui
+package com.alviy.moner.feature.home.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,32 +6,31 @@ import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alviy.moner.core.common.base.BaseFragment
 import com.alviy.moner.core.common.ext.getColor
-import com.alviy.moner.core.common.ext.navigateTo
 import com.alviy.moner.core.common.ext.setStatusBarColor
 import com.alviy.moner.core.common.ext.showDialog
 import com.alviy.moner.core.common.ext.toIDR
-import com.alviy.moner.core.designsystem.AddExpenseDialog
+import com.alviy.moner.core.designsystem.AddSpendDialog
+import com.alviy.moner.core.designsystem.AmountFieldDialog
 import com.alviy.moner.core.designsystem.TextFieldDialog
 import com.alviy.moner.core.designsystem.TransactionListDialog
 import com.alviy.moner.core.designsystem.WheelDialog
-import com.alviy.moner.feature.journal.R
-import com.alviy.moner.feature.journal.databinding.FragmentJournalBinding
-import com.alviy.moner.feature.journal.viewmodel.JournalViewModel
+import com.alviy.moner.core.domain.model.SpendSummary
+import com.alviy.moner.feature.home.R
+import com.alviy.moner.feature.home.databinding.FragmentHomeBinding
+import com.alviy.moner.feature.home.viewmodel.HomeViewModel
 import com.google.android.gms.auth.api.identity.AuthorizationRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.common.api.Scope
 import dagger.hilt.android.AndroidEntryPoint
+import java.math.BigDecimal
 
 @AndroidEntryPoint
-class JournalFragment : BaseFragment<FragmentJournalBinding>() {
-    private val viewModel: JournalViewModel by viewModels()
-    private var transactionAdapter: RecentTransactionAdapter? = null
+class HomeFragment : BaseFragment<FragmentHomeBinding>() {
+    private val viewModel: HomeViewModel by viewModels()
+    private val transactionAdapter = RecentTransactionAdapter()
 
     private val authLauncher =
         registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
@@ -46,36 +45,66 @@ class JournalFragment : BaseFragment<FragmentJournalBinding>() {
 
     override val injectedFragment = this
 
-    override fun initBinding(
-        inflater: LayoutInflater,
-        container: ViewGroup?
-    ) = FragmentJournalBinding.inflate(inflater, container, false)
+    override fun initBinding(inflater: LayoutInflater, container: ViewGroup?) =
+        FragmentHomeBinding.inflate(inflater, container, false)
 
     override fun initView() = with(binding) {
         observeNavigation(viewModel)
         setStatusBarColor(getColor(R.color.white_grey))
-        setupRvTransactions()
-        btnSelectedMonth.setOnClickListener { showDialogSelectTime() }
-        btnSpend.setOnClickListener { showAddExpenseDialog() }
+        rvTransactions.adapter = transactionAdapter
+        rvTransactions.layoutManager = LinearLayoutManager(requireContext())
+        btnSelectedMonth.setOnClickListener { showSelectMonthDialog() }
+        btnSpend.setOnClickListener { showAddSpendDialog() }
         btnFetch.setOnClickListener { appNav.navigateToReceiptGather() }
+        secondStatContainer.setOnClickListener { showSpendLimitDialog() }
     }
 
-    private fun setupRvTransactions() {
-        transactionAdapter = RecentTransactionAdapter()
-        binding.rvTransactions.adapter = transactionAdapter
-        binding.rvTransactions.layoutManager = LinearLayoutManager(requireContext())
+    override fun observeData() {
+        observeState(viewModel.selectedMonthYear) { binding.btnSelectedMonth.text = it }
+        observeState(viewModel.spendSummary, onChange = ::renderSummary)
+        observeState(viewModel.recentTransactions) { rows ->
+            transactionAdapter.submitList(rows)
+            binding.tvEmptyState.isVisible = rows.isEmpty()
+            binding.rvTransactions.isVisible = rows.isNotEmpty()
+        }
+        observeReceipts()
     }
 
-    private fun showDialogSelectTime() {
+    private fun renderSummary(summary: SpendSummary) = with(binding) {
+        tvTotalAmount.text = summary.totalSpend.toIDR()
+        tvSpendTodayValue.text = summary.totalSpendToday.toIDR()
+        tvSpendWeekValue.text = summary.totalSpendWeek.toIDR()
+
+        val limit = summary.spendLimit
+        val remaining = summary.remainingLimit
+        lpv.progress = summary.limitProgress
+        tvLimitTotal.isVisible = limit != null
+        tvLimitTotal.text = limit?.let { getString(R.string.home_limit_of, it.toIDR()) }
+        tvLimitValue.text = when {
+            remaining == null -> getString(R.string.home_limit_not_set)
+            remaining < BigDecimal.ZERO -> getString(R.string.home_limit_over, remaining.negate().toIDR())
+            else -> remaining.toIDR()
+        }
+    }
+
+    private fun showSelectMonthDialog() {
         val months = viewModel.monthYears
         val currentIndex = months.indexOf(viewModel.selectedMonthYear.value).coerceAtLeast(0)
-        WheelDialog.newInstance(months, currentIndex) { selected ->
-            viewModel.selectMonthYear(selected)
-        }.show(parentFragmentManager, "wheelDialog")
+        WheelDialog.newInstance(months, currentIndex, viewModel::selectMonthYear)
+            .show(parentFragmentManager, "wheelDialog")
     }
 
-    private fun showAddExpenseDialog() {
-        AddExpenseDialog.newInstance(viewModel.availableCategories.value).apply {
+    private fun showSpendLimitDialog() {
+        AmountFieldDialog.newInstance(
+            title = getString(R.string.home_set_limit_title),
+            buttonText = getString(R.string.home_set_limit_button),
+            initialAmount = viewModel.spendSummary.value.spendLimit,
+            onSubmit = viewModel::setSpendLimit
+        ).show(childFragmentManager, "spendLimitDialog")
+    }
+
+    private fun showAddSpendDialog() {
+        AddSpendDialog.newInstance(viewModel.availableCategories.value).apply {
             onNewCategoryRequested = { onCreated ->
                 TextFieldDialog.newInstance { name ->
                     viewModel.addCategory(name)
@@ -83,7 +112,7 @@ class JournalFragment : BaseFragment<FragmentJournalBinding>() {
                 }.show(childFragmentManager, "newCategoryDialog")
             }
             onSave = { input ->
-                viewModel.addTransaction(
+                viewModel.addSpend(
                     categoryName = input.categoryName,
                     date = input.date,
                     title = input.title,
@@ -92,49 +121,22 @@ class JournalFragment : BaseFragment<FragmentJournalBinding>() {
                     note = input.note
                 )
             }
-        }.showDialog(childFragmentManager, "addExpenseDialog")
+        }.showDialog(childFragmentManager, "addSpendDialog")
     }
 
-    override fun observeData() {
-        observeState(viewModel.selectedMonthYear) { selected ->
-            binding.btnSelectedMonth.text = selected ?: getString(R.string.journal_select_time_default)
-        }
-        observeState(viewModel.spendSummary) { summary ->
-            binding.tvTotalAmount.text = summary.totalExpense.toIDR()
-            binding.tvSpendTodayValue.text = summary.totalSpendToday.toIDR()
-            binding.tvSpendWeekValue.text = summary.totalSpendWeek.toIDR()
-        }
-        observeState(viewModel.recentTransactions) { rows ->
-            transactionAdapter?.submitList(rows)
-            binding.tvEmptyState.isVisible = rows.isEmpty()
-            binding.rvTransactions.isVisible = rows.isNotEmpty()
-        }
-        observeReceipts()
-    }
+    // ---------------------------------------------------------------- Gmail (kept for the receipt import)
 
     private fun observeReceipts() {
         observeStateFlow(
             flow = viewModel.receipts,
-            onLoading = {
-                TransactionListDialog.newInstance(
-                    listOf(
-                        TransactionListDialog.Companion.TransactionReceipt(
-                            "Loading", "", "", "", "", "", "", ""
-                        )
-                    )
-                ).showDialog(parentFragmentManager, "transactionDialog")
-            },
+            onLoading = { showReceipts(listOf(receiptMessage("Loading"))) },
             onError = { error ->
-                TransactionListDialog.newInstance(
-                    listOf(
-                        TransactionListDialog.Companion.TransactionReceipt(
-                            "Error Fetch", error.code.toString(), error.title.toString(), error.message.toString(), "", "", "", ""
-                        )
-                    )
-                ).showDialog(parentFragmentManager, "transactionDialog")
+                showReceipts(
+                    listOf(receiptMessage("Error Fetch", error.code.toString(), error.title.toString(), error.message.toString()))
+                )
             }
         ) { receipts ->
-            TransactionListDialog.newInstance(
+            showReceipts(
                 receipts.map { r ->
                     TransactionListDialog.Companion.TransactionReceipt(
                         r.id, r.channel, r.title, r.destination,
@@ -144,11 +146,18 @@ class JournalFragment : BaseFragment<FragmentJournalBinding>() {
                         r.note.orEmpty(),
                     )
                 }
-            ).showDialog(parentFragmentManager, "transactionDialog")
+            )
         }
     }
 
+    private fun receiptMessage(id: String, channel: String = "", title: String = "", destination: String = "") =
+        TransactionListDialog.Companion.TransactionReceipt(id, channel, title, destination, "", "", "", "")
 
+    private fun showReceipts(receipts: List<TransactionListDialog.Companion.TransactionReceipt>) {
+        TransactionListDialog.newInstance(receipts).showDialog(parentFragmentManager, "transactionDialog")
+    }
+
+    @Suppress("unused") // wired up again once the Gmail import entry point is back
     private fun authorizeGmail() {
         val request = AuthorizationRequest.builder()
             .setRequestedScopes(listOf(Scope(GMAIL_READONLY)))

@@ -8,7 +8,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alviy.moner.core.designsystem.FullScreenSheetDialogFragment
-import com.alviy.moner.core.designsystem.SourceExpenseAdapter
+import com.alviy.moner.core.designsystem.SourceSpendAdapter
 import com.alviy.moner.core.designsystem.TextFieldDialog
 import com.alviy.moner.feature.budget.databinding.DialogAddCategoryBudgetBinding
 import com.alviy.moner.feature.budget.domain.model.BudgetPeriod
@@ -22,7 +22,7 @@ class AddCategoryBudgetDialog : FullScreenSheetDialogFragment() {
     private val binding get() = _binding!!
 
     private val viewModel: BudgetViewModel by activityViewModels()
-    private lateinit var categoryAdapter: SourceExpenseAdapter
+    private lateinit var categoryAdapter: SourceSpendAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,7 +36,7 @@ class AddCategoryBudgetDialog : FullScreenSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        categoryAdapter = SourceExpenseAdapter { }
+        categoryAdapter = SourceSpendAdapter { }
         binding.rvCategory.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.rvCategory.adapter = categoryAdapter

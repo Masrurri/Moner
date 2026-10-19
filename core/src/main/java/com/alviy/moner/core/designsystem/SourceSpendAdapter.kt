@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.NO_POSITION
 import com.alviy.moner.core.databinding.ItemPillsBinding
 
-class SourceExpenseAdapter(
+class SourceSpendAdapter(
     private val onClick: (String) -> Unit
-) : ListAdapter<String, SourceExpenseAdapter.ViewHolder>(CategoryDiff) {
+) : ListAdapter<String, SourceSpendAdapter.ViewHolder>(CategoryDiff) {
     var selectedCategory: String? = null
     inner class ViewHolder(
         private val binding: ItemPillsBinding

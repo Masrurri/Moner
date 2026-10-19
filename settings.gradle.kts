@@ -18,7 +18,7 @@ rootProject.name = "Moner"
 
 include(":app")
 include(":core")
-include(":feature-journal")
+include(":feature-home")
 include(":feature-budget")
 include(":feature-settings")
 include(":api-gmail")

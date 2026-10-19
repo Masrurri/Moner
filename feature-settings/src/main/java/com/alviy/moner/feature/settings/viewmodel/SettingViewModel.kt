@@ -3,13 +3,13 @@ package com.alviy.moner.feature.settings.viewmodel
 import com.alviy.moner.core.common.AppPreferences
 import com.alviy.moner.core.common.base.BaseViewModel
 import com.alviy.moner.core.domain.model.TransactionItem
-import com.alviy.moner.core.domain.repository.ExpenseRepository
+import com.alviy.moner.core.domain.repository.SpendRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingViewModel @Inject constructor(
-    private val expenseRepository: ExpenseRepository,
+    private val spendRepository: SpendRepository,
     val appPreferences: AppPreferences
 ) : BaseViewModel() {
 
@@ -37,9 +37,9 @@ class SettingViewModel @Inject constructor(
     )
 
     fun generateSampleData() = launchSafely {
-        sampleCategories.forEach { expenseRepository.insertCategory(it.first, it.second) }
+        sampleCategories.forEach { spendRepository.insertCategory(it.first, it.second) }
         sampleTransactions.forEach {
-            expenseRepository.addExpense(
+            spendRepository.addSpend(
                 categoryName = it.categoryName,
                 date = it.date,
                 desc = it.desc,
@@ -49,5 +49,5 @@ class SettingViewModel @Inject constructor(
         }
     }
 
-    fun clearAllTable() = launchSafely { expenseRepository.clearAllTable() }
+    fun clearAllTable() = launchSafely { spendRepository.clearAllTable() }
 }

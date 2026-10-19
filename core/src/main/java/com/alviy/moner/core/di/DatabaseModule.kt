@@ -5,8 +5,9 @@ import androidx.room.Room
 import com.alviy.moner.core.data.local.MonerDatabase
 import com.alviy.moner.core.data.local.dao.CategoryBudgetDao
 import com.alviy.moner.core.data.local.dao.CategorySummaryDao
-import com.alviy.moner.core.data.local.dao.ExpenseCategoryDao
-import com.alviy.moner.core.data.local.dao.ExpenseSummaryDao
+import com.alviy.moner.core.data.local.dao.SpendCategoryDao
+import com.alviy.moner.core.data.local.dao.SpendLimitDao
+import com.alviy.moner.core.data.local.dao.SpendSummaryDao
 import com.alviy.moner.core.data.local.dao.ProfileDao
 import com.alviy.moner.core.data.local.dao.TransactionDao
 import dagger.Module
@@ -30,7 +31,7 @@ object DatabaseModule {
             MonerDatabase::class.java,
             "expense_db"
         )
-            .addMigrations(MonerDatabase.MIGRATION_13_14)
+            .addMigrations(MonerDatabase.MIGRATION_13_14, MonerDatabase.MIGRATION_14_15)
             .fallbackToDestructiveMigration()
             .build()
 
@@ -38,18 +39,21 @@ object DatabaseModule {
     fun provideProfileDao(db: MonerDatabase): ProfileDao = db.profileDao()
 
     @Provides
-    fun provideExpenseCategoryDao(db: MonerDatabase): ExpenseCategoryDao = db.expenseCategoryDao()
+    fun provideSpendCategoryDao(db: MonerDatabase): SpendCategoryDao = db.spendCategoryDao()
 
     @Provides
     fun provideTransactionDao(db: MonerDatabase): TransactionDao = db.transactionDao()
 
     @Provides
-    fun provideExpenseSummaryDao(db: MonerDatabase): ExpenseSummaryDao = db.expenseSummaryDao()
+    fun provideSpendSummaryDao(db: MonerDatabase): SpendSummaryDao = db.spendSummaryDao()
 
     @Provides
     fun provideCategorySummaryDao(db: MonerDatabase): CategorySummaryDao = db.categorySummaryDao()
 
     @Provides
     fun provideCategoryBudgetDao(db: MonerDatabase): CategoryBudgetDao = db.categoryBudgetDao()
+
+    @Provides
+    fun provideSpendLimitDao(db: MonerDatabase): SpendLimitDao = db.spendLimitDao()
 
 }

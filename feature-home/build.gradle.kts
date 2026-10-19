@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.alviy.moner.feature.journal"
+    namespace = "com.alviy.moner.feature.home"
     compileSdk = 34
 
     defaultConfig {

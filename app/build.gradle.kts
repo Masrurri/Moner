@@ -44,7 +44,7 @@ android {
 dependencies {
     implementation(project(":core"))
     implementation(project(":feature-budget"))
-    implementation(project(":feature-journal"))
+    implementation(project(":feature-home"))
     implementation(project(":feature-settings"))
     implementation(project(":feature-receipt-gather"))
 

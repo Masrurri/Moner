@@ -7,37 +7,41 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.alviy.moner.core.data.local.dao.CategoryBudgetDao
 import com.alviy.moner.core.data.local.dao.CategorySummaryDao
-import com.alviy.moner.core.data.local.dao.ExpenseCategoryDao
-import com.alviy.moner.core.data.local.dao.ExpenseSummaryDao
+import com.alviy.moner.core.data.local.dao.SpendCategoryDao
+import com.alviy.moner.core.data.local.dao.SpendLimitDao
+import com.alviy.moner.core.data.local.dao.SpendSummaryDao
 import com.alviy.moner.core.data.local.dao.ProfileDao
 import com.alviy.moner.core.data.local.dao.TransactionDao
 import com.alviy.moner.core.data.local.entity.CategoryBudgetEntity
 import com.alviy.moner.core.data.local.entity.CategorySummaryEntity
-import com.alviy.moner.core.data.local.entity.ExpenseCategoryEntity
-import com.alviy.moner.core.data.local.entity.ExpenseSummaryEntity
+import com.alviy.moner.core.data.local.entity.SpendCategoryEntity
+import com.alviy.moner.core.data.local.entity.SpendLimitEntity
+import com.alviy.moner.core.data.local.entity.SpendSummaryEntity
 import com.alviy.moner.core.data.local.entity.ProfileEntity
 import com.alviy.moner.core.data.local.entity.TransactionEntity
 
 @Database(
     entities = [
         ProfileEntity::class,
-        ExpenseCategoryEntity::class,
+        SpendCategoryEntity::class,
         TransactionEntity::class,
-        ExpenseSummaryEntity::class,
+        SpendSummaryEntity::class,
         CategorySummaryEntity::class,
-        CategoryBudgetEntity::class
+        CategoryBudgetEntity::class,
+        SpendLimitEntity::class
     ],
-    version = 14
+    version = 15
 )
 @TypeConverters(Converters::class)
 abstract class MonerDatabase : RoomDatabase() {
 
     abstract fun profileDao(): ProfileDao
-    abstract fun expenseCategoryDao(): ExpenseCategoryDao
+    abstract fun spendCategoryDao(): SpendCategoryDao
     abstract fun transactionDao(): TransactionDao
-    abstract fun expenseSummaryDao(): ExpenseSummaryDao
+    abstract fun spendSummaryDao(): SpendSummaryDao
     abstract fun categorySummaryDao(): CategorySummaryDao
     abstract fun categoryBudgetDao(): CategoryBudgetDao
+    abstract fun spendLimitDao(): SpendLimitDao
 
     companion object {
         /** Drops expense_summary.latestExpense / latestTransactionDate; today/week spend is now queried live. */
@@ -53,6 +57,16 @@ abstract class MonerDatabase : RoomDatabase() {
                 )
                 db.execSQL("DROP TABLE `expense_summary`")
                 db.execSQL("ALTER TABLE `expense_summary_new` RENAME TO `expense_summary`")
+            }
+        }
+
+        /** Adds spend_limit: one user-set spending limit per month. */
+        val MIGRATION_14_15 = object : Migration(14, 15) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `spend_limit` " +
+                        "(`monthYear` TEXT NOT NULL, `amount` TEXT NOT NULL, PRIMARY KEY(`monthYear`))"
+                )
             }
         }
     }

@@ -5,78 +5,29 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import com.alviy.moner.core.data.local.entity.ExpenseCategoryEntity
-import com.alviy.moner.core.data.local.entity.ExpenseCategoryWithTransactions
+import com.alviy.moner.core.data.local.entity.SpendCategoryEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface ExpenseCategoryDao {
+interface SpendCategoryDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertCategory(category: ExpenseCategoryEntity): Long
+    suspend fun insertCategory(category: SpendCategoryEntity): Long
 
+    /** Inserts the category for its month if missing and returns its id either way. */
     @Transaction
-    suspend fun insertCategoryIfNotExist(category: ExpenseCategoryEntity): Int {
+    suspend fun insertCategoryIfNotExist(category: SpendCategoryEntity): Int {
         val id = insertCategory(category)
-
-        return if (id == -1L) getCategoryId(category.categoryName, category.monthYear)
-        else id.toInt()
+        return if (id == -1L) getCategoryId(category.categoryName, category.monthYear) else id.toInt()
     }
 
-    @Query(
-        """
-        SELECT categoryId
-        FROM expense_category
-        WHERE categoryName = :name
-        AND monthYear = :monthYear
-        LIMIT 1
-        """
-    )
+    @Query("SELECT categoryId FROM expense_category WHERE categoryName = :name AND monthYear = :monthYear LIMIT 1")
     suspend fun getCategoryId(name: String, monthYear: String): Int
 
-    @Query(
-        """
-        SELECT *
-        FROM expense_category
-        WHERE monthYear = :monthYear
-        """
-    )
-    fun getCategories(monthYear: String): Flow<List<ExpenseCategoryEntity>>
-
-    @Query(
-        """
-        SELECT DISTINCT categoryName
-        FROM expense_category
-        WHERE monthYear = :monthYear
-        ORDER BY categoryName
-        """
-    )
+    @Query("SELECT DISTINCT categoryName FROM expense_category WHERE monthYear = :monthYear ORDER BY categoryName")
     fun getCategoryNamesForMonth(monthYear: String): Flow<List<String>>
 
-    @Query(
-        """
-        SELECT monthYear
-        FROM expense_category
-        GROUP BY monthYear
-        ORDER BY monthYear DESC
-        """
-    )
+    @Query("SELECT monthYear FROM expense_category GROUP BY monthYear ORDER BY monthYear DESC")
     fun getMonthYears(): Flow<List<String>>
-
-    @Transaction
-    @Query(
-        """
-        SELECT *
-        FROM expense_category
-        WHERE monthYear = :monthYear
-        ORDER BY dateCreated
-        """
-    )
-    fun getExpenseJournal(
-        monthYear: String
-    ): Flow<List<ExpenseCategoryWithTransactions>>
-
-    @Query("DELETE FROM expense_category WHERE categoryId = :categoryId")
-    suspend fun deleteCategoryById(categoryId: Int)
 
     @Query("DELETE FROM expense_category")
     suspend fun clearCategories()

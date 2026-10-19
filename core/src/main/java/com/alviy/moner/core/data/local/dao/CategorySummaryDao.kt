@@ -5,25 +5,12 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.alviy.moner.core.data.local.entity.CategorySummaryEntity
-import kotlinx.coroutines.flow.Flow
 import java.math.BigDecimal
 
 @Dao
 interface CategorySummaryDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertCategorySummary(summary: CategorySummaryEntity)
-
-    @Query(
-        """
-        SELECT *
-        FROM category_summary
-        WHERE monthYear = :monthYear
-        ORDER BY totalExpense DESC
-        """
-    )
-    fun getCategorySummaries(
-        monthYear: String
-    ): Flow<List<CategorySummaryEntity>>
 
     @Query(
         """

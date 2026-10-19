@@ -1,27 +1,28 @@
 package com.alviy.moner.core.domain.repository
 
-import com.alviy.moner.core.domain.model.ExpenseItem
 import com.alviy.moner.core.domain.model.SpendSummary
-import com.alviy.moner.core.domain.model.Profile
+import com.alviy.moner.core.domain.model.TransactionItem
 import kotlinx.coroutines.flow.Flow
 import java.math.BigDecimal
 
-interface ExpenseRepository {
+interface SpendRepository {
 
-    fun getProfile(): Flow<Profile>
+    /** Latest [limit] transactions of [monthYear], newest first. */
+    fun getSpendHistory(monthYear: String, limit: Int = RECENT_SPEND_LIMIT): Flow<List<TransactionItem>>
 
-    fun getCategories(monthYear: String): Flow<List<ExpenseItem>>
-
-    fun getExpenseJournal(monthYear: String): Flow<List<ExpenseItem>>
-
-    /** Month total for [monthYear], plus live totals for today and the current week. */
+    /** Month total, spend limit and live totals for today and the current week. */
     fun getSpendSummary(monthYear: String): Flow<SpendSummary>
 
+    suspend fun setSpendLimit(monthYear: String, amount: BigDecimal)
+
+    /** Months that already have categories, newest first. */
     fun getMonthYears(): Flow<List<String>>
 
     fun getCategoryNamesForMonth(monthYear: String): Flow<List<String>>
 
-    suspend fun addExpense(
+    suspend fun insertCategory(name: String, monthYear: String? = null)
+
+    suspend fun addSpend(
         categoryName: String,
         date: String,
         desc: String,
@@ -30,12 +31,9 @@ interface ExpenseRepository {
         note: String? = null
     )
 
-    suspend fun insertCategory(
-        name: String,
-        monthYear: String? = null
-    )
-
-    suspend fun deleteCategoryById(categoryId: Int)
-
     suspend fun clearAllTable()
+
+    companion object {
+        const val RECENT_SPEND_LIMIT = 20
+    }
 }

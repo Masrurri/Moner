@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.alviy.moner.core.data.local.entity.SpendHistoryEntry
 import com.alviy.moner.core.data.local.entity.TransactionEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -39,6 +40,19 @@ interface TransactionDao {
         """
     )
     fun getSpendBetween(startDate: String, endDate: String): Flow<java.math.BigDecimal>
+
+    /** Latest [limit] transactions of [monthYear] with their category name, newest first. */
+    @Query(
+        """
+        SELECT t.transactionId, t.categoryId, c.categoryName, t.date, t.desc, t.source, t.amount, t.note
+        FROM expense_transaction t
+        JOIN expense_category c ON t.categoryId = c.categoryId
+        WHERE c.monthYear = :monthYear
+        ORDER BY t.date DESC
+        LIMIT :limit
+        """
+    )
+    fun getSpendHistory(monthYear: String, limit: Int): Flow<List<SpendHistoryEntry>>
 
     @Query("DELETE FROM expense_transaction")
     suspend fun clearTransactions()

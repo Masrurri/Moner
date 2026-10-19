@@ -35,9 +35,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(
         binding.bottomNav.setupWithNavController(navController)
         binding.bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.journal_bottom_nav -> navController.navigateTo(
-                    resId = R.id.journal_nav,
-                    popUpToId = R.id.journal_nav
+                R.id.home_bottom_nav -> navController.navigateTo(
+                    resId = R.id.home_nav,
+                    popUpToId = R.id.home_nav
                 )
                 R.id.budget_bottom_nav -> navController.navigateTo(
                     resId = R.id.budget_nav,
@@ -62,7 +62,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(
         activeGraphId = graphId
 
         val itemId = when (graphId) {
-            R.id.journal_nav -> R.id.journal_bottom_nav
+            R.id.home_nav -> R.id.home_bottom_nav
             R.id.budget_nav -> R.id.budget_bottom_nav
             R.id.settings_nav -> R.id.settings_bottom_nav
             else -> null

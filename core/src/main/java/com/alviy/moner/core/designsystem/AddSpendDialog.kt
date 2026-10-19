@@ -7,24 +7,24 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alviy.moner.core.R
-import com.alviy.moner.core.databinding.DialogAddExpenseBinding
+import com.alviy.moner.core.databinding.DialogAddSpendBinding
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Locale
-class AddExpenseDialog : FullScreenSheetDialogFragment() {
-    private lateinit var binding: DialogAddExpenseBinding
+class AddSpendDialog : FullScreenSheetDialogFragment() {
+    private lateinit var binding: DialogAddSpendBinding
     private var selectedCategory: String? = null
     private var selectedSource: String? = null
     private var selectedDate: LocalDateTime = LocalDateTime.now()
 
     private var categories: List<String> = emptyList()
-    private lateinit var categoryAdapter: SourceExpenseAdapter
-    private lateinit var sourceAdapter: SourceExpenseAdapter
+    private lateinit var categoryAdapter: SourceSpendAdapter
+    private lateinit var sourceAdapter: SourceSpendAdapter
 
-    var onSave: ((NewExpenseInput) -> Unit)? = null
+    var onSave: ((NewSpendInput) -> Unit)? = null
     var onNewCategoryRequested: ((onCreated: (String) -> Unit) -> Unit)? = null
 
     override fun onCreateView(
@@ -32,20 +32,20 @@ class AddExpenseDialog : FullScreenSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = DialogAddExpenseBinding.inflate(inflater, container, false)
+        binding = DialogAddSpendBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        categoryAdapter = SourceExpenseAdapter { selectedCategory = it }
+        categoryAdapter = SourceSpendAdapter { selectedCategory = it }
         binding.rvCategory.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.rvCategory.adapter = categoryAdapter
         categoryAdapter.submitList(categories)
 
-        sourceAdapter = SourceExpenseAdapter { selectedSource = it }
+        sourceAdapter = SourceSpendAdapter { selectedSource = it }
         sourceAdapter.submitList(PAYMENT_SOURCES)
         binding.rvSource.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -64,7 +64,7 @@ class AddExpenseDialog : FullScreenSheetDialogFragment() {
             }
         }
 
-        binding.btnSaveExpense.setOnClickListener {
+        binding.btnSaveSpend.setOnClickListener {
             val category = selectedCategory
             val title = binding.tfTitle.getText()
             val source = selectedSource
@@ -88,7 +88,7 @@ class AddExpenseDialog : FullScreenSheetDialogFragment() {
             }
 
             onSave?.invoke(
-                NewExpenseInput(
+                NewSpendInput(
                     categoryName = category,
                     title = title,
                     source = source,
@@ -142,11 +142,11 @@ class AddExpenseDialog : FullScreenSheetDialogFragment() {
     companion object {
         private val PAYMENT_SOURCES = listOf("Cash", "QRIS", "Debit")
 
-        fun newInstance(availableCategories: List<String>) = AddExpenseDialog().apply {
+        fun newInstance(availableCategories: List<String>) = AddSpendDialog().apply {
             categories = availableCategories
         }
 
-        data class NewExpenseInput(
+        data class NewSpendInput(
             val categoryName: String,
             val title: String,
             val source: String,

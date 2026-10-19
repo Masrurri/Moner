@@ -10,7 +10,7 @@ import java.math.BigDecimal
     tableName = "expense_transaction",
     foreignKeys = [
         ForeignKey(
-            entity = ExpenseCategoryEntity::class,
+            entity = SpendCategoryEntity::class,
             parentColumns = ["categoryId"],
             childColumns = ["categoryId"],
             onDelete = ForeignKey.CASCADE

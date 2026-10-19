@@ -4,7 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.alviy.moner.core.common.base.BaseViewModel
 import com.alviy.moner.core.common.ext.toFullMonthYear
 import com.alviy.moner.core.common.mergeWithDefaultCategories
-import com.alviy.moner.core.domain.repository.ExpenseRepository
+import com.alviy.moner.core.domain.repository.SpendRepository
 import com.alviy.moner.feature.budget.domain.model.BudgetPeriod
 import com.alviy.moner.feature.budget.domain.model.BudgetSummary
 import com.alviy.moner.feature.budget.domain.model.CategoryBudgetProgress
@@ -25,13 +25,13 @@ import javax.inject.Inject
 @HiltViewModel
 class BudgetViewModel @Inject constructor(
     private val budgetRepository: BudgetRepository,
-    private val expenseRepository: ExpenseRepository
+    private val spendRepository: SpendRepository
 ) : BaseViewModel() {
 
     private val _selectedMonthYear = MutableStateFlow(LocalDateTime.now().toFullMonthYear())
     val selectedMonthYear: StateFlow<String> = _selectedMonthYear.asStateFlow()
 
-    val monthYears: StateFlow<List<String>> = expenseRepository.getMonthYears()
+    val monthYears: StateFlow<List<String>> = spendRepository.getMonthYears()
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val categoryBudgets: StateFlow<List<CategoryBudgetProgress>> = _selectedMonthYear
@@ -43,7 +43,7 @@ class BudgetViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), BudgetSummary())
 
     val availableCategories: StateFlow<List<String>> = _selectedMonthYear
-        .flatMapLatest { monthYear -> expenseRepository.getCategoryNamesForMonth(monthYear) }
+        .flatMapLatest { monthYear -> spendRepository.getCategoryNamesForMonth(monthYear) }
         .map { mergeWithDefaultCategories(it) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, mergeWithDefaultCategories(emptyList()))
 
@@ -52,7 +52,7 @@ class BudgetViewModel @Inject constructor(
     }
 
     fun addCategory(name: String) = launchSafely {
-        expenseRepository.insertCategory(name)
+        spendRepository.insertCategory(name)
     }
 
     fun saveCategoryBudget(

@@ -1,5 +1,6 @@
 package com.alviy.moner.core.data.local.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import java.math.BigDecimal
@@ -15,6 +16,6 @@ import java.math.BigDecimal
 data class CategorySummaryEntity(
     val monthYear: String,
     val categoryId: Int,
-    val totalExpense: BigDecimal,
+    @ColumnInfo(name = "totalExpense") val totalSpend: BigDecimal,
     val latestTrxDate: String
 )

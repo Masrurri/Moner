@@ -67,8 +67,7 @@ class JournalFragment : BaseFragment<FragmentJournalBinding>() {
     }
 
     private fun showDialogSelectTime() {
-        val months = viewModel.monthYears.value
-        if (months.isEmpty()) return
+        val months = viewModel.monthYears
         val currentIndex = months.indexOf(viewModel.selectedMonthYear.value).coerceAtLeast(0)
         WheelDialog.newInstance(months, currentIndex) { selected ->
             viewModel.selectMonthYear(selected)
@@ -100,10 +99,12 @@ class JournalFragment : BaseFragment<FragmentJournalBinding>() {
         observeState(viewModel.selectedMonthYear) { selected ->
             binding.btnSelectedMonth.text = selected ?: getString(R.string.journal_select_time_default)
         }
-        observeState(viewModel.expenseSummary) { summary ->
+        observeState(viewModel.spendSummary) { summary ->
             binding.tvTotalAmount.text = summary.totalExpense.toIDR()
+            binding.tvSpendTodayValue.text = summary.totalSpendToday.toIDR()
+            binding.tvSpendWeekValue.text = summary.totalSpendWeek.toIDR()
         }
-        observeState(viewModel.journalRows) { rows ->
+        observeState(viewModel.recentTransactions) { rows ->
             transactionAdapter?.submitList(rows)
             binding.tvEmptyState.isVisible = rows.isEmpty()
             binding.rvTransactions.isVisible = rows.isNotEmpty()

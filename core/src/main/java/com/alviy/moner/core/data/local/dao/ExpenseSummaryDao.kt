@@ -40,16 +40,13 @@ interface ExpenseSummaryDao {
     @Query(
         """
         UPDATE expense_summary
-        SET totalExpense = totalExpense + :amount,
-            latestExpense = :amount,
-            latestTransactionDate = :date
+        SET totalExpense = totalExpense + :amount
         WHERE monthYear = :monthYear
         """
     )
     suspend fun updateExpenseSummary(
         monthYear: String,
-        amount: BigDecimal,
-        date: String
+        amount: BigDecimal
     ): Int
 
     @Query("DELETE FROM expense_summary")

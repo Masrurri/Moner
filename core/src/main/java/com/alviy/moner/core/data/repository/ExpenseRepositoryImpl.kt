@@ -15,15 +15,21 @@ import com.alviy.moner.core.data.local.entity.ExpenseCategoryEntity
 import com.alviy.moner.core.data.local.entity.ExpenseSummaryEntity
 import com.alviy.moner.core.data.local.entity.TransactionEntity
 import com.alviy.moner.core.data.mapper.toExpenseItem
-import com.alviy.moner.core.data.mapper.toExpenseSummary
 import com.alviy.moner.core.data.mapper.toListExpenseItem
+import com.alviy.moner.core.data.mapper.toSpendSummary
 import com.alviy.moner.core.domain.model.Profile
+import com.alviy.moner.core.domain.model.SpendSummary
 import com.alviy.moner.core.domain.repository.ExpenseRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import java.math.BigDecimal
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.YearMonth
+import java.time.temporal.TemporalAdjusters
+import java.time.temporal.WeekFields
+import java.util.Locale
 import javax.inject.Inject
 
 class ExpenseRepositoryImpl @Inject constructor(
@@ -66,8 +72,20 @@ class ExpenseRepositoryImpl @Inject constructor(
     override fun getExpenseJournal(monthYear: String) =
         expenseCategoryDao.getExpenseJournal(monthYear).map { result -> result.toListExpenseItem() }
 
-    override fun getExpenseSummary(monthYear: String) =
-        expenseSummaryDao.getExpenseSummary(monthYear).map { result -> result.toExpenseSummary() }
+    override fun getSpendSummary(monthYear: String): Flow<SpendSummary> {
+        val today = LocalDate.now()
+        val weekStart = today.with(TemporalAdjusters.previousOrSame(WeekFields.of(Locale.getDefault()).firstDayOfWeek))
+        return combine(
+            expenseSummaryDao.getExpenseSummary(monthYear),
+            transactionDao.getSpendBetween(today.startOfDayIso(), today.plusDays(1).startOfDayIso()),
+            transactionDao.getSpendBetween(weekStart.startOfDayIso(), weekStart.plusWeeks(1).startOfDayIso())
+        ) { summary, spendToday, spendWeek ->
+            summary.toSpendSummary(totalSpendToday = spendToday, totalSpendWeek = spendWeek)
+        }
+    }
+
+    // Same format as stored transaction dates (LocalDateTime.toString()), so range bounds compare correctly.
+    private fun LocalDate.startOfDayIso(): String = atStartOfDay().toString()
 
     override fun getMonthYears(): Flow<List<String>> =
         expenseCategoryDao.getMonthYears()
@@ -128,20 +146,11 @@ class ExpenseRepositoryImpl @Inject constructor(
         }
 
         // update expense summary
-        val updatedSummary = expenseSummaryDao.updateExpenseSummary(
-            monthYear,
-            amount,
-            date
-        )
+        val updatedSummary = expenseSummaryDao.updateExpenseSummary(monthYear, amount)
 
         if (updatedSummary == 0) {
             expenseSummaryDao.insertExpenseSummary(
-                ExpenseSummaryEntity(
-                    monthYear = monthYear,
-                    totalExpense = amount,
-                    latestExpense = amount,
-                    latestTransactionDate = date
-                )
+                ExpenseSummaryEntity(monthYear = monthYear, totalExpense = amount)
             )
         }
     }

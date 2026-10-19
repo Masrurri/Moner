@@ -9,7 +9,5 @@ import java.math.BigDecimal
 )
 data class ExpenseSummaryEntity(
     val monthYear: String,
-    val totalExpense: BigDecimal,
-    val latestExpense: BigDecimal,
-    val latestTransactionDate: String
+    val totalExpense: BigDecimal
 )

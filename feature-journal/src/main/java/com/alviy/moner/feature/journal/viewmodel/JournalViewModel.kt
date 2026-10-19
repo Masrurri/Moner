@@ -5,9 +5,10 @@ import com.alviy.moner.api.gmail.model.ReceiptTransaction
 import com.alviy.moner.core.common.base.BaseViewModel
 import com.alviy.moner.core.common.entity.ErrorCodes
 import com.alviy.moner.core.common.entity.Result
+import com.alviy.moner.core.common.ext.fullMonthYearFormatter
 import com.alviy.moner.core.common.mergeWithDefaultCategories
 import com.alviy.moner.core.domain.model.ExpenseItem
-import com.alviy.moner.core.domain.model.ExpenseSummary
+import com.alviy.moner.core.domain.model.SpendSummary
 import com.alviy.moner.core.domain.repository.ExpenseRepository
 import com.alviy.moner.core.network.GoogleAuthTokenHolder
 import com.alviy.moner.feature.journal.ui.model.JournalRow
@@ -19,6 +20,8 @@ import kotlinx.coroutines.flow.map
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.Year
+import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import javax.inject.Inject
@@ -30,17 +33,19 @@ class JournalViewModel @Inject constructor(
     private val googleAuthTokens: GoogleAuthTokenHolder
 ) : BaseViewModel() {
 
-    private val _monthYears = MutableStateFlow<List<String>>(emptyList())
-    val monthYears: StateFlow<List<String>> = _monthYears.asStateFlow()
+    // Static: every month of the current year, January..December, in the same format categories are stored with.
+    val monthYears: List<String> = Year.now().let { year ->
+        (1..12).map { month -> year.atMonth(month).format(fullMonthYearFormatter()) }
+    }
 
     private val _selectedMonthYear = MutableStateFlow<String?>(null)
     val selectedMonthYear: StateFlow<String?> = _selectedMonthYear.asStateFlow()
 
-    private val _expenseSummary = MutableStateFlow(ExpenseSummary())
-    val expenseSummary: StateFlow<ExpenseSummary> = _expenseSummary.asStateFlow()
+    private val _spendSummary = MutableStateFlow(SpendSummary())
+    val spendSummary: StateFlow<SpendSummary> = _spendSummary.asStateFlow()
 
-    private val _journalRows = MutableStateFlow<List<JournalRow>>(emptyList())
-    val journalRows: StateFlow<List<JournalRow>> = _journalRows.asStateFlow()
+    private val _recentTransactions = MutableStateFlow<List<JournalRow>>(emptyList())
+    val recentTransactions: StateFlow<List<JournalRow>> = _recentTransactions.asStateFlow()
 
     // Categories offered by the add-spending dialog.
     private val _availableCategories = MutableStateFlow(mergeWithDefaultCategories(emptyList()))
@@ -51,16 +56,14 @@ class JournalViewModel @Inject constructor(
     val receipts = _receipts.asStateFlow()
 
     init {
-        expenseRepository.getMonthYears().collectFlow(_monthYears) { months ->
-            if (_selectedMonthYear.value == null && months.isNotEmpty()) selectMonthYear(months.first())
-        }
+        selectMonthYear(YearMonth.now().format(fullMonthYearFormatter()))
     }
 
     fun selectMonthYear(monthYear: String) {
         _selectedMonthYear.value = monthYear
         // Same targets on every call, so the previous month's DAO observers are replaced.
-        expenseRepository.getExpenseSummary(monthYear).collectFlow(_expenseSummary)
-        expenseRepository.getExpenseJournal(monthYear).map(::buildRows).collectFlow(_journalRows)
+        expenseRepository.getSpendSummary(monthYear).collectFlow(_spendSummary)
+        expenseRepository.getExpenseJournal(monthYear).map(::buildRows).collectFlow(_recentTransactions)
         expenseRepository.getCategoryNamesForMonth(monthYear)
             .map { mergeWithDefaultCategories(it) }
             .collectFlow(_availableCategories)

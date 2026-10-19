@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.alviy.moner.core.data.local.entity.TransactionEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TransactionDao {
@@ -28,6 +29,16 @@ interface TransactionDao {
         startDate: String,
         endDate: String
     ): java.math.BigDecimal
+
+    /** Total spent in [startDate, endDate); dates are ISO LocalDateTime strings, so they compare lexically. */
+    @Query(
+        """
+        SELECT COALESCE(SUM(amount), 0)
+        FROM expense_transaction
+        WHERE date >= :startDate AND date < :endDate
+        """
+    )
+    fun getSpendBetween(startDate: String, endDate: String): Flow<java.math.BigDecimal>
 
     @Query("DELETE FROM expense_transaction")
     suspend fun clearTransactions()

@@ -29,7 +29,10 @@ object DatabaseModule {
             context,
             MonerDatabase::class.java,
             "expense_db"
-        ).fallbackToDestructiveMigration().build()
+        )
+            .addMigrations(MonerDatabase.MIGRATION_13_14)
+            .fallbackToDestructiveMigration()
+            .build()
 
     @Provides
     fun provideProfileDao(db: MonerDatabase): ProfileDao = db.profileDao()

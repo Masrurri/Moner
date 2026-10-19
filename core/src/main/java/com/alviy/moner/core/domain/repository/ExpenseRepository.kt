@@ -1,7 +1,7 @@
 package com.alviy.moner.core.domain.repository
 
 import com.alviy.moner.core.domain.model.ExpenseItem
-import com.alviy.moner.core.domain.model.ExpenseSummary
+import com.alviy.moner.core.domain.model.SpendSummary
 import com.alviy.moner.core.domain.model.Profile
 import kotlinx.coroutines.flow.Flow
 import java.math.BigDecimal
@@ -14,7 +14,8 @@ interface ExpenseRepository {
 
     fun getExpenseJournal(monthYear: String): Flow<List<ExpenseItem>>
 
-    fun getExpenseSummary(monthYear: String): Flow<ExpenseSummary>
+    /** Month total for [monthYear], plus live totals for today and the current week. */
+    fun getSpendSummary(monthYear: String): Flow<SpendSummary>
 
     fun getMonthYears(): Flow<List<String>>
 

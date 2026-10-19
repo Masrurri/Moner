@@ -19,7 +19,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import java.math.BigDecimal
 import java.time.LocalDateTime
-import java.time.Year
 import java.time.YearMonth
 import javax.inject.Inject
 
@@ -30,12 +29,15 @@ class HomeViewModel @Inject constructor(
     private val googleAuthTokens: GoogleAuthTokenHolder
 ) : BaseViewModel() {
 
-    // Static: every month of the current year, in the same format categories are stored with.
-    val monthYears: List<String> = Year.now().let { year ->
-        (1..12).map { month -> year.atMonth(month).format(fullMonthYearFormatter()) }
+    /** "MMMM yyyy" of the current month, the format categories are stored with. */
+    val currentMonthYear: String = YearMonth.now().format(fullMonthYearFormatter())
+
+    // January of this year up to the current month; future months are never offered.
+    val monthYears: List<String> = YearMonth.now().let { now ->
+        (1..now.monthValue).map { month -> now.withMonth(month).format(fullMonthYearFormatter()) }
     }
 
-    private val _selectedMonthYear = MutableStateFlow(YearMonth.now().format(fullMonthYearFormatter()))
+    private val _selectedMonthYear = MutableStateFlow(currentMonthYear)
     val selectedMonthYear: StateFlow<String> = _selectedMonthYear.asStateFlow()
 
     private val _spendSummary = MutableStateFlow(SpendSummary())

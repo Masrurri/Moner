@@ -60,7 +60,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     }
 
     override fun observeData() {
-        observeState(viewModel.selectedMonthYear) { binding.btnSelectedMonth.text = it }
+        observeState(viewModel.selectedMonthYear) { binding.btnSelectedMonth.text = monthLabel(it) }
         observeState(viewModel.spendSummary, onChange = ::renderSummary)
         observeState(viewModel.recentTransactions) { rows ->
             transactionAdapter.submitList(rows)
@@ -89,10 +89,16 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     private fun showSelectMonthDialog() {
         val months = viewModel.monthYears
+        val labels = months.map(::monthLabel)
         val currentIndex = months.indexOf(viewModel.selectedMonthYear.value).coerceAtLeast(0)
-        WheelDialog.newInstance(months, currentIndex, viewModel::selectMonthYear)
-            .show(parentFragmentManager, "wheelDialog")
+        // The wheel returns the picked label; map it back to its month by position.
+        WheelDialog.newInstance(labels, currentIndex) { label ->
+            months.getOrNull(labels.indexOf(label))?.let(viewModel::selectMonthYear)
+        }.show(parentFragmentManager, "wheelDialog")
     }
+
+    private fun monthLabel(monthYear: String): String =
+        if (monthYear == viewModel.currentMonthYear) getString(R.string.home_select_time_default) else monthYear
 
     private fun showSpendLimitDialog() {
         AmountFieldDialog.newInstance(

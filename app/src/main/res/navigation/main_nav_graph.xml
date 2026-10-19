@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_nav"
-    app:startDestination="@id/journal_nav">
+    app:startDestination="@id/home_nav">
 
-    <!-- Include Feature Graph -->
-    <include app:graph="@navigation/journal_nav_graph" />
+    <!-- Feature graphs; each feature module owns its own graph -->
+    <include app:graph="@navigation/home_nav_graph" />
     <include app:graph="@navigation/budget_nav_graph" />
     <include app:graph="@navigation/settings_nav_graph" />
     <include app:graph="@navigation/receipt_gather_nav_graph" />

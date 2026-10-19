@@ -15,6 +15,6 @@
         android:importantForAutofill="no"
         android:inputType="number"
         android:maxLines="1"
-        android:text="Rp 0" />
+        android:text="@string/common_amount_zero" />
 
 </FrameLayout>

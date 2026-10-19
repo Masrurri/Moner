@@ -9,7 +9,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-/** In :api-gmail (depends on :core). Core never sees this module. */
+/** Network bindings for :api-gmail. Core never sees this module. */
 @Module
 @InstallIn(SingletonComponent::class)
 object ApiGmailModule {

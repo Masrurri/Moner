@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_welcome_back">Welcome back</string>
+    <string name="home_total_expense">Total Spending</string>
+    <string name="home_delta_format">%1$s%2$.0f%% vs last month</string>
+    <string name="home_recent_transactions">Recent Transactions</string>
+    <string name="home_see_all">See all</string>
+    <string name="home_empty_state">No transactions yet. Tap + to add your first expense.</string>
+    <string name="home_greeting_format">Hey, %1$s</string>
+    <string name="home_greeting_default_name">Punk</string>
+    <string name="home_greeting_placeholder">Hey, Punk</string>
+    <string name="home_select_time_default">This Month</string>
+
+    <string name="home_action_spend">Spend</string>
+    <string name="home_action_fetch">Fetch</string>
+    <string name="home_action_stats">Stats</string>
+
+    <string name="home_money_out_today">Money out today</string>
+    <string name="home_money_out_week">Money out this week</string>
+    <string name="home_spending_limit">Spending Limit</string>
+
+    <!-- Static values shown until these cards are wired to real data -->
+    <string name="home_placeholder_spent" translatable="false">Rp 4.250.000</string>
+    <string name="home_placeholder_limit" translatable="false">Rp 5.000.000</string>
+
+    <string name="home_transaction_subtitle_format">%1$s · %2$s</string>
+    <string name="home_transaction_amount_format">- %1$s</string>
+</resources>

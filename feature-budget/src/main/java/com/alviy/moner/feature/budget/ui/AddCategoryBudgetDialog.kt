@@ -1,83 +1,76 @@
 package com.alviy.moner.feature.budget.ui
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.alviy.moner.core.designsystem.FullScreenSheetDialogFragment
-import com.alviy.moner.core.designsystem.SourceExpenseAdapter
-import com.alviy.moner.core.designsystem.TextFieldDialog
+import com.alviy.moner.core.common.base.BaseBottomSheetDialogFragment
+import com.alviy.moner.core.common.ext.collectWhile
+import com.alviy.moner.core.common.ext.onDialogResult
+import com.alviy.moner.core.common.ext.showDialog
+import com.alviy.moner.core.designsystem.adapter.PillAdapter
+import com.alviy.moner.core.designsystem.dialog.TextFieldDialog
 import com.alviy.moner.feature.budget.databinding.DialogAddCategoryBudgetBinding
 import com.alviy.moner.feature.budget.domain.model.BudgetPeriod
 import com.alviy.moner.feature.budget.viewmodel.BudgetViewModel
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 
-class AddCategoryBudgetDialog : FullScreenSheetDialogFragment() {
+/** Add Category Budget sheet. Shares [BudgetViewModel] with the BudgetFragment that shows it. */
+class AddCategoryBudgetDialog :
+    BaseBottomSheetDialogFragment<DialogAddCategoryBudgetBinding>(DialogAddCategoryBudgetBinding::inflate) {
 
-    private var _binding: DialogAddCategoryBudgetBinding? = null
-    private val binding get() = _binding!!
+    // Scoped to the parent BudgetFragment so the budget is saved for the month selected there.
+    private val viewModel: BudgetViewModel by viewModels(ownerProducer = { requireParentFragment() })
+    private lateinit var categoryAdapter: PillAdapter
 
-    private val viewModel: BudgetViewModel by activityViewModels()
-    private lateinit var categoryAdapter: SourceExpenseAdapter
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = DialogAddCategoryBudgetBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        categoryAdapter = SourceExpenseAdapter { }
+    override fun initView(savedInstanceState: Bundle?) {
+        categoryAdapter = PillAdapter()
+        savedInstanceState?.getString(STATE_SELECTED_CATEGORY)?.let { categoryAdapter.selectedItem = it }
         binding.rvCategory.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.rvCategory.adapter = categoryAdapter
 
-        viewModel.availableCategories
-            .onEach { categoryAdapter.submitList(it) }
-            .launchIn(viewLifecycleOwner.lifecycleScope)
+        viewModel.availableCategories.collectWhile(viewLifecycleOwner) { categoryAdapter.submitList(it) }
 
         binding.btnNewCategory.setOnClickListener {
-            TextFieldDialog.newInstance { newCategory ->
-                viewModel.addCategory(newCategory)
-                categoryAdapter.selectedCategory = newCategory
-            }.show(childFragmentManager, "new_category")
+            TextFieldDialog.newInstance(REQUEST_NEW_CATEGORY).showDialog(childFragmentManager, TextFieldDialog.TAG)
         }
-
-        binding.btnSaveBudget.setOnClickListener {
-            val category = categoryAdapter.selectedCategory
-            if (category.isNullOrBlank()) return@setOnClickListener
-
-            val period = if (binding.togglePeriod.checkedButtonId == binding.btnPeriodWeekly.id) {
-                BudgetPeriod.WEEKLY
-            } else {
-                BudgetPeriod.MONTHLY
+        onDialogResult(REQUEST_NEW_CATEGORY) { result ->
+            TextFieldDialog.enteredText(result)?.let { name ->
+                viewModel.addCategory(name)
+                categoryAdapter.selectedItem = name
             }
-
-            viewModel.saveCategoryBudget(
-                categoryName = category,
-                monthlyLimit = binding.amountInput.amount,
-                period = period,
-                notifyAt80Percent = binding.switchNotify.isChecked
-            )
-            dismiss()
         }
+
+        binding.btnSaveBudget.setOnClickListener { save() }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        if (::categoryAdapter.isInitialized) outState.putString(STATE_SELECTED_CATEGORY, categoryAdapter.selectedItem)
+    }
+
+    private fun save() {
+        val category = categoryAdapter.selectedItem
+        if (category.isNullOrBlank()) return
+
+        val period = if (binding.togglePeriod.checkedButtonId == binding.btnPeriodWeekly.id) {
+            BudgetPeriod.WEEKLY
+        } else {
+            BudgetPeriod.MONTHLY
+        }
+        viewModel.saveCategoryBudget(
+            categoryName = category,
+            monthlyLimit = binding.amountInput.amount,
+            period = period,
+            notifyAt80Percent = binding.switchNotify.isChecked
+        )
+        dismiss()
     }
 
     companion object {
+        const val TAG = "AddCategoryBudgetDialog"
+        private const val REQUEST_NEW_CATEGORY = "add_budget_new_category"
+        private const val STATE_SELECTED_CATEGORY = "state_selected_category"
+
         fun newInstance() = AddCategoryBudgetDialog()
     }
 }

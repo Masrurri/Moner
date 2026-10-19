@@ -1,27 +1,28 @@
 package com.alviy.moner.core.common.ext
 
 import android.os.Bundle
+import androidx.annotation.IdRes
 import androidx.navigation.NavController
 import androidx.navigation.navOptions
 
 fun NavController.navigateTo(
-    resId: Int,
-    popUpToId: Int? = null,
-    isLaunchSingleTop: Boolean? = null,
-    isInclusive: Boolean? = null,
-    isSaveState: Boolean? = null,
-    isRestoreState: Boolean? = null,
-    bundle: Bundle? = null
+    @IdRes resId: Int,
+    @IdRes popUpToId: Int? = null,
+    isLaunchSingleTop: Boolean = false,
+    isInclusive: Boolean = false,
+    isSaveState: Boolean = false,
+    isRestoreState: Boolean = false,
+    bundle: Bundle? = null,
 ) {
-    val navOptions = navOptions {
+    val options = navOptions {
         popUpToId?.let {
             popUpTo(it) {
-                this.inclusive = isInclusive.orFalse()
-                this.saveState = isSaveState.orFalse()
+                inclusive = isInclusive
+                saveState = isSaveState
             }
         }
-        this.launchSingleTop = isLaunchSingleTop.orFalse()
-        this.restoreState = isRestoreState.orFalse()
+        launchSingleTop = isLaunchSingleTop
+        restoreState = isRestoreState
     }
-    this.navigate(resId, bundle, navOptions)
+    navigate(resId, bundle, options)
 }

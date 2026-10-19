@@ -1,4 +1,5 @@
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         google()
         mavenCentral()
@@ -17,9 +18,15 @@ dependencyResolutionManagement {
 rootProject.name = "Moner"
 
 include(":app")
+
+// Shared foundation: base classes, design system, data layer, networking
 include(":core")
-include(":feature-journal")
+
+// Remote APIs
+include(":api-gmail")
+
+// Screens
+include(":feature-home")
 include(":feature-budget")
 include(":feature-settings")
-include(":api-gmail")
 include(":feature-receipt-gather")

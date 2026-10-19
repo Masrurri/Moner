@@ -24,7 +24,7 @@
     <string name="settings_clear_database_confirm_title">Clear database?</string>
     <string name="settings_clear_database_confirm_message">This permanently deletes all transactions, categories, and budgets. This cannot be undone.</string>
     <string name="settings_clear_database_confirm_positive">Clear</string>
-    <string name="settings_clear_database_confirm_negative">Cancel</string>
 
     <string name="app_version_format">Moner v%1$s</string>
+    <string name="app_version_fallback" translatable="false">1.0</string>
 </resources>

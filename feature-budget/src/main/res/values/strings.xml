@@ -7,16 +7,15 @@
     <string name="budget_empty_state">No category budgets yet. Add one to start tracking.</string>
     <string name="budget_over_by_format">Over by %1$s</string>
     <string name="budget_spent_limit_format">%1$s / %2$s</string>
+    <string name="budget_limit_format">/ %1$s</string>
 
     <string name="add_category_budget_title">Add Category Budget</string>
     <string name="add_category_budget_monthly_limit">MONTHLY LIMIT *</string>
     <string name="add_category_budget_category">Category *</string>
-    <string name="add_category_budget_new_category">New</string>
     <string name="add_category_budget_period">Period *</string>
     <string name="add_category_budget_monthly">Monthly</string>
     <string name="add_category_budget_weekly">Weekly</string>
     <string name="add_category_budget_notify">Notify at 80%% spent</string>
     <string name="add_category_budget_notify_desc">Get an alert before you go over</string>
     <string name="add_category_budget_save">Save Budget</string>
-    <string name="add_category_budget_new_category_hint">Category name</string>
 </resources>

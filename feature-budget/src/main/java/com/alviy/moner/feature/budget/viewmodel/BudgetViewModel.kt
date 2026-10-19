@@ -1,9 +1,8 @@
 package com.alviy.moner.feature.budget.viewmodel
 
-import androidx.lifecycle.viewModelScope
 import com.alviy.moner.core.common.base.BaseViewModel
+import com.alviy.moner.core.common.defaults.ExpenseDefaults
 import com.alviy.moner.core.common.ext.toFullMonthYear
-import com.alviy.moner.core.common.mergeWithDefaultCategories
 import com.alviy.moner.core.domain.repository.ExpenseRepository
 import com.alviy.moner.feature.budget.domain.model.BudgetPeriod
 import com.alviy.moner.feature.budget.domain.model.BudgetSummary
@@ -12,16 +11,16 @@ import com.alviy.moner.feature.budget.domain.repository.BudgetRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import javax.inject.Inject
 
+/** Shared by [com.alviy.moner.feature.budget.ui.BudgetFragment] and its Add Category Budget sheet. */
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class BudgetViewModel @Inject constructor(
     private val budgetRepository: BudgetRepository,
@@ -31,21 +30,22 @@ class BudgetViewModel @Inject constructor(
     private val _selectedMonthYear = MutableStateFlow(LocalDateTime.now().toFullMonthYear())
     val selectedMonthYear: StateFlow<String> = _selectedMonthYear.asStateFlow()
 
+    /** Read synchronously when the month picker opens, so it is kept hot. */
     val monthYears: StateFlow<List<String>> = expenseRepository.getMonthYears()
-        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+        .stateEagerly(emptyList())
 
     val categoryBudgets: StateFlow<List<CategoryBudgetProgress>> = _selectedMonthYear
-        .flatMapLatest { budgetRepository.getCategoryBudgetsWithSpend(it) }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+        .flatMapLatest(budgetRepository::getCategoryBudgetsWithSpend)
+        .stateWhileSubscribed(emptyList())
 
     val budgetSummary: StateFlow<BudgetSummary> = _selectedMonthYear
-        .flatMapLatest { budgetRepository.getBudgetSummary(it) }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), BudgetSummary())
+        .flatMapLatest(budgetRepository::getBudgetSummary)
+        .stateWhileSubscribed(BudgetSummary())
 
     val availableCategories: StateFlow<List<String>> = _selectedMonthYear
-        .flatMapLatest { monthYear -> expenseRepository.getCategoryNamesForMonth(monthYear) }
-        .map { mergeWithDefaultCategories(it) }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, mergeWithDefaultCategories(emptyList()))
+        .flatMapLatest(expenseRepository::getCategoryNamesForMonth)
+        .map(ExpenseDefaults::mergeWithCategories)
+        .stateEagerly(ExpenseDefaults.mergeWithCategories(emptyList()))
 
     fun selectMonthYear(monthYear: String) {
         _selectedMonthYear.value = monthYear

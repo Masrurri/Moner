@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">Moner</string>
+    <string name="app_name" translatable="false">Moner</string>
+
+    <string name="nav_home">Home</string>
+    <string name="nav_budget">Budget</string>
+    <string name="nav_settings">Settings</string>
 </resources>

@@ -9,6 +9,7 @@ import com.alviy.moner.core.data.local.dao.ExpenseCategoryDao
 import com.alviy.moner.core.data.local.dao.ExpenseSummaryDao
 import com.alviy.moner.core.data.local.dao.ProfileDao
 import com.alviy.moner.core.data.local.dao.TransactionDao
+import com.alviy.moner.core.data.local.migration.MonerMigrations
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,7 +30,11 @@ object DatabaseModule {
             context,
             MonerDatabase::class.java,
             "expense_db"
-        ).fallbackToDestructiveMigration().build()
+        )
+            .addMigrations(*MonerMigrations.ALL)
+            .fallbackToDestructiveMigrationFrom(*MonerMigrations.UNMIGRATABLE_VERSIONS)
+            .fallbackToDestructiveMigrationOnDowngrade()
+            .build()
 
     @Provides
     fun provideProfileDao(db: MonerDatabase): ProfileDao = db.profileDao()

@@ -1,19 +1,18 @@
 package com.alviy.moner.core.common.base
 
 import android.util.Log
-import com.alviy.moner.core.common.entity.ErrorCodes
-import com.alviy.moner.core.common.entity.ErrorCodes.GENERAL
-import com.alviy.moner.core.common.entity.ErrorResponse
-import okhttp3.ResponseBody
-import retrofit2.Response
-import com.alviy.moner.core.common.entity.Result
+import com.alviy.moner.core.common.result.ErrorCodes
+import com.alviy.moner.core.common.result.ErrorMessages
+import com.alviy.moner.core.common.result.ErrorResponse
+import com.alviy.moner.core.common.result.Result
 import com.google.gson.Gson
-import com.squareup.moshi.Moshi
+import retrofit2.Response
 import java.io.IOException
+import java.net.HttpURLConnection
 import java.net.SocketTimeoutException
 import kotlin.coroutines.cancellation.CancellationException
 
-
+/** Base for remote data sources: every Retrofit outcome becomes a [Result], never an exception. */
 abstract class BaseDataSource(protected val gson: Gson) {
 
     /** Runs a Retrofit call that returns Response<T> and maps every outcome to [Result]. */
@@ -26,14 +25,14 @@ abstract class BaseDataSource(protected val gson: Gson) {
             errorHandler(response.code(), response.errorBody()?.use { it.string() })
         }
     } catch (e: CancellationException) {
-        throw e                                        // never swallow coroutine cancellation
+        throw e                                                  // never swallow coroutine cancellation
     } catch (e: SocketTimeoutException) {
-        errorHandler(504, null)                        // was 401, which looked like "token expired"
+        errorHandler(HttpURLConnection.HTTP_GATEWAY_TIMEOUT, null)
     } catch (e: IOException) {
-        errorHandler(503, null)                        // no connectivity / DNS / connection reset
+        errorHandler(HttpURLConnection.HTTP_UNAVAILABLE, null)   // no connectivity / DNS / connection reset
     } catch (e: Exception) {
         Log.e(TAG, "Unexpected error", e)
-        errorHandler(0, null)
+        errorHandler(UNKNOWN_HTTP_CODE, null)
     }
 
     /** Override when an API returns errors in a different JSON shape (see GmailRemoteDataSource). */
@@ -41,29 +40,33 @@ abstract class BaseDataSource(protected val gson: Gson) {
         gson.fromJson(raw, ErrorResponse::class.java)
 
     private fun <T> errorHandler(httpCode: Int, rawErrorBody: String?): Result<T> {
-        val code = if (httpCode.requiresGenericError()) {
+        val code = if (httpCode in GENERIC_ERROR_CODES) {
             httpCode.toString()
         } else {
-            rawErrorBody.toErrorResponse().code ?: GENERAL
+            rawErrorBody.toErrorResponse().code ?: ErrorCodes.GENERAL
         }
         return Result.error(
             code = code,
-            title = GENERAL_ERROR_TITLE,
-            message = GENERAL_ERROR_BODY,
-            data = null,
+            title = ErrorMessages.GENERAL_TITLE,
+            message = ErrorMessages.GENERAL_BODY,
         )
     }
-
-    private fun Int.requiresGenericError() = this == 503 || this == 401 || this == 504
 
     private fun String?.toErrorResponse(): ErrorResponse =
         if (isNullOrBlank()) DEFAULT_ERROR
         else runCatching { parseError(this) }.getOrNull() ?: DEFAULT_ERROR
 
-    companion object {
-        private const val TAG = "BaseDataSource"
-        const val GENERAL_ERROR_TITLE = "General Error"
-        const val GENERAL_ERROR_BODY = "Please try again, service unreachable"
-        private val DEFAULT_ERROR = ErrorResponse(GENERAL, GENERAL_ERROR_TITLE, GENERAL_ERROR_BODY)
+    private companion object {
+        const val TAG = "BaseDataSource"
+        const val UNKNOWN_HTTP_CODE = 0
+
+        /** Reported by their HTTP code alone; any body is not trusted. */
+        val GENERIC_ERROR_CODES = setOf(
+            HttpURLConnection.HTTP_UNAUTHORIZED,
+            HttpURLConnection.HTTP_UNAVAILABLE,
+            HttpURLConnection.HTTP_GATEWAY_TIMEOUT,
+        )
+
+        val DEFAULT_ERROR = ErrorResponse(ErrorCodes.GENERAL, ErrorMessages.GENERAL_TITLE, ErrorMessages.GENERAL_BODY)
     }
 }

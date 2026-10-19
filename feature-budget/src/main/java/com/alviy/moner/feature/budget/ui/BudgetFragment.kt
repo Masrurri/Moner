@@ -1,78 +1,70 @@
 package com.alviy.moner.feature.budget.ui
 
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alviy.moner.core.common.base.BaseFragment
+import com.alviy.moner.core.common.ext.onDialogResult
+import com.alviy.moner.core.common.ext.showDialog
 import com.alviy.moner.core.common.ext.toIDR
-import com.alviy.moner.core.designsystem.WheelDialog
+import com.alviy.moner.core.designsystem.dialog.WheelDialog
+import com.alviy.moner.feature.budget.R
 import com.alviy.moner.feature.budget.databinding.FragmentBudgetBinding
 import com.alviy.moner.feature.budget.viewmodel.BudgetViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class BudgetFragment : BaseFragment<FragmentBudgetBinding>() {
+class BudgetFragment : BaseFragment<FragmentBudgetBinding>(FragmentBudgetBinding::inflate) {
 
     private val viewModel: BudgetViewModel by viewModels()
-    private lateinit var categoryBudgetAdapter: CategoryBudgetAdapter
-
-    override val injectedFragment = this
-
-    override fun initBinding(
-        inflater: LayoutInflater,
-        container: ViewGroup?
-    ) = FragmentBudgetBinding.inflate(inflater, container, false)
+    private var categoryBudgetAdapter: CategoryBudgetAdapter? = null
 
     override fun initView() {
-        categoryBudgetAdapter = CategoryBudgetAdapter { }
+        categoryBudgetAdapter = CategoryBudgetAdapter()
         binding.rvCategoryBudgets.layoutManager = LinearLayoutManager(requireContext())
         binding.rvCategoryBudgets.adapter = categoryBudgetAdapter
 
-        binding.btnSelectMonth.setOnClickListener {
-            val months = viewModel.monthYears.value
-            if (months.isEmpty()) return@setOnClickListener
-            val currentIndex = months.indexOf(viewModel.selectedMonthYear.value).coerceAtLeast(0)
-            WheelDialog.newInstance(months, currentIndex) { selected ->
-                viewModel.selectMonthYear(selected)
-            }.show(childFragmentManager, "select_month")
+        binding.btnSelectMonth.setOnClickListener { showMonthPicker() }
+        binding.btnAddCategoryBudget.setOnClickListener {
+            AddCategoryBudgetDialog.newInstance().showDialog(childFragmentManager, AddCategoryBudgetDialog.TAG)
         }
 
-        binding.btnAddCategoryBudget.setOnClickListener {
-            AddCategoryBudgetDialog.newInstance().show(childFragmentManager, "add_category_budget")
+        onDialogResult(REQUEST_MONTH) { result ->
+            WheelDialog.selectedItem(result)?.let(viewModel::selectMonthYear)
         }
     }
 
     override fun observeData() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    viewModel.selectedMonthYear.collect { monthYear ->
-                        binding.btnSelectMonth.text = monthYear.substringBefore(" ")
-                    }
-                }
-                launch {
-                    viewModel.budgetSummary.collect { summary ->
-                        binding.tvSpentAmount.text = summary.totalSpent.toIDR()
-                        binding.tvLimitAmount.text = "/ ${summary.totalLimit.toIDR()}"
-                        binding.progressRing.progress = summary.progressFraction
-                    }
-                }
-                launch {
-                    viewModel.categoryBudgets.collect { list ->
-                        categoryBudgetAdapter.submitList(list)
-                        binding.cvCategoryBudgets.visibility =
-                            if (list.isEmpty()) View.GONE else View.VISIBLE
-                        binding.cvEmptyState.visibility =
-                            if (list.isEmpty()) View.VISIBLE else View.GONE
-                    }
-                }
-            }
+        collect(viewModel.selectedMonthYear) { monthYear ->
+            binding.btnSelectMonth.text = monthYear.substringBefore(MONTH_YEAR_SEPARATOR)   // "March 2026" -> "March"
         }
+        collect(viewModel.budgetSummary) { summary ->
+            binding.tvSpentAmount.text = summary.totalSpent.toIDR()
+            binding.tvLimitAmount.text = getString(R.string.budget_limit_format, summary.totalLimit.toIDR())
+            binding.progressRing.progress = summary.progressFraction
+        }
+        collect(viewModel.categoryBudgets) { list ->
+            categoryBudgetAdapter?.submitList(list)
+            binding.cvCategoryBudgets.isVisible = list.isNotEmpty()
+            binding.cvEmptyState.isVisible = list.isEmpty()
+        }
+    }
+
+    override fun onDestroyView() {
+        categoryBudgetAdapter = null
+        super.onDestroyView()
+    }
+
+    private fun showMonthPicker() {
+        val months = viewModel.monthYears.value
+        if (months.isEmpty()) return
+        val currentIndex = months.indexOf(viewModel.selectedMonthYear.value).coerceAtLeast(0)
+        WheelDialog.newInstance(months, currentIndex, REQUEST_MONTH)
+            .showDialog(childFragmentManager, WheelDialog.TAG)
+    }
+
+    private companion object {
+        const val REQUEST_MONTH = "budget_request_month"
+        const val MONTH_YEAR_SEPARATOR = " "
     }
 }

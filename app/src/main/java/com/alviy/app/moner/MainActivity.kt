@@ -1,6 +1,5 @@
 package com.alviy.app.moner
 
-import android.os.Bundle
 import androidx.core.view.isVisible
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
@@ -12,64 +11,46 @@ import com.alviy.moner.core.common.ext.navigateTo
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : BaseActivity<ActivityMainBinding>(
-    ActivityMainBinding::inflate
-) {
+class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
+
     private lateinit var navController: NavController
     private var activeGraphId: Int? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initView()
-        observeData()
-    }
 
     override fun initView() {
         setupNavigation()
     }
 
-    override fun observeData() = Unit
-
     private fun setupNavigation() {
         navController = NavHostFragment.findNavController(binding.navHost.getFragment())
         binding.bottomNav.setupWithNavController(navController)
         binding.bottomNav.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.journal_bottom_nav -> navController.navigateTo(
-                    resId = R.id.journal_nav,
-                    popUpToId = R.id.journal_nav
-                )
-                R.id.budget_bottom_nav -> navController.navigateTo(
-                    resId = R.id.budget_nav,
-                    popUpToId = R.id.budget_nav
-                )
-                R.id.settings_bottom_nav -> navController.navigateTo(
-                    resId = R.id.settings_nav,
-                    popUpToId = R.id.settings_nav
-                )
-                else -> return@setOnItemSelectedListener false
-            }
+            val graphId = TABS.entries.firstOrNull { it.value == item.itemId }?.key
+                ?: return@setOnItemSelectedListener false
+            navController.navigateTo(resId = graphId, popUpToId = graphId)
             true
         }
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            observeActiveBottomNav(destination)
+            syncBottomNav(destination)
         }
     }
 
-    private fun observeActiveBottomNav(destination: NavDestination) {
+    /** Highlights the tab owning [destination]; hides the bar on screens outside the tabs. */
+    private fun syncBottomNav(destination: NavDestination) {
         val graphId = destination.parent?.id ?: return
         if (graphId == activeGraphId) return
         activeGraphId = graphId
 
-        val itemId = when (graphId) {
-            R.id.journal_nav -> R.id.journal_bottom_nav
-            R.id.budget_nav -> R.id.budget_bottom_nav
-            R.id.settings_nav -> R.id.settings_bottom_nav
-            else -> null
-        }
-
+        val itemId = TABS[graphId]
         binding.bottomNav.isVisible = itemId != null
         if (itemId != null) binding.bottomNav.menu.findItem(itemId)?.isChecked = true
     }
 
+    private companion object {
+        /** Feature graph id -> bottom nav item id. Add a row here to add a tab. */
+        val TABS = mapOf(
+            R.id.home_nav to R.id.home_bottom_nav,
+            R.id.budget_nav to R.id.budget_bottom_nav,
+            R.id.settings_nav to R.id.settings_bottom_nav,
+        )
+    }
 }

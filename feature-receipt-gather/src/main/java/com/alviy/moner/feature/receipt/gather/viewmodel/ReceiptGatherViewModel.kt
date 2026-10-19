@@ -5,7 +5,4 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class ReceiptGatherViewModel @Inject constructor(
-) : BaseViewModel() {
-
-}
+class ReceiptGatherViewModel @Inject constructor() : BaseViewModel()

@@ -6,26 +6,28 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_white_rounded"
-    android:padding="16dp">
+    android:padding="@dimen/space_16">
 
+    <!-- Highlight behind the centered (selected) row -->
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        app:layout_constraintStart_toStartOf="@id/rv_wheel"
-        app:layout_constraintEnd_toEndOf="@id/rv_wheel"
-        app:layout_constraintTop_toTopOf="@id/rv_wheel"
+        android:layout_height="@dimen/size_60"
+        android:contentDescription="@null"
+        android:src="@drawable/bg_item_wheel_selected"
         app:layout_constraintBottom_toBottomOf="@id/rv_wheel"
-        android:src="@drawable/bg_item_wheel_selected"/>
+        app:layout_constraintEnd_toEndOf="@id/rv_wheel"
+        app:layout_constraintStart_toStartOf="@id/rv_wheel"
+        app:layout_constraintTop_toTopOf="@id/rv_wheel" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_wheel"
-        android:layout_width="300dp"
-        android:layout_height="200dp"
+        android:layout_width="@dimen/size_300"
+        android:layout_height="@dimen/size_200"
+        android:layout_marginVertical="@dimen/space_20"
         android:clipToPadding="false"
         android:overScrollMode="never"
-        android:paddingTop="70dp"
-        android:paddingBottom="70dp"
-        android:layout_marginVertical="20dp"
+        android:paddingTop="@dimen/space_70"
+        android:paddingBottom="@dimen/space_70"
         android:scrollbars="none"
         app:layout_constraintBottom_toTopOf="@id/btn_select"
         app:layout_constraintEnd_toEndOf="parent"
@@ -36,25 +38,15 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_select"
+        style="@style/Widget.Moner.Button.Dialog.Inverse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="8dp"
-        android:layout_marginBottom="16dp"
-        android:backgroundTint="@color/white"
-        android:elevation="0dp"
-        android:gravity="center"
-        android:paddingHorizontal="14dp"
-        android:paddingVertical="0dp"
-        android:text="Select"
-        android:textAppearance="@style/TextAppearance.Moner.Bold"
-        android:textColor="@color/black"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginHorizontal="@dimen/space_8"
+        android:layout_marginBottom="@dimen/space_16"
+        android:text="@string/common_select"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="1"
-        app:rippleColor="@color/colorRipple"
-        app:shapeAppearance="@style/Shape.RoundedButton" />
-
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

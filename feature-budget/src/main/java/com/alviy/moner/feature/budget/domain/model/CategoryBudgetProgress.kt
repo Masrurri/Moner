@@ -1,7 +1,6 @@
 package com.alviy.moner.feature.budget.domain.model
 
 import java.math.BigDecimal
-import java.math.RoundingMode
 
 data class CategoryBudgetProgress(
     val categoryName: String,
@@ -14,7 +13,5 @@ data class CategoryBudgetProgress(
 
     val overageAmount: BigDecimal get() = (spent - limit).coerceAtLeast(BigDecimal.ZERO)
 
-    val progressFraction: Float
-        get() = if (limit <= BigDecimal.ZERO) 0f
-        else (spent.divide(limit, 4, RoundingMode.HALF_UP).toFloat()).coerceIn(0f, 1f)
+    val progressFraction: Float get() = progressFraction(spent, limit)
 }

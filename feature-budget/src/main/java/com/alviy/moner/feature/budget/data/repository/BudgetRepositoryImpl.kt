@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.map
 import java.math.BigDecimal
 import java.time.DayOfWeek
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.temporal.TemporalAdjusters
 import javax.inject.Inject
 
@@ -25,24 +26,11 @@ class BudgetRepositoryImpl @Inject constructor(
     override fun getCategoryBudgetsWithSpend(monthYear: String): Flow<List<CategoryBudgetProgress>> =
         categoryBudgetDao.getCategoryBudgets(monthYear).map { budgets ->
             budgets.map { budget ->
-                val period = runCatching { BudgetPeriod.valueOf(budget.period) }
-                    .getOrDefault(BudgetPeriod.MONTHLY)
-
-                val spent = when (period) {
-                    BudgetPeriod.MONTHLY ->
-                        categorySummaryDao.getSpendForCategoryInMonth(budget.categoryName, monthYear)
-                            ?: BigDecimal.ZERO
-
-                    BudgetPeriod.WEEKLY -> {
-                        val (start, end) = currentWeekRange()
-                        transactionDao.getSpendForCategoryBetween(budget.categoryName, start, end)
-                    }
-                }
-
+                val period = BudgetPeriod.fromStored(budget.period)
                 CategoryBudgetProgress(
                     categoryName = budget.categoryName,
                     limit = budget.monthlyLimit,
-                    spent = spent,
+                    spent = spentFor(budget.categoryName, monthYear, period),
                     period = period,
                     notifyAt80Percent = budget.notifyAt80Percent
                 )
@@ -52,8 +40,8 @@ class BudgetRepositoryImpl @Inject constructor(
     override fun getBudgetSummary(monthYear: String): Flow<BudgetSummary> =
         getCategoryBudgetsWithSpend(monthYear).map { progress ->
             BudgetSummary(
-                totalLimit = progress.fold(BigDecimal.ZERO) { acc, item -> acc + item.limit },
-                totalSpent = progress.fold(BigDecimal.ZERO) { acc, item -> acc + item.spent }
+                totalLimit = progress.sumOf { it.limit },
+                totalSpent = progress.sumOf { it.spent }
             )
         }
 
@@ -79,12 +67,26 @@ class BudgetRepositoryImpl @Inject constructor(
     override suspend fun deleteCategoryBudget(monthYear: String, categoryName: String) =
         categoryBudgetDao.deleteCategoryBudget(categoryName, monthYear)
 
+    private suspend fun spentFor(categoryName: String, monthYear: String, period: BudgetPeriod): BigDecimal =
+        when (period) {
+            BudgetPeriod.MONTHLY ->
+                categorySummaryDao.getSpendForCategoryInMonth(categoryName, monthYear) ?: BigDecimal.ZERO
+
+            BudgetPeriod.WEEKLY -> {
+                val (start, end) = currentWeekRange()
+                transactionDao.getSpendForCategoryBetween(categoryName, start, end)
+            }
+        }
+
+    /** Monday 00:00 to Sunday 23:59:59 of the current week, as ISO strings comparable with stored dates. */
     private fun currentWeekRange(): Pair<String, String> {
         val now = LocalDateTime.now()
-        val start = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
-            .toLocalDate().atStartOfDay()
-        val end = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
-            .toLocalDate().atTime(23, 59, 59)
+        val start = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).toLocalDate().atStartOfDay()
+        val end = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY)).toLocalDate().atTime(END_OF_DAY)
         return start.toString() to end.toString()
+    }
+
+    private companion object {
+        val END_OF_DAY: LocalTime = LocalTime.of(23, 59, 59)
     }
 }

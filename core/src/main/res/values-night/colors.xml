@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Dark counterparts of the themed tokens in values/colors.xml. Fixed tokens are not repeated here. -->
+
     <!-- Base -->
     <color name="black">#F5F5F5</color>
     <color name="white">#111111</color>
@@ -12,21 +14,20 @@
     <color name="color_stroke_hairline">#2A2A2A</color>
     <color name="color_shadow">#66000000</color>
     <color name="color_ripple">#33FFFFFF</color>
+    <color name="color_input_bg">#242424</color>
 
     <!-- Text -->
     <color name="color_text_primary">#F5F5F5</color>
     <color name="color_text_secondary">#9A9A9A</color>
     <color name="color_text_tertiary">#6E6E6E</color>
     <color name="color_text_on_ink">#F5F5F5</color>
-    <color name="thin_text">#6E6E6E</color>
 
     <!-- Accent (neon stays constant across themes; on-neon content stays dark for contrast) -->
     <color name="color_accent_neon">#D6FF3F</color>
     <color name="color_on_neon">#111111</color>
-    <color name="color_accent_ink">#111111</color>
     <color name="color_danger">#FF6B5E</color>
 
-    <!-- Buttons / FAB (flip with theme) -->
+    <!-- Buttons (flip with theme) -->
     <color name="color_button_primary_bg">#F5F5F5</color>
     <color name="color_button_primary_bg_pressed">#D8D8D8</color>
     <color name="color_button_primary_text">#111111</color>
@@ -34,19 +35,8 @@
     <!-- Pills / chips -->
     <color name="color_pill_bg_unselected">#242424</color>
     <color name="color_pill_text_unselected">#F5F5F5</color>
-    <color name="color_pill_stroke_selected">#8A9D00</color>
 
-    <!-- Bottom nav: active state uses the neon badge, content stays ink-dark for contrast -->
-    <color name="color_nav_bg">#000000</color>
+    <!-- Bottom nav: active content stays ink-dark for contrast -->
     <color name="color_nav_icon_inactive">#6E6E6E</color>
-    <color name="color_nav_active_pill_bg">#D6FF3F</color>
     <color name="color_nav_active_content">#111111</color>
-
-    <!-- Legacy aliases kept for widgets not yet migrated -->
-    <color name="lightGrey">#242424</color>
-    <color name="colorPrimary">#F5F5F5</color>
-    <color name="colorBtnPressed">#D8D8D8</color>
-    <color name="colorRipple">#33FFFFFF</color>
-    <color name="strokeLightPills">#8A9D00</color>
-    <color name="shadow">#66000000</color>
 </resources>

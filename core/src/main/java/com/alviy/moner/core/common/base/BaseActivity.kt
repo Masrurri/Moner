@@ -5,19 +5,23 @@ import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
 
+/**
+ * Inflates [VB] and calls [initView] then [observeData] exactly once per onCreate.
+ * Subclasses should not call them again.
+ */
 abstract class BaseActivity<VB : ViewBinding>(
-    private val bindingInflater: (layoutInflater: LayoutInflater) -> VB
+    private val bindingInflater: (LayoutInflater) -> VB
 ) : AppCompatActivity() {
 
-    private lateinit var _binding: VB
-    protected val binding get() = _binding
+    protected lateinit var binding: VB
+        private set
 
-    abstract fun initView()
-    abstract fun observeData()
+    protected abstract fun initView()
+    protected open fun observeData() = Unit
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = bindingInflater.invoke(layoutInflater)
+        binding = bindingInflater(layoutInflater)
         setContentView(binding.root)
 
         initView()

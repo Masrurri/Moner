@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Home-only styles. Shared ones live in :core values/styles.xml. -->
+
+    <!-- Small stat cards in the header ("Money out today" / "this week") -->
+    <style name="Widget.Moner.Home.StatIcon" parent="">
+        <item name="android:layout_width">@dimen/size_16</item>
+        <item name="android:layout_height">@dimen/size_16</item>
+        <item name="android:layout_marginStart">@dimen/space_12</item>
+        <item name="android:src">@drawable/ic_export</item>
+        <item name="android:contentDescription">@null</item>
+    </style>
+
+    <style name="Widget.Moner.Home.StatLabel" parent="">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/space_10</item>
+        <item name="android:layout_marginTop">@dimen/space_8</item>
+        <item name="android:layout_marginEnd">@dimen/space_12</item>
+        <item name="android:textAppearance">@style/TextAppearance.Moner.Regular</item>
+        <item name="android:textColor">@color/color_text_secondary</item>
+        <item name="android:textSize">@dimen/text_10</item>
+    </style>
+
+    <style name="Widget.Moner.Home.StatValue" parent="">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/space_10</item>
+        <item name="android:layout_marginTop">@dimen/space_2</item>
+        <item name="android:layout_marginEnd">@dimen/space_12</item>
+        <item name="android:layout_marginBottom">@dimen/space_8</item>
+        <item name="android:textAppearance">@style/TextAppearance.Moner.Bold</item>
+        <item name="android:textColor">@color/color_fixed_text_dark</item>
+        <item name="android:textSize">@dimen/text_14</item>
+    </style>
+</resources>

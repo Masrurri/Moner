@@ -1,7 +1,14 @@
 [versions]
-# Project Configuration
+# Project configuration (consumed by build-logic convention plugins)
+compileSdk = "34"
+targetSdk = "34"
+minSdk = "31"
+jvmTarget = "17"
+
+# Build tooling
 agp = "8.3.2"
 kotlin = "1.9.24"
+ksp = "1.9.24-1.0.20"
 
 # AndroidX Core & UI
 coreKtx = "1.12.0"
@@ -20,31 +27,33 @@ coroutines = "1.7.3"
 retrofit = "2.9.0"
 gson = "2.10.1"
 okhttp = "4.12.0"
-moshi = "1.15.2"
 
 # Dependency Injection
 hilt = "2.51.1"
 
+# Room Database
+room = "2.6.1"
+
+# Google
+google-auth = "22.0.0"
+
 # Testing
 junit = "4.13.2"
 junitVersion = "1.3.0"
+androidxTestRunner = "1.7.0"
 espressoCore = "3.7.0"
 
-# Room Database
-room = "2.6.1"
-ksp = "1.9.24-1.0.20"
-
-#Google Oauth
-google-auth = "22.0.0"
-navigationFragmentKtx = "2.10.2"
-navigationUiKtx = "2.10.2"
-
 [libraries]
-# Dagger
+# Build tooling (build-logic only)
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
+
+# Dagger / Hilt
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 
-# Google Oauth
+# Google
 google-play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "google-auth" }
 
 # Networking
@@ -53,7 +62,6 @@ retrofit-gson = { group = "com.squareup.retrofit2", name = "converter-gson", ver
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 okhttp-core = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 okhttp-logging = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp" }
-moshi = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshi" }
 
 # AndroidX Core & UI
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -72,27 +80,35 @@ androidx-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle
 androidx-lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 
-# Testing
-junit = { group = "junit", name = "junit", version.ref = "junit" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
-androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
-
 # Room Database
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigationUiKtx" }
+room-testing = { module = "androidx.room:room-testing", version.ref = "room" }
+
+# Testing
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidxTestRunner" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 
 [bundles]
-networking = ["retrofit", "retrofit-gson"]
-navigation = ["androidx-navigation-fragment-ktx", "androidx-fragment-ktx"]
+networking = ["retrofit", "retrofit-gson", "gson", "okhttp-core", "okhttp-logging"]
+navigation = ["androidx-navigation-fragment-ktx", "androidx-navigation-ui-ktx", "androidx-fragment-ktx"]
 lifecycle = ["androidx-lifecycle-viewmodel", "androidx-lifecycle-runtime"]
+ui = ["androidx-core-ktx", "androidx-appcompat", "google-material", "androidx-constraintlayout"]
+room = ["room-runtime", "room-ktx"]
 
 [plugins]
-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-androidx-navigation-safeargs = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigation" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+
+# Convention plugins (defined in build-logic)
+moner-android-application = { id = "moner.android.application" }
+moner-android-library = { id = "moner.android.library" }
+moner-android-hilt = { id = "moner.android.hilt" }
+moner-android-room = { id = "moner.android.room" }
+moner-android-feature = { id = "moner.android.feature" }

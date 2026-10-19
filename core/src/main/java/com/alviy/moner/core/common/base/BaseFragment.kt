@@ -11,12 +11,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.withStarted
 import androidx.navigation.NavController
-import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
-import com.alviy.moner.core.common.entity.ErrorCodes
-import com.alviy.moner.core.common.entity.Result
+import com.alviy.moner.core.common.ext.collectWhile
+import com.alviy.moner.core.common.result.ErrorCodes
+import com.alviy.moner.core.common.result.ErrorMessages
+import com.alviy.moner.core.common.result.Result
 import com.alviy.moner.core.navigation.AppNavigator
 import com.alviy.moner.core.navigation.NavCommand
 import kotlinx.coroutines.Job
@@ -28,86 +29,66 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
 
-abstract class BaseFragment<VB : ViewBinding> : Fragment() {
+/**
+ * Base screen: owns the view binding (cleared in onDestroyView so views never leak),
+ * cross-module navigation and lifecycle-safe flow collection.
+ *
+ *   class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate)
+ */
+abstract class BaseFragment<VB : ViewBinding>(
+    private val bindingInflater: Inflate<VB>
+) : Fragment() {
 
-    protected lateinit var binding: VB
-    abstract val injectedFragment: Fragment
-    private var navController: NavController? = null
+    private var _binding: VB? = null
+
+    /** Valid between onCreateView and onDestroyView only. */
+    protected val binding: VB
+        get() = checkNotNull(_binding) { "Binding accessed outside the view lifecycle of ${javaClass.simpleName}" }
 
     @Inject lateinit var navigatorFactory: AppNavigator.Factory
 
+    /** Navigates across feature graphs through the app module, which knows every graph. */
     protected val appNav: AppNavigator get() = navigatorFactory.create(rootNavController())
 
-    abstract fun initView()
-    abstract fun observeData()
-
-    override fun onResume() {
-        super.onResume()
-        val breadCrumb = buildString {
-            navController?.backQueue?.toList()?.forEachIndexed { index, navBackStackEntry ->
-                val destination = navBackStackEntry.destination
-                if (destination is FragmentNavigator.Destination) {
-                    val dName = destination.label ?: destination.id.toString()
-                    if (index>0) append(" > ")
-                    append(dName)
-                }
-            }
-        }
-        Log.d("Bread", breadCrumb)
-    }
-
-    protected abstract fun initBinding(
-        inflater: LayoutInflater,
-        container: ViewGroup?
-    ): VB
+    protected abstract fun initView()
+    protected open fun observeData() = Unit
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = initBinding(inflater, container)
-        return binding.root
-    }
+    ): View = bindingInflater(inflater, container, false).also { _binding = it }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
         observeData()
-        activity?.runOnUiThread {
-            navController = NavHostFragment.findNavController(injectedFragment)
-        }
     }
 
-    private fun rootNavController(): NavController {
-        var rootHost: NavHostFragment? = null
-        var current: Fragment? = this
-        while (current != null) {
-            if (current is NavHostFragment) rootHost = current
-            current = current.parentFragment
-        }
-        return rootHost?.navController ?: findNavController()
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
+
+    /** Collects [flow] while the view is STARTED; the usual way to render a ViewModel StateFlow. */
+    protected fun <T> collect(flow: Flow<T>, action: suspend (T) -> Unit): Job =
+        flow.collectWhile(viewLifecycleOwner, action = action)
 
     protected fun observeNavigation(viewModel: BaseViewModel) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.navEvents.collect { command ->
-                    val navController = findNavController()
-                    when (command) {
-                        is NavCommand.GoTo -> navController.navigate(command.directions)
-                        is NavCommand.Back -> navController.popBackStack()
-                        is NavCommand.BackTo -> navController.popBackStack(command.destinationId, command.inclusive)
-                    }
-                }
+        viewModel.navEvents.collectWhile(viewLifecycleOwner) { command ->
+            val navController = findNavController()
+            when (command) {
+                is NavCommand.GoTo -> navController.navigate(command.directions)
+                is NavCommand.Back -> navController.popBackStack()
+                is NavCommand.BackTo -> navController.popBackStack(command.destinationId, command.inclusive)
             }
         }
     }
 
     /**
      * Observe a *state* (e.g. a ViewModel StateFlow<Result<T>>).
-     * Collects only while the view is at least [minState]; the latest value is re-delivered
-     * every time the view becomes visible again, which is what you want for rendering state.
+     * Collects only while the view is at least [minState]; a value already handled is not
+     * re-delivered when the view becomes visible again.
      */
     protected fun <T> observeStateFlow(
         flow: StateFlow<Result<T>?>,
@@ -132,8 +113,7 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
     /**
      * Run a *one-shot* cold flow (e.g. repository.getX()) safely and return its [Job] so the
      * caller can cancel it.
-     *  - runs once: unlike observeStateFlow it is NOT restarted when the view re-enters STARTED,
-     *    so the network call isn't repeated;
+     *  - runs once: unlike observeStateFlow it is NOT restarted when the view re-enters STARTED;
      *  - exceptions thrown by the flow become an ERROR result instead of crashing;
      *  - callbacks are deferred until the view is STARTED (safe for navigation/dialogs);
      *  - cancelled automatically with the view.
@@ -149,7 +129,7 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
             flow
                 .catch { e ->
                     if (e is CancellationException) throw e
-                    emit(Result.error(ErrorCodes.GENERAL, "General Error", e.message))
+                    emit(Result.error(ErrorCodes.GENERAL, ErrorMessages.GENERAL_TITLE, e.message))
                 }
                 .collect { result ->
                     owner.lifecycle.withStarted { dispatch(result, onLoading, onError, onSuccess) }
@@ -157,7 +137,14 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
         }
     }
 
-    // ---------------------------------------------------------------- internals
+    /** Default for results without an onLoading callback. Override to show a shared loader. */
+    protected open fun handleLoading() = Unit
+
+    /** Default for results without an onError callback. Override to show a shared error UI. */
+    protected open fun handleError(result: Result<*>) {
+        Log.e(TAG, "code: ${result.code}, title: ${result.title}, message: ${result.message}")
+    }
+
     @Suppress("UNCHECKED_CAST")
     private fun <T> dispatch(
         result: Result<T>,
@@ -166,17 +153,24 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
         onSuccess: (T) -> Unit,
     ) {
         when (result.status) {
-            Result.Status.LOADING -> if (onLoading != null) onLoading() else handleLoading()
+            Result.Status.LOADING -> onLoading?.invoke() ?: handleLoading()
             Result.Status.SUCCESS -> onSuccess(result.data as T)
-            Result.Status.ERROR -> if (onError != null) onError(result) else handleError(result.code, result.title, result.message)
+            Result.Status.ERROR -> onError?.invoke(result) ?: handleError(result)
         }
     }
 
-    private fun handleLoading() {
-
+    /** The outermost NavHostFragment's controller, which owns the app-level graph. */
+    private fun rootNavController(): NavController {
+        var rootHost: NavHostFragment? = null
+        var current: Fragment? = this
+        while (current != null) {
+            if (current is NavHostFragment) rootHost = current
+            current = current.parentFragment
+        }
+        return rootHost?.navController ?: findNavController()
     }
 
-    private fun handleError(code: String?, title: String?, message: String?) {
-        Log.e("Dispatch-Error", "code: $code, title: $title, message: $message")
+    private companion object {
+        const val TAG = "BaseFragment"
     }
 }

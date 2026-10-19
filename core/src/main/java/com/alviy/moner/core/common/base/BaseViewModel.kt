@@ -4,7 +4,6 @@ import androidx.annotation.IdRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDirections
-import com.alviy.moner.core.common.entity.Result
 import com.alviy.moner.core.navigation.NavCommand
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -12,6 +11,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
@@ -50,18 +52,24 @@ open class BaseViewModel : ViewModel() {
     }
 
     /**
-     * Collects a repository flow into this state holder, cancelling any previous load with the same key.
-     * [onEach] runs for every emitted result before the state is updated (side effects only).
+     * Collects this flow (Room DAO, repository, or Retrofit-backed [Result] flow) into [target] in viewModelScope.
+     * Calling it again with the same [key] cancels the previous collection, so re-observing with new
+     * arguments (e.g. another month) replaces the old stream — no flatMapLatest / stateIn needed.
+     * Upstream errors go to [onError] instead of crashing the scope; [onEach] runs after [target] is updated.
      */
-    protected fun <T> MutableStateFlow<in Result<T>>.loadFrom(
-        flow: Flow<Result<T>>,
+    protected fun <T> Flow<T>.collectFlow(
+        target: MutableStateFlow<in T>,
         key: String = DEFAULT_KEY,
-        onEach: (Result<T>) -> Unit = {},
+        onError: (Throwable) -> Unit = ::onError,
+        onEach: suspend (T) -> Unit = {},
     ): Job = launchSingle(key) {
-        flow.collect { result ->
-            onEach(result)
-            this@loadFrom.value = result
-        }
+        this@collectFlow
+            .onEach { value ->
+                target.value = value
+                onEach(value)
+            }
+            .catch { onError(it) }
+            .collect()
     }
 
     protected fun cancelJob(key: String = DEFAULT_KEY) {

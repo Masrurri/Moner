@@ -1,6 +1,5 @@
 package com.alviy.moner.feature.journal.viewmodel
 
-import androidx.lifecycle.viewModelScope
 import com.alviy.moner.api.gmail.data.repository.GmailRepository
 import com.alviy.moner.api.gmail.model.ReceiptTransaction
 import com.alviy.moner.core.common.base.BaseViewModel
@@ -14,18 +13,11 @@ import com.alviy.moner.core.domain.repository.ExpenseRepository
 import com.alviy.moner.core.network.GoogleAuthTokenHolder
 import com.alviy.moner.feature.journal.ui.model.JournalRow
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -33,7 +25,6 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 import javax.inject.Inject
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class JournalViewModel @Inject constructor(
     private val expenseRepository: ExpenseRepository,
@@ -44,37 +35,28 @@ class JournalViewModel @Inject constructor(
     private val _selectedMonthYear = MutableStateFlow<String?>(null)
     val selectedMonthYear: StateFlow<String?> = _selectedMonthYear.asStateFlow()
 
-    val monthYears: StateFlow<List<String>> = expenseRepository.getMonthYears()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    private val _monthYears = MutableStateFlow<List<String>>(emptyList())
+    val monthYears: StateFlow<List<String>> = _monthYears.asStateFlow()
 
-    val profile: StateFlow<Profile> = expenseRepository.getProfile()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), Profile())
+    private val _profile = MutableStateFlow(Profile())
+    val profile: StateFlow<Profile> = _profile.asStateFlow()
 
-    val availableCategories: StateFlow<List<String>> = _selectedMonthYear
-        .flatMapLatest { monthYear ->
-            if (monthYear == null) flowOf(emptyList()) else expenseRepository.getCategoryNamesForMonth(monthYear)
-        }
-        .map { mergeWithDefaultCategories(it) }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, mergeWithDefaultCategories(emptyList()))
+    private val _availableCategories = MutableStateFlow(mergeWithDefaultCategories(emptyList()))
+    val availableCategories: StateFlow<List<String>> = _availableCategories.asStateFlow()
 
     private val _selectedCategoryFilter = MutableStateFlow(ALL_CATEGORIES)
     val selectedCategoryFilter: StateFlow<String> = _selectedCategoryFilter.asStateFlow()
 
-    private val currentMonthExpenseJournal: StateFlow<List<ExpenseItem>> = _selectedMonthYear
-        .flatMapLatest { monthYear ->
-            if (monthYear == null) flowOf(emptyList()) else expenseRepository.getExpenseJournal(monthYear)
-        }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    private val currentMonthExpenseJournal = MutableStateFlow<List<ExpenseItem>>(emptyList())
 
-    val categoryFilterOptions: StateFlow<List<String>> = currentMonthExpenseJournal
-        .map { items -> listOf(ALL_CATEGORIES) + items.map { it.categoryName }.distinct().sorted() }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), listOf(ALL_CATEGORIES))
+    private val _categoryFilterOptions = MutableStateFlow(listOf(ALL_CATEGORIES))
+    val categoryFilterOptions: StateFlow<List<String>> = _categoryFilterOptions.asStateFlow()
 
-    val expenseSummary: StateFlow<ExpenseSummary> = _selectedMonthYear
-        .flatMapLatest { monthYear ->
-            if (monthYear == null) flowOf(ExpenseSummary()) else expenseRepository.getExpenseSummary(monthYear)
-        }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ExpenseSummary())
+    private val _journalRows = MutableStateFlow<List<JournalRow>>(emptyList())
+    val journalRows: StateFlow<List<JournalRow>> = _journalRows.asStateFlow()
+
+    private val _expenseSummary = MutableStateFlow(ExpenseSummary())
+    val expenseSummary: StateFlow<ExpenseSummary> = _expenseSummary.asStateFlow()
 
     private val _monthOverMonthDeltaPercent = MutableStateFlow<Double?>(null)
     val monthOverMonthDeltaPercent: StateFlow<Double?> = _monthOverMonthDeltaPercent.asStateFlow()
@@ -82,6 +64,15 @@ class JournalViewModel @Inject constructor(
     // null = nothing requested yet; the fragment ignores it, so no callback fires until a fetch starts.
     private val _receipts = MutableStateFlow<Result<List<ReceiptTransaction>>?>(null)
     val receipts = _receipts.asStateFlow()
+
+    init {
+        expenseRepository.getProfile().collectFlow(_profile, KEY_PROFILE)
+        expenseRepository.getMonthYears().collectFlow(_monthYears, KEY_MONTH_YEARS) { months ->
+            if (_selectedMonthYear.value == null && months.isNotEmpty()) {
+                selectMonthYear(months.first())
+            }
+        }
+    }
 
     fun onAuthorized(accessToken: String) {
         googleAuthTokens.accessToken = accessToken
@@ -93,36 +84,35 @@ class JournalViewModel @Inject constructor(
     }
 
     fun load() {
-        _receipts.loadFrom(gmailRepository.getGmailReceipts()) { result ->
+        gmailRepository.getGmailReceipts().collectFlow(_receipts, KEY_RECEIPTS) { result ->
             if (result.code == ErrorCodes.UNAUTHORIZED) googleAuthTokens.accessToken = null // expired
-        }
-    }
-
-    val journalRows: StateFlow<List<JournalRow>> = combine(
-        currentMonthExpenseJournal,
-        _selectedCategoryFilter
-    ) { items, filter ->
-        buildRows(items, filter)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
-
-    init {
-        viewModelScope.launch {
-            monthYears.collect { months ->
-                if (_selectedMonthYear.value == null && months.isNotEmpty()) {
-                    selectMonthYear(months.first())
-                }
-            }
         }
     }
 
     fun selectMonthYear(monthYear: String) {
         _selectedMonthYear.value = monthYear
         _selectedCategoryFilter.value = ALL_CATEGORIES
+
+        // Same keys on every call: switching month cancels the previous month's DAO observers.
+        expenseRepository.getExpenseJournal(monthYear).collectFlow(currentMonthExpenseJournal, KEY_JOURNAL) { items ->
+            _categoryFilterOptions.value = listOf(ALL_CATEGORIES) + items.map { it.categoryName }.distinct().sorted()
+            refreshJournalRows()
+        }
+        expenseRepository.getCategoryNamesForMonth(monthYear)
+            .map { mergeWithDefaultCategories(it) }
+            .collectFlow(_availableCategories, KEY_CATEGORIES)
+        expenseRepository.getExpenseSummary(monthYear).collectFlow(_expenseSummary, KEY_SUMMARY)
+
         recomputeMonthOverMonthDelta(monthYear)
     }
 
     fun selectCategoryFilter(category: String) {
         _selectedCategoryFilter.value = category
+        refreshJournalRows()
+    }
+
+    private fun refreshJournalRows() {
+        _journalRows.value = buildRows(currentMonthExpenseJournal.value, _selectedCategoryFilter.value)
     }
 
     fun addCategory(name: String) = launchSafely {
@@ -203,5 +193,12 @@ class JournalViewModel @Inject constructor(
 
     companion object {
         const val ALL_CATEGORIES = "All"
+
+        private const val KEY_PROFILE = "profile"
+        private const val KEY_MONTH_YEARS = "monthYears"
+        private const val KEY_JOURNAL = "journal"
+        private const val KEY_CATEGORIES = "categories"
+        private const val KEY_SUMMARY = "summary"
+        private const val KEY_RECEIPTS = "receipts"
     }
 }

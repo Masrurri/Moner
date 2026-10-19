@@ -18,10 +18,6 @@ interface SpendRepository {
     /** Months that already have categories, newest first. */
     fun getMonthYears(): Flow<List<String>>
 
-    fun getCategoryNamesForMonth(monthYear: String): Flow<List<String>>
-
-    suspend fun insertCategory(name: String, monthYear: String? = null)
-
     suspend fun addSpend(
         categoryName: String,
         date: String,

@@ -20,12 +20,10 @@ class AddSpendDialog : FullScreenSheetDialogFragment() {
     private var selectedSource: String? = null
     private var selectedDate: LocalDateTime = LocalDateTime.now()
 
-    private var categories: List<String> = emptyList()
     private lateinit var categoryAdapter: SourceSpendAdapter
     private lateinit var sourceAdapter: SourceSpendAdapter
 
     var onSave: ((NewSpendInput) -> Unit)? = null
-    var onNewCategoryRequested: ((onCreated: (String) -> Unit) -> Unit)? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,7 +41,7 @@ class AddSpendDialog : FullScreenSheetDialogFragment() {
         binding.rvCategory.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.rvCategory.adapter = categoryAdapter
-        categoryAdapter.submitList(categories)
+        categoryAdapter.submitList(SpendCategory.labels)
 
         sourceAdapter = SourceSpendAdapter { selectedSource = it }
         sourceAdapter.submitList(PAYMENT_SOURCES)
@@ -54,15 +52,6 @@ class AddSpendDialog : FullScreenSheetDialogFragment() {
         updateDateLabel()
 
         binding.rowDate.setOnClickListener { showDatePicker() }
-
-        binding.btnNewCategory.setOnClickListener {
-            onNewCategoryRequested?.invoke { created ->
-                categories = categories + created
-                categoryAdapter.submitList(categories)
-                categoryAdapter.selectedCategory = created
-                selectedCategory = created
-            }
-        }
 
         binding.btnSaveSpend.setOnClickListener {
             val category = selectedCategory
@@ -105,11 +94,6 @@ class AddSpendDialog : FullScreenSheetDialogFragment() {
         Toast.makeText(requireContext(), messageRes, Toast.LENGTH_SHORT).show()
     }
 
-    fun setAvailableCategories(categories: List<String>) {
-        this.categories = categories
-        if (::categoryAdapter.isInitialized) categoryAdapter.submitList(categories)
-    }
-
     private fun showDatePicker() {
         val picker = MaterialDatePicker.Builder.datePicker()
             .setSelection(selectedDate.toLocalDate().atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli())
@@ -142,9 +126,7 @@ class AddSpendDialog : FullScreenSheetDialogFragment() {
     companion object {
         private val PAYMENT_SOURCES = listOf("Cash", "QRIS", "Debit")
 
-        fun newInstance(availableCategories: List<String>) = AddSpendDialog().apply {
-            categories = availableCategories
-        }
+        fun newInstance() = AddSpendDialog()
 
         data class NewSpendInput(
             val categoryName: String,

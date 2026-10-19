@@ -5,16 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alviy.moner.core.designsystem.FullScreenSheetDialogFragment
 import com.alviy.moner.core.designsystem.SourceSpendAdapter
-import com.alviy.moner.core.designsystem.TextFieldDialog
+import com.alviy.moner.core.designsystem.SpendCategory
 import com.alviy.moner.feature.budget.databinding.DialogAddCategoryBudgetBinding
 import com.alviy.moner.feature.budget.domain.model.BudgetPeriod
 import com.alviy.moner.feature.budget.viewmodel.BudgetViewModel
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 
 class AddCategoryBudgetDialog : FullScreenSheetDialogFragment() {
 
@@ -40,17 +37,7 @@ class AddCategoryBudgetDialog : FullScreenSheetDialogFragment() {
         binding.rvCategory.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.rvCategory.adapter = categoryAdapter
-
-        viewModel.availableCategories
-            .onEach { categoryAdapter.submitList(it) }
-            .launchIn(viewLifecycleOwner.lifecycleScope)
-
-        binding.btnNewCategory.setOnClickListener {
-            TextFieldDialog.newInstance { newCategory ->
-                viewModel.addCategory(newCategory)
-                categoryAdapter.selectedCategory = newCategory
-            }.show(childFragmentManager, "new_category")
-        }
+        categoryAdapter.submitList(SpendCategory.labels)
 
         binding.btnSaveBudget.setOnClickListener {
             val category = categoryAdapter.selectedCategory

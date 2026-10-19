@@ -15,6 +15,7 @@
         android:importantForAutofill="no"
         android:inputType="number"
         android:maxLines="1"
-        android:text="Rp 0" />
+        android:text="Rp 0"
+        android:textCursorDrawable="@drawable/cursor_dark" />
 
 </FrameLayout>

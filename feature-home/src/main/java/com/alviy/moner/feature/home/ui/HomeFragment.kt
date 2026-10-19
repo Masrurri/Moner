@@ -14,7 +14,6 @@ import com.alviy.moner.core.common.ext.showDialog
 import com.alviy.moner.core.common.ext.toIDR
 import com.alviy.moner.core.designsystem.AddSpendDialog
 import com.alviy.moner.core.designsystem.AmountFieldDialog
-import com.alviy.moner.core.designsystem.TextFieldDialog
 import com.alviy.moner.core.designsystem.TransactionListDialog
 import com.alviy.moner.core.designsystem.WheelDialog
 import com.alviy.moner.core.domain.model.SpendSummary
@@ -110,13 +109,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     }
 
     private fun showAddSpendDialog() {
-        AddSpendDialog.newInstance(viewModel.availableCategories.value).apply {
-            onNewCategoryRequested = { onCreated ->
-                TextFieldDialog.newInstance { name ->
-                    viewModel.addCategory(name)
-                    onCreated(name)
-                }.show(childFragmentManager, "newCategoryDialog")
-            }
+        AddSpendDialog.newInstance().apply {
             onSave = { input ->
                 viewModel.addSpend(
                     categoryName = input.categoryName,

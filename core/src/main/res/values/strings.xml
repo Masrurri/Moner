@@ -6,13 +6,11 @@
     <string name="add_expense_amount">AMOUNT *</string>
     <string name="add_expense_title_hint">e.g. Nasi Padang</string>
     <string name="add_expense_category">Category *</string>
-    <string name="add_expense_new_category">New</string>
     <string name="add_expense_payment_source">Payment Source *</string>
     <string name="add_expense_date">Date *</string>
     <string name="add_expense_note_hint">Add a note...</string>
     <string name="add_expense_save">Save Expense</string>
     <string name="add_expense_today_format">Today, %1$s</string>
-    <string name="add_expense_new_category_hint">Category name</string>
     <string name="add_expense_error_category">Select a category</string>
     <string name="add_expense_error_title">Enter a title</string>
     <string name="add_expense_error_source">Select a payment source</string>

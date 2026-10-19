@@ -6,7 +6,6 @@ import com.alviy.moner.core.common.base.BaseViewModel
 import com.alviy.moner.core.common.entity.ErrorCodes
 import com.alviy.moner.core.common.entity.Result
 import com.alviy.moner.core.common.ext.fullMonthYearFormatter
-import com.alviy.moner.core.common.mergeWithDefaultCategories
 import com.alviy.moner.core.domain.model.SpendSummary
 import com.alviy.moner.core.domain.repository.SpendRepository
 import com.alviy.moner.core.network.GoogleAuthTokenHolder
@@ -46,10 +45,6 @@ class HomeViewModel @Inject constructor(
     private val _recentTransactions = MutableStateFlow<List<RecentTransactionRow>>(emptyList())
     val recentTransactions: StateFlow<List<RecentTransactionRow>> = _recentTransactions.asStateFlow()
 
-    // Categories offered by the add-spend dialog.
-    private val _availableCategories = MutableStateFlow(mergeWithDefaultCategories(emptyList()))
-    val availableCategories: StateFlow<List<String>> = _availableCategories.asStateFlow()
-
     // null = nothing requested yet; the fragment ignores it, so no callback fires until a fetch starts.
     private val _receipts = MutableStateFlow<Result<List<ReceiptTransaction>>?>(null)
     val receipts = _receipts.asStateFlow()
@@ -65,17 +60,10 @@ class HomeViewModel @Inject constructor(
         spendRepository.getSpendHistory(monthYear)
             .map { it.toRecentTransactionRows() }
             .collectFlow(_recentTransactions)
-        spendRepository.getCategoryNamesForMonth(monthYear)
-            .map { mergeWithDefaultCategories(it) }
-            .collectFlow(_availableCategories)
     }
 
     fun setSpendLimit(amount: BigDecimal) = launchSafely {
         spendRepository.setSpendLimit(_selectedMonthYear.value, amount)
-    }
-
-    fun addCategory(name: String) = launchSafely {
-        spendRepository.insertCategory(name)
     }
 
     fun addSpend(

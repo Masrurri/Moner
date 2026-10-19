@@ -68,19 +68,6 @@ class SpendRepositoryImpl @Inject constructor(
             months.sortedByDescending { YearMonth.parse(it, fullMonthYearFormatter()) }
         }
 
-    override fun getCategoryNamesForMonth(monthYear: String): Flow<List<String>> =
-        spendCategoryDao.getCategoryNamesForMonth(monthYear)
-
-    override suspend fun insertCategory(name: String, monthYear: String?) {
-        spendCategoryDao.insertCategory(
-            SpendCategoryEntity(
-                categoryName = name,
-                dateCreated = LocalDateTime.now().toString(),
-                monthYear = monthYear ?: LocalDateTime.now().toFullMonthYear()
-            )
-        )
-    }
-
     override suspend fun addSpend(
         categoryName: String,
         date: String,

@@ -38,7 +38,7 @@ import javax.inject.Inject
 class JournalViewModel @Inject constructor(
     private val expenseRepository: ExpenseRepository,
     private val gmailRepository: GmailRepository,
-    private val googleAuthTokens: GoogleAuthTokenHolder,
+    private val googleAuthTokens: GoogleAuthTokenHolder
 ) : BaseViewModel() {
 
     private val _selectedMonthYear = MutableStateFlow<String?>(null)

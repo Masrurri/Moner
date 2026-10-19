@@ -1,6 +1,7 @@
 package com.alviy.app.moner
 
 import android.os.Bundle
+import androidx.core.view.isVisible
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
@@ -35,16 +36,16 @@ class MainActivity : BaseActivity<ActivityMainBinding>(
         binding.bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.journal_bottom_nav -> navController.navigateTo(
-                    resId = com.alviy.moner.feature.journal.R.id.journal_nav,
-                    popUpToId = com.alviy.moner.feature.journal.R.id.journal_nav
+                    resId = R.id.journal_nav,
+                    popUpToId = R.id.journal_nav
                 )
                 R.id.budget_bottom_nav -> navController.navigateTo(
-                    resId = com.alviy.moner.feature.budget.R.id.budget_nav,
-                    popUpToId = com.alviy.moner.feature.budget.R.id.budget_nav
+                    resId = R.id.budget_nav,
+                    popUpToId = R.id.budget_nav
                 )
                 R.id.settings_bottom_nav -> navController.navigateTo(
-                    resId = com.alviy.moner.feature.settings.R.id.settings_nav,
-                    popUpToId = com.alviy.moner.feature.settings.R.id.settings_nav
+                    resId = R.id.settings_nav,
+                    popUpToId = R.id.settings_nav
                 )
                 else -> return@setOnItemSelectedListener false
             }
@@ -59,11 +60,16 @@ class MainActivity : BaseActivity<ActivityMainBinding>(
         val graphId = destination.parent?.id ?: return
         if (graphId == activeGraphId) return
         activeGraphId = graphId
-        binding.bottomNav.selectedItemId = when (graphId) {
-            com.alviy.moner.feature.budget.R.id.budget_nav -> R.id.budget_bottom_nav
-            com.alviy.moner.feature.settings.R.id.settings_nav -> R.id.settings_bottom_nav
-            else -> R.id.journal_bottom_nav
+
+        val itemId = when (graphId) {
+            R.id.journal_nav -> R.id.journal_bottom_nav
+            R.id.budget_nav -> R.id.budget_bottom_nav
+            R.id.settings_nav -> R.id.settings_bottom_nav
+            else -> null
         }
+
+        binding.bottomNav.isVisible = itemId != null
+        if (itemId != null) binding.bottomNav.menu.findItem(itemId)?.isChecked = true
     }
 
 }

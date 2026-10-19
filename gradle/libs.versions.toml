@@ -36,6 +36,8 @@ ksp = "1.9.24-1.0.20"
 
 #Google Oauth
 google-auth = "22.0.0"
+navigationFragmentKtx = "2.10.2"
+navigationUiKtx = "2.10.2"
 
 [libraries]
 # Dagger
@@ -79,6 +81,8 @@ androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-co
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
+navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigationUiKtx" }
 
 [bundles]
 networking = ["retrofit", "retrofit-gson"]

@@ -1,17 +1,25 @@
 package com.alviy.moner.core.common.base
 
+import androidx.annotation.IdRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavDirections
+import com.alviy.moner.core.common.entity.Result
+import com.alviy.moner.core.navigation.NavCommand
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
-import com.alviy.moner.core.common.entity.Result
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
 
 open class BaseViewModel : ViewModel() {
+    private val _navEvents = Channel<NavCommand>(Channel.BUFFERED)
+    internal val navEvents = _navEvents.receiveAsFlow()
+
     // One running job per key, so independent loads (e.g. "list" vs "detail") don't cancel each other.
     private val jobs = ConcurrentHashMap<String, Job>()
 
@@ -58,6 +66,18 @@ open class BaseViewModel : ViewModel() {
 
     protected fun cancelJob(key: String = DEFAULT_KEY) {
         jobs.remove(key)?.cancel()
+    }
+
+    protected fun goTo(directions: NavDirections) {
+        _navEvents.trySend(NavCommand.GoTo(directions))
+    }
+
+    protected fun back() {
+        _navEvents.trySend(NavCommand.Back)
+    }
+
+    protected fun backTo(@IdRes destinationId: Int, inclusive: Boolean = false) {
+        _navEvents.trySend(NavCommand.BackTo(destinationId, inclusive))
     }
 
     protected companion object {

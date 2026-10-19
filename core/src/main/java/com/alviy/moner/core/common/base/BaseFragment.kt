@@ -13,15 +13,19 @@ import androidx.lifecycle.withStarted
 import androidx.navigation.NavController
 import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import com.alviy.moner.core.common.entity.ErrorCodes
 import com.alviy.moner.core.common.entity.Result
+import com.alviy.moner.core.navigation.AppNavigator
+import com.alviy.moner.core.navigation.NavCommand
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
 
 abstract class BaseFragment<VB : ViewBinding> : Fragment() {
@@ -29,6 +33,10 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
     protected lateinit var binding: VB
     abstract val injectedFragment: Fragment
     private var navController: NavController? = null
+
+    @Inject lateinit var navigatorFactory: AppNavigator.Factory
+
+    protected val appNav: AppNavigator get() = navigatorFactory.create(rootNavController())
 
     abstract fun initView()
     abstract fun observeData()
@@ -71,8 +79,29 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    private fun rootNavController(): NavController {
+        var rootHost: NavHostFragment? = null
+        var current: Fragment? = this
+        while (current != null) {
+            if (current is NavHostFragment) rootHost = current
+            current = current.parentFragment
+        }
+        return rootHost?.navController ?: findNavController()
+    }
+
+    protected fun observeNavigation(viewModel: BaseViewModel) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.navEvents.collect { command ->
+                    val navController = findNavController()
+                    when (command) {
+                        is NavCommand.GoTo -> navController.navigate(command.directions)
+                        is NavCommand.Back -> navController.popBackStack()
+                        is NavCommand.BackTo -> navController.popBackStack(command.destinationId, command.inclusive)
+                    }
+                }
+            }
+        }
     }
 
     /**

@@ -10,6 +10,7 @@ fun NavController.navigateTo(
     isLaunchSingleTop: Boolean? = null,
     isInclusive: Boolean? = null,
     isSaveState: Boolean? = null,
+    isRestoreState: Boolean? = null,
     bundle: Bundle? = null
 ) {
     val navOptions = navOptions {
@@ -20,6 +21,7 @@ fun NavController.navigateTo(
             }
         }
         this.launchSingleTop = isLaunchSingleTop.orFalse()
+        this.restoreState = isRestoreState.orFalse()
     }
     this.navigate(resId, bundle, navOptions)
 }

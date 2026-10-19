@@ -9,5 +9,6 @@
     <include app:graph="@navigation/journal_nav_graph" />
     <include app:graph="@navigation/budget_nav_graph" />
     <include app:graph="@navigation/settings_nav_graph" />
+    <include app:graph="@navigation/receipt_gather_nav_graph" />
 
 </navigation>

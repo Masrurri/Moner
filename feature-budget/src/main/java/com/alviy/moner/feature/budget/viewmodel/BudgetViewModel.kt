@@ -22,7 +22,6 @@ import java.math.BigDecimal
 import java.time.LocalDateTime
 import javax.inject.Inject
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class BudgetViewModel @Inject constructor(
     private val budgetRepository: BudgetRepository,

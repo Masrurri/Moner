@@ -1,6 +1,5 @@
 package com.alviy.moner.feature.journal.ui
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.activity.result.IntentSenderRequest
@@ -10,9 +9,13 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alviy.moner.core.common.base.BaseFragment
 import com.alviy.moner.core.common.ext.getColor
+import com.alviy.moner.core.common.ext.navigateTo
 import com.alviy.moner.core.common.ext.setStatusBarColor
 import com.alviy.moner.core.common.ext.showDialog
 import com.alviy.moner.core.common.ext.toIDR
@@ -55,12 +58,13 @@ class JournalFragment : BaseFragment<FragmentJournalBinding>() {
     ) = FragmentJournalBinding.inflate(inflater, container, false)
 
     override fun initView() = with(binding) {
+        observeNavigation(viewModel)
         setStatusBarColor(getColor(R.color.white_grey))
         setupRvCategory()
         setupRvTransactions()
         btnSelectedMonth.setOnClickListener { showDialogSelectTime() }
         btnSpend.setOnClickListener { showAddExpenseDialog() }
-        btnFetch.setOnClickListener { authorizeGmail() }
+        btnFetch.setOnClickListener { appNav.navigateToReceiptGather() }
     }
 
     private fun setupRvCategory() {

@@ -46,6 +46,7 @@ dependencies {
     implementation(project(":feature-budget"))
     implementation(project(":feature-journal"))
     implementation(project(":feature-settings"))
+    implementation(project(":feature-receipt-gather"))
 
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)

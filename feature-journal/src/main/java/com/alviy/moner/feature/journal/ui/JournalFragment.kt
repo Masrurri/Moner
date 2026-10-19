@@ -27,12 +27,10 @@ import com.google.android.gms.auth.api.identity.AuthorizationRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.common.api.Scope
 import dagger.hilt.android.AndroidEntryPoint
-import kotlin.math.abs
 
 @AndroidEntryPoint
 class JournalFragment : BaseFragment<FragmentJournalBinding>() {
     private val viewModel: JournalViewModel by viewModels()
-    private var categoryAdapter: CategoryAdapter? = null
     private var transactionAdapter: RecentTransactionAdapter? = null
 
     private val authLauncher =
@@ -56,17 +54,10 @@ class JournalFragment : BaseFragment<FragmentJournalBinding>() {
     override fun initView() = with(binding) {
         observeNavigation(viewModel)
         setStatusBarColor(getColor(R.color.white_grey))
-        setupRvCategory()
         setupRvTransactions()
         btnSelectedMonth.setOnClickListener { showDialogSelectTime() }
         btnSpend.setOnClickListener { showAddExpenseDialog() }
         btnFetch.setOnClickListener { appNav.navigateToReceiptGather() }
-    }
-
-    private fun setupRvCategory() {
-        categoryAdapter = CategoryAdapter { category ->
-            viewModel.selectCategoryFilter(category)
-        }
     }
 
     private fun setupRvTransactions() {
@@ -106,11 +97,21 @@ class JournalFragment : BaseFragment<FragmentJournalBinding>() {
     }
 
     override fun observeData() {
-        observeMonthYears()
-        observeGreeting()
-        observeTotalExpense()
-        observeCategoryFilters()
-        observeTransactions()
+        observeState(viewModel.selectedMonthYear) { selected ->
+            binding.btnSelectedMonth.text = selected ?: getString(R.string.journal_select_time_default)
+        }
+        observeState(viewModel.expenseSummary) { summary ->
+            binding.tvTotalAmount.text = summary.totalExpense.toIDR()
+        }
+        observeState(viewModel.journalRows) { rows ->
+            transactionAdapter?.submitList(rows)
+            binding.tvEmptyState.isVisible = rows.isEmpty()
+            binding.rvTransactions.isVisible = rows.isNotEmpty()
+        }
+        observeReceipts()
+    }
+
+    private fun observeReceipts() {
         observeStateFlow(
             flow = viewModel.receipts,
             onLoading = {
@@ -146,55 +147,6 @@ class JournalFragment : BaseFragment<FragmentJournalBinding>() {
         }
     }
 
-    private fun observeMonthYears() {
-        observeState(viewModel.selectedMonthYear) { selected ->
-            binding.btnSelectedMonth.text = selected
-                ?: getString(R.string.journal_select_time_default)
-        }
-    }
-
-    private fun observeGreeting() {
-        observeState(viewModel.profile) { profile ->
-            val name = profile.name.ifBlank {
-                getString(R.string.journal_greeting_default_name)
-            }
-            binding.tvGreeting.text = getString(R.string.journal_greeting_format, name)
-        }
-    }
-
-    private fun observeTotalExpense() {
-        observeState(viewModel.expenseSummary) { summary ->
-            binding.tvTotalAmount.text = summary.totalExpense.toIDR()
-        }
-        observeState(viewModel.monthOverMonthDeltaPercent) { delta ->
-            binding.tvDelta.apply {
-                if (delta == null) {
-                    isVisible = false
-                } else {
-                    isVisible = true
-                    val sign = if (delta >= 0) "+" else "-"
-                    text = getString(R.string.journal_delta_format, sign, abs(delta))
-                }
-            }
-        }
-    }
-
-    private fun observeCategoryFilters() {
-        observeState(viewModel.categoryFilterOptions) { options ->
-            categoryAdapter?.submitList(options)
-        }
-        observeState(viewModel.selectedCategoryFilter) { selected ->
-            categoryAdapter?.setSelected(selected)
-        }
-    }
-
-    private fun observeTransactions() {
-        observeState(viewModel.journalRows) { rows ->
-            transactionAdapter?.submitList(rows)
-            binding.tvEmptyState.isVisible = rows.isEmpty()
-            binding.rvTransactions.isVisible = rows.isNotEmpty()
-        }
-    }
 
     private fun authorizeGmail() {
         val request = AuthorizationRequest.builder()

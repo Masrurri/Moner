@@ -7,10 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import com.alviy.moner.core.databinding.DialogTransactionListBinding
 import com.alviy.moner.core.databinding.ItemGmailFetchReceiptBinding
+import java.math.BigDecimal
 
 class TransactionListDialog : FullScreenSheetDialogFragment() {
     private lateinit var binding: DialogTransactionListBinding
-    private var receiptList: List<GmailReceipt>? = null
+    private var receiptList: List<TransactionReceipt>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,40 +27,43 @@ class TransactionListDialog : FullScreenSheetDialogFragment() {
         receiptList?.forEach { generateList(it) }
     }
 
-    private fun generateList(data: GmailReceipt) {
+    private fun generateList(data: TransactionReceipt) {
         ItemGmailFetchReceiptBinding.inflate(LayoutInflater.from(context)).apply {
             tvContent.text = SpannableStringBuilder().apply {
                 append(data.id)
                 append("\n")
-                append(data.merchant)
+                append(data.channel)
                 append("\n")
-                append(data.subject)
+                append(data.title)
+                append("\n")
+                append(data.destination)
                 append("\n")
                 append(data.amount)
                 append("\n")
-                append(data.currency)
+                append(data.dateTime)
                 append("\n")
-                append(data.dateMillis)
+                append(data.method.orEmpty())
                 append("\n")
-                append(data.snippet)
+                append(data.note.orEmpty())
             }
             binding.llcDialogTransactionList.addView(root)
         }
     }
 
     companion object {
-        fun newInstance(receipts: List<GmailReceipt>) = TransactionListDialog().apply {
+        fun newInstance(receipts: List<TransactionReceipt>) = TransactionListDialog().apply {
             receiptList = receipts
         }
 
-        data class GmailReceipt(
+        data class TransactionReceipt(
             val id: String,
-            val merchant: String,
-            val subject: String,
+            val channel: String,
+            val title: String,
+            val destination: String,
             val amount: String,
-            val currency: String,
-            val dateMillis: String,
-            val snippet: String
+            val dateTime: String,
+            val method: String?,
+            val note: String?,
         )
     }
 }

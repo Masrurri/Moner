@@ -5,7 +5,9 @@ import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.core.view.WindowCompat
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.viewbinding.ViewBinding
 import com.alviy.moner.core.common.base.BaseFragment
 
@@ -21,4 +23,13 @@ fun Fragment.setStatusBarColor(@ColorInt color: Int, isDarkIcon: Boolean = true)
         requireActivity().window,
         requireActivity().window.decorView
     ).isAppearanceLightStatusBars = isDarkIcon
+}
+
+/** Shows this dialog under [tag], replacing any dialog already shown with that tag. */
+fun DialogFragment.showDialog(manager: FragmentManager, tag: String) {
+    if (manager.isStateSaved) return            // app is going to the background; skip to avoid a crash
+    manager.beginTransaction().apply {
+        manager.findFragmentByTag(tag)?.let { remove(it) }   // removing a DialogFragment also dismisses its dialog
+        add(this@showDialog, tag)
+    }.commit()
 }

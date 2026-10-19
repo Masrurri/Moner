@@ -25,7 +25,7 @@ class GmailRemoteDataSource @Inject constructor(
         getApiResult { api.getMessage(id) }
 
     override fun parseError(raw: String): ErrorResponse? =
-        gson.fromJson(raw, GoogleErrorEnvelope::class.java).error?.let {
+        gson.fromJson(raw, GoogleErrorEnvelope::class.java)?.error?.let {
             ErrorResponse(code = it.code?.toString(), title = it.status, message = it.message)
         }
 }

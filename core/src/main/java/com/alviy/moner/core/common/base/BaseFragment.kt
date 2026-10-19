@@ -81,7 +81,7 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
      * every time the view becomes visible again, which is what you want for rendering state.
      */
     protected fun <T> observeStateFlow(
-        flow: StateFlow<Result<T>?>,   // null = nothing requested yet -> no callback fires
+        flow: StateFlow<Result<T>?>,
         minState: Lifecycle.State = Lifecycle.State.STARTED,
         onLoading: (() -> Unit)? = null,
         onError: ((Result<T>) -> Unit)? = null,
@@ -89,8 +89,13 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
     ): Job {
         val owner = viewLifecycleOwner
         return owner.lifecycleScope.launch {
+            var lastHandled: Result<T>? = null          // outlives each STARTED/STOPPED cycle
             owner.repeatOnLifecycle(minState) {
-                flow.filterNotNull().collect { dispatch(it, onLoading, onError, onSuccess) }
+                flow.filterNotNull().collect { result ->
+                    if (result === lastHandled) return@collect   // replayed after resume, already shown
+                    lastHandled = result
+                    dispatch(result, onLoading, onError, onSuccess)
+                }
             }
         }
     }

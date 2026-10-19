@@ -2,21 +2,20 @@ package com.alviy.moner.feature.journal.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.alviy.app.gmail.data.repository.GmailRepository
-import com.alviy.app.gmail.model.GmailReceiptTransaction
+import com.alviy.app.gmail.model.ReceiptTransaction
 import com.alviy.moner.core.common.base.BaseViewModel
 import com.alviy.moner.core.common.entity.ErrorCodes
+import com.alviy.moner.core.common.entity.Result
 import com.alviy.moner.core.common.mergeWithDefaultCategories
 import com.alviy.moner.core.domain.model.ExpenseItem
 import com.alviy.moner.core.domain.model.ExpenseSummary
 import com.alviy.moner.core.domain.model.Profile
 import com.alviy.moner.core.domain.repository.ExpenseRepository
+import com.alviy.moner.core.network.GoogleAuthTokenHolder
 import com.alviy.moner.feature.journal.ui.model.JournalRow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import com.alviy.moner.core.common.entity.Result
-import com.alviy.moner.core.network.GoogleAuthTokenHolder
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -81,8 +80,8 @@ class JournalViewModel @Inject constructor(
     val monthOverMonthDeltaPercent: StateFlow<Double?> = _monthOverMonthDeltaPercent.asStateFlow()
 
     // null = nothing requested yet; the fragment ignores it, so no callback fires until a fetch starts.
-    private val _receipts = MutableStateFlow<Result<List<GmailReceiptTransaction>>?>(null )
-    val receipts: StateFlow<Result<List<GmailReceiptTransaction>>?> = _receipts.asStateFlow()
+    private val _receipts = MutableStateFlow<Result<List<ReceiptTransaction>>?>(null)
+    val receipts = _receipts.asStateFlow()
 
     fun onAuthorized(accessToken: String) {
         googleAuthTokens.accessToken = accessToken

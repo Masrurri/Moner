@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.alviy.moner.core.common.base.BaseFragment
 import com.alviy.moner.core.common.ext.getColor
 import com.alviy.moner.core.common.ext.setStatusBarColor
+import com.alviy.moner.core.common.ext.showDialog
 import com.alviy.moner.core.common.ext.toIDR
 import com.alviy.moner.core.designsystem.AddExpenseDialog
 import com.alviy.moner.core.designsystem.TextFieldDialog
@@ -101,7 +102,7 @@ class JournalFragment : BaseFragment<FragmentJournalBinding>() {
                     note = input.note
                 )
             }
-        }.show(childFragmentManager, "addExpenseDialog")
+        }.showDialog(childFragmentManager, "addExpenseDialog")
     }
 
     override fun observeData() {
@@ -112,17 +113,36 @@ class JournalFragment : BaseFragment<FragmentJournalBinding>() {
         observeTransactions()
         observeStateFlow(
             flow = viewModel.receipts,
-            onLoading = null,
-            onError = {
+            onLoading = {
                 TransactionListDialog.newInstance(
-                    listOf(TransactionListDialog.Companion.GmailReceipt("Error Fetch", it.code.toString(), it.title.toString(), it.message.toString(), "", "", ""))
-                ).show(parentFragmentManager, "transactionDialog")
+                    listOf(
+                        TransactionListDialog.Companion.TransactionReceipt(
+                            "Loading", "", "", "", "", "", "", ""
+                        )
+                    )
+                ).showDialog(parentFragmentManager, "transactionDialog")
+            },
+            onError = { error ->
+                TransactionListDialog.newInstance(
+                    listOf(
+                        TransactionListDialog.Companion.TransactionReceipt(
+                            "Error Fetch", error.code.toString(), error.title.toString(), error.message.toString(), "", "", "", ""
+                        )
+                    )
+                ).showDialog(parentFragmentManager, "transactionDialog")
             }
-        ) { it ->
+        ) { receipts ->
             TransactionListDialog.newInstance(
-                it.map { TransactionListDialog.Companion.GmailReceipt(it.id, it.merchant, it.subject, it.amount.toString(), it.currency.toString(), it.dateMillis.toString(), it.snippet) }
-            ).show(parentFragmentManager, "transactionDialog")
-            it.forEach { a -> Log.d("Receipt", a.toString()) }
+                receipts.map { r ->
+                    TransactionListDialog.Companion.TransactionReceipt(
+                        r.id, r.channel, r.title, r.destination,
+                        r.amount.toPlainString(),
+                        listOfNotNull(r.date, r.time).joinToString(" "),
+                        r.method?.label.orEmpty(),
+                        r.note.orEmpty(),
+                    )
+                }
+            ).showDialog(parentFragmentManager, "transactionDialog")
         }
     }
 

@@ -1,9 +1,9 @@
 package com.alviy.app.gmail.data.repository
 
 import com.alviy.app.gmail.data.remote.service.GmailRemoteDataSource
-import com.alviy.app.gmail.mapper.toReceipt
-import com.alviy.app.gmail.model.GmailReceiptTransaction
+import com.alviy.app.gmail.mapper.GmailReceiptParser
 import com.alviy.app.gmail.model.MessageRef
+import com.alviy.app.gmail.model.ReceiptTransaction
 import com.alviy.moner.core.common.entity.ErrorCodes
 import com.alviy.moner.core.common.entity.Result
 import com.alviy.moner.core.common.entity.flatMap
@@ -20,33 +20,39 @@ import javax.inject.Inject
 
 class GmailRepositoryImpl @Inject constructor(
     private val remote: GmailRemoteDataSource,
+    private val parser: GmailReceiptParser,
 ) : GmailRepository {
 
-    override fun getGmailReceipts(query: String, max: Int): Flow<Result<List<GmailReceiptTransaction>>> =
+    override fun getGmailReceipts(query: String?, max: Int): Flow<Result<List<ReceiptTransaction>>> =
         resultFlow {
-            remote.listMessages(query, max).flatMap { list ->
+            remote.listMessages(query ?: parser.searchQuery(), max).flatMap { list ->
                 fetchReceipts(list.messages.orEmpty())
             }
         }
 
-    private suspend fun fetchReceipts(refs: List<MessageRef>): Result<List<GmailReceiptTransaction>> =
+    private suspend fun fetchReceipts(refs: List<MessageRef>): Result<List<ReceiptTransaction>> =
         coroutineScope {
             val gate = Semaphore(MAX_PARALLEL)
-            val results = refs
-                .map { ref -> async { gate.withPermit { remote.getMessage(ref.id).map { it.toReceipt() } } } }
+            val results: List<Result<ReceiptTransaction?>> = refs
+                .map { ref ->
+                    async {
+                        // Only the network call holds a permit; parsing runs outside it.
+                        val message = gate.withPermit { remote.getMessage(ref.id) }
+                        message.map { parser.parse(it) }      // SUCCESS(null) = not a payment, skipped
+                    }
+                }
                 .awaitAll()
 
             // Expired token: fail the whole load so the UI can ask the user to re-authorize.
             results.firstOrNull { it.code == ErrorCodes.UNAUTHORIZED }?.let {
-                return@coroutineScope it.propagateError<List<GmailReceiptTransaction>>()
+                return@coroutineScope it.propagateError<List<ReceiptTransaction>>()
             }
 
-            val receipts = results.mapNotNull { it.data }
-            if (receipts.isEmpty() && results.isNotEmpty()) {
-                results.first().propagateError()          // every fetch failed -> surface the error
-            } else {
-                Result.success(receipts.sortedByDescending { it.dateMillis })  // partial failures are skipped
+            if (results.isNotEmpty() && results.all { it.isError }) {
+                return@coroutineScope results.first().propagateError()    // every fetch failed
             }
+
+            Result.success(results.mapNotNull { it.data })                // drops errors and non-payments
         }
 
     private companion object {

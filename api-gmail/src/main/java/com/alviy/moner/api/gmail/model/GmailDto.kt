@@ -1,5 +1,9 @@
 package com.alviy.moner.api.gmail.model
 
+data class GmailProfileResponse(
+    val emailAddress: String
+)
+
 data class GmailListResponse(
     val messages: List<MessageRef>?,
     val nextPageToken: String?,
@@ -25,4 +29,5 @@ data class Header(val name: String, val value: String)
 data class PartBody(val data: String?) // base64url
 
 data class GoogleErrorEnvelope(val error: GoogleError?)
+
 data class GoogleError(val code: Int?, val message: String?, val status: String?)

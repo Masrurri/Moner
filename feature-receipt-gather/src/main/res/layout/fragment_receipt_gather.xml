@@ -72,35 +72,24 @@
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:src="@drawable/ic_google"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_google_desc"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/color_text_secondary" />
+                    app:layout_constraintTop_toTopOf="@id/tv_google_desc"
+                    app:tint="#8E8E8E" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_google_desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
-                    android:layout_marginEnd="16dp"
                     android:text="Connect your google account to fetch."
-                    android:textAppearance="@style/TextAppearance.Moner.Regular"
+                    android:textAppearance="@style/TextAppearance.Moner.SemiBold"
                     android:textColor="@color/color_text_secondary"
                     android:textSize="10sp"
-                    app:layout_constraintEnd_toStartOf="@id/iv_arrow"
-                    app:layout_constraintBottom_toBottomOf="@id/iv_google"
-                    app:layout_constraintStart_toEndOf="@id/iv_google"
-                    app:layout_constraintTop_toTopOf="@id/iv_google" />
-
-                <ImageView
-                    android:id="@+id/iv_arrow"
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:src="@drawable/ic_arrow_right"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_google_desc"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/tv_google_desc"
-                    app:tint="@color/color_text_secondary" />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/iv_google"
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

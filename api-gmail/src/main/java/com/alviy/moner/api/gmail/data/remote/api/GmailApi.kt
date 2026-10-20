@@ -2,12 +2,16 @@ package com.alviy.moner.api.gmail.data.remote.api
 
 import com.alviy.moner.api.gmail.model.GmailListResponse
 import com.alviy.moner.api.gmail.model.GmailMessage
+import com.alviy.moner.api.gmail.model.GmailProfileResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface GmailApi {
+    @GET("gmail/v1/users/me/profile")
+    suspend fun getProfile(): Response<GmailProfileResponse>
+
     @GET("gmail/v1/users/me/messages")
     suspend fun listMessages(
         @Query("q") query: String,

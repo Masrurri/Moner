@@ -1,5 +1,6 @@
 package com.alviy.moner.api.gmail.data.repository
 
+import com.alviy.moner.api.gmail.model.GmailProfileResponse
 import com.alviy.moner.api.gmail.model.ReceiptTransaction
 import com.alviy.moner.core.common.entity.Result
 import kotlinx.coroutines.flow.Flow
@@ -13,4 +14,6 @@ interface GmailRepository {
         query: String? = null,
         max: Int = 50,
     ): Flow<Result<List<ReceiptTransaction>>>
+
+    fun getGmailProfileEmail(): Flow<Result<GmailProfileResponse>>
 }

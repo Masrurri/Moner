@@ -50,10 +50,22 @@ class ReceiptGatherFragment : BaseFragment<FragmentReceiptGatherBinding>() {
         rvReceipts.adapter = receiptListAdapter
         rvReceipts.layoutManager = LinearLayoutManager(requireContext())
         btnFetch.setOnClickListener { authorizeGoogleAccount() }
+        checkGoogleAuthStatus()
     }
 
     override fun observeData() {
         observeFetchedReceipts()
+        observeGoogleEmail()
+    }
+
+    private fun observeGoogleEmail() {
+        observeStateFlow(
+            flow = viewModel.googleProfile,
+            onLoading = { binding.tvGoogleDesc.text = "Checking Google account…" },
+            onError = { binding.tvGoogleDesc.text = "Connect your google account to fetch." }
+        ) { result ->
+            binding.tvGoogleDesc.text = result.emailAddress
+        }
     }
 
     private fun observeFetchedReceipts() {
@@ -88,11 +100,26 @@ class ReceiptGatherFragment : BaseFragment<FragmentReceiptGatherBinding>() {
         TransactionListDialog.newInstance(receipts).showDialog(parentFragmentManager, "transactionDialog")
     }
 
+    private fun buildAuthRequest() = AuthorizationRequest.builder()
+        .setRequestedScopes(listOf(Scope(GMAIL_READONLY)))
+        .build()
+
+    /** Silent check: never launches UI. */
+    private fun checkGoogleAuthStatus() {
+        Identity.getAuthorizationClient(requireActivity()).authorize(buildAuthRequest())
+            .addOnSuccessListener { result ->
+                val token = result.accessToken
+                if (!result.hasResolution() && token != null) {
+                    viewModel.onGoogleAlreadyAuthorized(token)   // authorized
+                } else {
+                    viewModel.onGoogleNotAuthorized()            // needs consent → not authorized
+                }
+            }
+            .addOnFailureListener { viewModel.onGoogleNotAuthorized() }
+    }
+
     private fun authorizeGoogleAccount() {
-        val request = AuthorizationRequest.builder()
-            .setRequestedScopes(listOf(Scope(GMAIL_READONLY)))
-            .build()
-        Identity.getAuthorizationClient(requireActivity()).authorize(request)
+        Identity.getAuthorizationClient(requireActivity()).authorize(buildAuthRequest())
             .addOnSuccessListener { result ->
                 if (result.hasResolution()) {
                     authLauncher.launch(IntentSenderRequest.Builder(result.pendingIntent!!.intentSender).build())

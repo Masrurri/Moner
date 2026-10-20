@@ -2,6 +2,7 @@ package com.alviy.moner.api.gmail.data.repository
 
 import com.alviy.moner.api.gmail.data.remote.service.GmailRemoteDataSource
 import com.alviy.moner.api.gmail.mapper.GmailReceiptParser
+import com.alviy.moner.api.gmail.model.GmailProfileResponse
 import com.alviy.moner.api.gmail.model.MessageRef
 import com.alviy.moner.api.gmail.model.ReceiptTransaction
 import com.alviy.moner.core.common.entity.ErrorCodes
@@ -49,11 +50,14 @@ class GmailRepositoryImpl @Inject constructor(
             }
 
             if (results.isNotEmpty() && results.all { it.isError }) {
-                return@coroutineScope results.first().propagateError()    // every fetch failed
+                return@coroutineScope results.first().propagateError()  // every fetch failed
             }
 
-            Result.success(results.mapNotNull { it.data })                // drops errors and non-payments
+            Result.success(results.mapNotNull { it.data }) // drops errors and non-payments
         }
+
+    override fun getGmailProfileEmail(): Flow<Result<GmailProfileResponse>> =
+        resultFlow { remote.getProfile() }
 
     private companion object {
         const val MAX_PARALLEL = 5

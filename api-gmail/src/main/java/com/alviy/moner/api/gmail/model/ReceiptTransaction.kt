@@ -12,11 +12,11 @@ data class ReceiptTransaction(
     val date: String,               // "dd/MM/yyyy", always in Jakarta time (WIB)
     val time: String?,              // "HH:mm" in WIB, null when the email has no time
     val method: PaymentMethod?,     // QRIS, debit, transfer... null if the email doesn't say
-    val note: String?,              // category or note, if the email has one
+    val note: String?               // category or note, if the email has one
 )
 
 enum class PaymentMethod(val label: String) {
-    QRIS("QRIS"), DEBIT("Debit"), TRANSFER("Transfer"), EWALLET("E-wallet"), CREDIT("Credit card");
+    QRIS("QRIS"), DEBIT("Debit"), TRANSFER("Transfer"), EWALLET("E-wallet"), CREDIT("Credit card"), TOPUP("Top-Up");
 
     companion object {
         fun fromText(text: String?): PaymentMethod? {
@@ -26,6 +26,7 @@ enum class PaymentMethod(val label: String) {
                 "debit" in s -> DEBIT
                 "kredit" in s || "credit" in s || "visa" in s || "mastercard" in s -> CREDIT
                 "top-up" in s || "top up" in s || "transfer" in s -> TRANSFER
+                "top-up" in s || "top up" in s -> TOPUP
                 "ovo" in s || "gopay" in s || "dana" in s || "shopeepay" in s || "linkaja" in s || "wallet" in s -> EWALLET
                 else -> null
             }

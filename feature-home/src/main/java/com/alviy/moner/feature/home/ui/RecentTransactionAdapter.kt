@@ -6,16 +6,16 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.alviy.moner.core.common.ext.toIDR
+import com.alviy.moner.core.databinding.ItemListHeaderBinding
 import com.alviy.moner.core.designsystem.iconForCategory
 import com.alviy.moner.feature.home.databinding.ItemRecentTransactionBinding
-import com.alviy.moner.feature.home.databinding.ItemRecentTransactionHeaderBinding
 import com.alviy.moner.feature.home.ui.model.RecentTransactionRow
 import java.time.LocalDateTime
 
 class RecentTransactionAdapter : ListAdapter<RecentTransactionRow, RecyclerView.ViewHolder>(Diff) {
 
     class HeaderViewHolder(
-        private val binding: ItemRecentTransactionHeaderBinding
+        private val binding: ItemListHeaderBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(row: RecentTransactionRow.DateHeader) {
             binding.root.text = row.label
@@ -45,7 +45,7 @@ class RecentTransactionAdapter : ListAdapter<RecentTransactionRow, RecyclerView.
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return if (viewType == VIEW_TYPE_HEADER) {
-            HeaderViewHolder(ItemRecentTransactionHeaderBinding.inflate(inflater, parent, false))
+            HeaderViewHolder(ItemListHeaderBinding.inflate(inflater, parent, false))
         } else {
             TransactionViewHolder(ItemRecentTransactionBinding.inflate(inflater, parent, false))
         }

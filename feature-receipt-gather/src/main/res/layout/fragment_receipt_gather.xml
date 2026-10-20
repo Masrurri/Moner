@@ -8,6 +8,7 @@
     tools:context=".ui.ReceiptGatherFragment">
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/mcv_google"
         style="@style/Widget.Moner.MaterialCardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -79,6 +80,22 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_receipts"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="@dimen/spacing_lg"
+        android:layout_marginTop="@dimen/spacing_xs"
+        android:clipToPadding="false"
+        android:nestedScrollingEnabled="false"
+        android:paddingBottom="96dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/mcv_google"
+        tools:itemCount="4"
+        tools:listitem="@layout/item_receipt" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_fetch"

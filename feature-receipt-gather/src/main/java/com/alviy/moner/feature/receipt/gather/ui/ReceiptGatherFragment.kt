@@ -6,7 +6,10 @@ import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.alviy.moner.core.R
 import com.alviy.moner.core.common.base.BaseFragment
+import com.alviy.moner.core.common.ext.getColor
+import com.alviy.moner.core.common.ext.setStatusBarColor
 import com.alviy.moner.core.common.ext.showDialog
 import com.alviy.moner.core.designsystem.TransactionListDialog
 import com.alviy.moner.feature.receipt.gather.databinding.FragmentReceiptGatherBinding
@@ -43,6 +46,7 @@ class ReceiptGatherFragment : BaseFragment<FragmentReceiptGatherBinding>() {
     ) = FragmentReceiptGatherBinding.inflate(inflater, container, false)
 
     override fun initView() = with(binding) {
+        setStatusBarColor(binding.getColor(R.color.white))
         rvReceipts.adapter = receiptListAdapter
         rvReceipts.layoutManager = LinearLayoutManager(requireContext())
         btnFetch.setOnClickListener { authorizeGoogleAccount() }

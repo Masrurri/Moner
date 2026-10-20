@@ -7,93 +7,121 @@
     android:background="@color/white_grey"
     tools:context=".ui.ReceiptGatherFragment">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/mcv_google"
-        style="@style/Widget.Moner.MaterialCardView"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginHorizontal="@dimen/spacing_lg"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="@dimen/spacing_lg"
-        android:padding="0dp"
-        app:cardBackgroundColor="@color/white"
-        app:cardCornerRadius="20dp"
+        android:background="@drawable/bg_rounded_bottom"
+        android:backgroundTint="@color/white"
+        android:paddingHorizontal="16dp"
+        android:translationZ="22dp"
+        android:outlineSpotShadowColor="@color/color_shadow"
+        android:outlineAmbientShadowColor="@color/color_shadow"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="16dp">
+            android:textAppearance="@style/TextAppearance.Moner.Bold"
+            android:textSize="22sp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints"
+            android:text="Receipt Gather" />
 
-            <ImageView
-                android:id="@+id/iv_google"
-                android:layout_width="wrap_content"
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_subtitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Manual Scan Receipt and Fetched Receipt from Google Account will appear here, click item to record as spending."
+            android:textAppearance="@style/TextAppearance.Moner.Regular"
+            android:textColor="@color/color_text_secondary"
+            android:textSize="@dimen/text_size_sm"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="@id/tv_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_title" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/mcv_google"
+            style="@style/Widget.Moner.MaterialCardView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="20dp"
+            app:cardBackgroundColor="#EBEAEA"
+            app:cardCornerRadius="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_subtitle">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_google"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/color_text_heading" />
+                app:rippleColor="@color/color_ripple_grey"
+                android:paddingVertical="8dp"
+                android:paddingHorizontal="10dp">
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_google_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_sm"
-                android:layout_marginTop="10dp"
-                android:text="Google Account"
-                android:textAppearance="@style/TextAppearance.Moner.SemiBold"
-                android:textSize="@dimen/text_size_lg"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0"
-                app:layout_constraintStart_toEndOf="@id/iv_google"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="MissingConstraints" />
+                <ImageView
+                    android:id="@+id/iv_google"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_google"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/color_text_secondary" />
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_google_desc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_sm"
-                android:layout_marginBottom="10dp"
-                android:text="Connect your google account."
-                android:textAppearance="@style/TextAppearance.Moner.Regular"
-                android:textColor="@color/color_text_secondary"
-                android:textSize="@dimen/text_size_sm"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/iv_google"
-                app:layout_constraintTop_toBottomOf="@id/tv_google_title"
-                app:layout_constraintVertical_bias="0" />
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_google_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="Connect your google account to fetch."
+                    android:textAppearance="@style/TextAppearance.Moner.Regular"
+                    android:textColor="@color/color_text_secondary"
+                    android:textSize="10sp"
+                    app:layout_constraintEnd_toStartOf="@id/iv_arrow"
+                    app:layout_constraintBottom_toBottomOf="@id/iv_google"
+                    app:layout_constraintStart_toEndOf="@id/iv_google"
+                    app:layout_constraintTop_toTopOf="@id/iv_google" />
 
-            <ImageView
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:src="@drawable/ic_arrow_right"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/color_text_secondary" />
+                <ImageView
+                    android:id="@+id/iv_arrow"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:src="@drawable/ic_arrow_right"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_google_desc"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/tv_google_desc"
+                    app:tint="@color/color_text_secondary" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </com.google.android.material.card.MaterialCardView>
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_receipts"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginHorizontal="@dimen/spacing_lg"
-        android:layout_marginTop="@dimen/spacing_xs"
         android:clipToPadding="false"
         android:nestedScrollingEnabled="false"
         android:paddingBottom="96dp"
+        android:paddingTop="30dp"
+        android:layout_marginTop="120dp"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/mcv_google"
         tools:itemCount="4"
         tools:listitem="@layout/item_receipt" />
 

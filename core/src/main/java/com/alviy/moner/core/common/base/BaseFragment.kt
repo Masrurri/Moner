@@ -9,24 +9,19 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.lifecycle.withStarted
 import androidx.navigation.NavController
 import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
-import com.alviy.moner.core.common.entity.ErrorCodes
 import com.alviy.moner.core.common.entity.Result
 import com.alviy.moner.core.navigation.AppNavigator
 import com.alviy.moner.core.navigation.NavCommand
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.coroutines.cancellation.CancellationException
 
 abstract class BaseFragment<VB : ViewBinding> : Fragment() {
 
@@ -147,35 +142,6 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
         }
     }
 
-    /**
-     * Run a *one-shot* cold flow (e.g. repository.getX()) safely and return its [Job] so the
-     * caller can cancel it.
-     *  - runs once: unlike observeStateFlow it is NOT restarted when the view re-enters STARTED,
-     *    so the network call isn't repeated;
-     *  - exceptions thrown by the flow become an ERROR result instead of crashing;
-     *  - callbacks are deferred until the view is STARTED (safe for navigation/dialogs);
-     *  - cancelled automatically with the view.
-     */
-    protected fun <T> safeCallJob(
-        flow: Flow<Result<T>>,
-        onLoading: (() -> Unit)? = null,
-        onError: ((Result<T>) -> Unit)? = null,
-        onSuccess: (T) -> Unit,
-    ): Job {
-        val owner = viewLifecycleOwner
-        return owner.lifecycleScope.launch {
-            flow
-                .catch { e ->
-                    if (e is CancellationException) throw e
-                    emit(Result.error(ErrorCodes.GENERAL, "General Error", e.message))
-                }
-                .collect { result ->
-                    owner.lifecycle.withStarted { dispatch(result, onLoading, onError, onSuccess) }
-                }
-        }
-    }
-
-    // ---------------------------------------------------------------- internals
     @Suppress("UNCHECKED_CAST")
     private fun <T> dispatch(
         result: Result<T>,

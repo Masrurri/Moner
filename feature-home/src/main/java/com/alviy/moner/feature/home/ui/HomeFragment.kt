@@ -31,17 +31,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     private val viewModel: HomeViewModel by viewModels()
     private val transactionAdapter = RecentTransactionAdapter()
 
-    private val authLauncher =
-        registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
-            try {
-                val auth = Identity.getAuthorizationClient(requireActivity())
-                    .getAuthorizationResultFromIntent(result.data)
-                auth.accessToken?.let(viewModel::onAuthorized) ?: viewModel.onAuthFailed("No access token")
-            } catch (e: Exception) {
-                viewModel.onAuthFailed(e.message)
-            }
-        }
-
     override val injectedFragment = this
 
     override fun initBinding(inflater: LayoutInflater, container: ViewGroup?) =
@@ -54,8 +43,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         rvTransactions.layoutManager = LinearLayoutManager(requireContext())
         btnSelectedMonth.setOnClickListener { showSelectMonthDialog() }
         btnSpend.setOnClickListener { showAddSpendDialog() }
-        btnFetch.setOnClickListener { appNav.navigateToReceiptGather() }
-        secondStatContainer.setOnClickListener { showSpendLimitDialog() }
+        btnReceipt.setOnClickListener { appNav.navigateToReceiptGather() }
+        btnSetLimit.setOnClickListener { showSpendLimitDialog() }
     }
 
     override fun observeData() {
@@ -66,7 +55,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             binding.tvEmptyState.isVisible = rows.isEmpty()
             binding.rvTransactions.isVisible = rows.isNotEmpty()
         }
-        observeReceipts()
     }
 
     private fun renderSummary(summary: SpendSummary) = with(binding) {
@@ -79,8 +67,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         lpv.progress = summary.limitProgress
         tvLimitTotal.isVisible = limit != null
         tvLimitTotal.text = limit?.let { getString(R.string.home_limit_of, it.toIDR()) }
+        tvLimitValue.isVisible = limit != null
+        btnSetLimit.isVisible = limit == null
         tvLimitValue.text = when {
-            remaining == null -> getString(R.string.home_limit_not_set)
+            remaining == null -> ""
             remaining < BigDecimal.ZERO -> getString(R.string.home_limit_over, remaining.negate().toIDR())
             else -> remaining.toIDR()
         }
@@ -121,58 +111,5 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                 )
             }
         }.showDialog(childFragmentManager, "addSpendDialog")
-    }
-
-    // ---------------------------------------------------------------- Gmail (kept for the receipt import)
-
-    private fun observeReceipts() {
-        observeStateFlow(
-            flow = viewModel.receipts,
-            onLoading = { showReceipts(listOf(receiptMessage("Loading"))) },
-            onError = { error ->
-                showReceipts(
-                    listOf(receiptMessage("Error Fetch", error.code.toString(), error.title.toString(), error.message.toString()))
-                )
-            }
-        ) { receipts ->
-            showReceipts(
-                receipts.map { r ->
-                    TransactionListDialog.Companion.TransactionReceipt(
-                        r.id, r.channel, r.title, r.destination,
-                        r.amount.toPlainString(),
-                        listOfNotNull(r.date, r.time).joinToString(" "),
-                        r.method?.label.orEmpty(),
-                        r.note.orEmpty(),
-                    )
-                }
-            )
-        }
-    }
-
-    private fun receiptMessage(id: String, channel: String = "", title: String = "", destination: String = "") =
-        TransactionListDialog.Companion.TransactionReceipt(id, channel, title, destination, "", "", "", "")
-
-    private fun showReceipts(receipts: List<TransactionListDialog.Companion.TransactionReceipt>) {
-        TransactionListDialog.newInstance(receipts).showDialog(parentFragmentManager, "transactionDialog")
-    }
-
-    @Suppress("unused") // wired up again once the Gmail import entry point is back
-    private fun authorizeGmail() {
-        val request = AuthorizationRequest.builder()
-            .setRequestedScopes(listOf(Scope(GMAIL_READONLY)))
-            .build()
-        Identity.getAuthorizationClient(requireActivity()).authorize(request)
-            .addOnSuccessListener { result ->
-                if (result.hasResolution()) {
-                    authLauncher.launch(IntentSenderRequest.Builder(result.pendingIntent!!.intentSender).build())
-                } else {
-                    result.accessToken?.let(viewModel::onAuthorized)
-                }
-            }
-            .addOnFailureListener { viewModel.onAuthFailed(it.message) }
-    }
-
-    private companion object {
-        const val GMAIL_READONLY = "https://www.googleapis.com/auth/gmail.readonly"
     }
 }

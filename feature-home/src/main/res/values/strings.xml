@@ -3,8 +3,8 @@
     <string name="home_greeting">Hey, Punk</string>
     <string name="home_welcome_back">Welcome back</string>
     <string name="home_action_spend">Spend</string>
-    <string name="home_action_fetch">Fetch</string>
-    <string name="home_action_stats">Stats</string>
+    <string name="home_action_receipt">Receipt</string>
+    <string name="home_action_scan">Scan</string>
     <string name="home_spend_today">Money out today</string>
     <string name="home_spend_week">Money out this week</string>
     <string name="home_spend_limit">Spending Limit</string>

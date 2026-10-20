@@ -23,9 +23,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val spendRepository: SpendRepository,
-    private val gmailRepository: GmailRepository,
-    private val googleAuthTokens: GoogleAuthTokenHolder
+    private val spendRepository: SpendRepository
 ) : BaseViewModel() {
 
     /** "MMMM yyyy" of the current month, the format categories are stored with. */
@@ -44,10 +42,6 @@ class HomeViewModel @Inject constructor(
 
     private val _recentTransactions = MutableStateFlow<List<RecentTransactionRow>>(emptyList())
     val recentTransactions: StateFlow<List<RecentTransactionRow>> = _recentTransactions.asStateFlow()
-
-    // null = nothing requested yet; the fragment ignores it, so no callback fires until a fetch starts.
-    private val _receipts = MutableStateFlow<Result<List<ReceiptTransaction>>?>(null)
-    val receipts = _receipts.asStateFlow()
 
     init {
         selectMonthYear(_selectedMonthYear.value)
@@ -82,22 +76,5 @@ class HomeViewModel @Inject constructor(
             amount = amount,
             note = note
         )
-    }
-
-    // ---------------------------------------------------------------- Gmail (kept for the receipt import)
-
-    fun onAuthorized(accessToken: String) {
-        googleAuthTokens.accessToken = accessToken
-        loadReceipts()
-    }
-
-    fun onAuthFailed(message: String?) {
-        _receipts.value = Result.error(ErrorCodes.GENERAL, "Authorization failed", message ?: "Authorization failed")
-    }
-
-    fun loadReceipts() {
-        gmailRepository.getGmailReceipts().collectFlow(_receipts) { result ->
-            if (result.code == ErrorCodes.UNAUTHORIZED) googleAuthTokens.accessToken = null // expired
-        }
     }
 }

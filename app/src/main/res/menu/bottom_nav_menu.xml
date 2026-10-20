@@ -9,11 +9,11 @@
     <item
         android:id="@+id/budget_bottom_nav"
         android:title="@string/nav_budget"
-        android:icon="@drawable/ic_budget_nav"/>
+        android:icon="@drawable/ic_chart_square"/>
 
     <item
         android:id="@+id/settings_bottom_nav"
         android:title="@string/nav_settings"
-        android:icon="@drawable/ic_settings_nav"/>
+        android:icon="@drawable/ic_setting"/>
 
 </menu>

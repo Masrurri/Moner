@@ -12,6 +12,7 @@
     <color name="color_bg_surface">#FFFFFF</color>
     <color name="color_bg_field">#F1F1EF</color>
     <color name="color_bg_chip">#DCDDDE</color>
+    <color name="color_bg_google_chip">#EBEAEA</color>
     <color name="color_bg_dark">#151515</color>
     <color name="color_surface_dark">#1C1C1C</color>
     <color name="color_surface_ink">#111111</color>
@@ -30,6 +31,7 @@
     <color name="color_text_secondary">#6E6E6E</color>
     <color name="color_text_tertiary">#A0A0A0</color>
     <color name="color_text_muted">#ABABAB</color>
+    <color name="color_icon_muted">#8E8E8E</color>
     <color name="color_text_on_ink">#FFFFFF</color>
     <color name="color_text_on_dark_secondary">#B3FFFFFF</color>
 
@@ -38,6 +40,10 @@
     <color name="color_on_neon">#111111</color>
     <color name="color_accent_ink">#111111</color>
     <color name="color_danger">#E4483C</color>
+
+    <!-- Loading -->
+    <color name="color_shimmer_highlight">#99FFFFFF</color>
+    <color name="color_skeleton">#E4E4E4</color>
 
     <!-- Progress -->
     <color name="color_progress_track">#E4E4E4</color>

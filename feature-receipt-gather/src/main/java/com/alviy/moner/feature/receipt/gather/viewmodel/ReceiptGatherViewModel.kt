@@ -17,44 +17,53 @@ class ReceiptGatherViewModel @Inject constructor(
     private val gmailRepository: GmailRepository,
     private val googleAuthTokens: GoogleAuthTokenHolder
 ) : BaseViewModel() {
+
+    /** SUCCESS = connected (email shown, fetch enabled); ERROR = not connected (tap to connect). */
     private val _googleProfile = MutableStateFlow<Result<GmailProfileResponse>?>(null)
     val googleProfile = _googleProfile.asStateFlow()
 
     private val _fetchedReceipts = MutableStateFlow<Result<List<ReceiptTransaction>>?>(null)
     val fetchedReceipts = _fetchedReceipts.asStateFlow()
 
-    /** Silent check found an existing grant: just load the email. */
-    fun onGoogleAlreadyAuthorized(accessToken: String) {
-        googleAuthTokens.accessToken = accessToken
-        fetchGoogleProfile()
+    // ---------------------------------------------------------------- Google account
+
+    /** The silent auth check started; show the profile as loading until it answers. */
+    fun onCheckingGoogleAuth() {
+        _googleProfile.value = Result.loading()
     }
+
+    /** Silent check found an existing grant. */
+    fun onGoogleAlreadyAuthorized(accessToken: String) = connectWith(accessToken)
 
     /** Silent check found no grant. */
-    fun onGoogleNotAuthorized() {
-        googleAuthTokens.accessToken = null
-        _googleProfile.value = Result.error(ErrorCodes.UNAUTHORIZED, "Not connected", "Google account not connected")
-    }
+    fun onGoogleNotAuthorized() = markNotConnected()
 
-    /** User completed the auth flow (button click). */
-    fun onAuthGoogleSuccess(accessToken: String) {
-        googleAuthTokens.accessToken = accessToken
-        fetchGoogleProfile()
-        fetchGmailReceipts()
-    }
+    /** User finished the interactive connect flow. */
+    fun onAuthGoogleSuccess(accessToken: String) = connectWith(accessToken)
 
     fun onAuthGoogleFailed(message: String?) {
-        _fetchedReceipts.value = Result.error(ErrorCodes.GENERAL, "Authorization failed", message ?: "Authorization failed")
+        googleAuthTokens.accessToken = null
+        _googleProfile.value = Result.error(ErrorCodes.GENERAL, "Authorization failed", message ?: "Authorization failed")
     }
 
-    private fun fetchGoogleProfile() {
+    private fun connectWith(accessToken: String) {
+        googleAuthTokens.accessToken = accessToken
         gmailRepository.getGmailProfileEmail().collectFlow(_googleProfile) { result ->
             if (result.code == ErrorCodes.UNAUTHORIZED) googleAuthTokens.accessToken = null
         }
     }
 
+    private fun markNotConnected() {
+        googleAuthTokens.accessToken = null
+        _googleProfile.value = Result.error(ErrorCodes.UNAUTHORIZED, "Not connected", "Google account not connected")
+    }
+
+    // ---------------------------------------------------------------- Receipts
+
+    /** Only offered once the profile loaded, i.e. a valid token is held. */
     fun fetchGmailReceipts() {
         gmailRepository.getGmailReceipts().collectFlow(_fetchedReceipts) { result ->
-            if (result.code == ErrorCodes.UNAUTHORIZED) googleAuthTokens.accessToken = null
+            if (result.code == ErrorCodes.UNAUTHORIZED) markNotConnected() // token expired: ask to connect again
         }
     }
 }

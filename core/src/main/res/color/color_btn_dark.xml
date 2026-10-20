@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Background of the dark action buttons; light grey while disabled. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="@color/color_bg_chip" android:state_enabled="false"/>
+    <item android:color="@color/color_surface_dark"/>
+</selector>

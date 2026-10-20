@@ -1,2 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="receipt_gather_title">Receipt Gather</string>
+    <string name="receipt_gather_subtitle">Manual Scan Receipt and Fetched Receipt from Google Account will appear here, click item to record as spending.</string>
+    <string name="receipt_gather_google_connect">Connect your google account to fetch.</string>
+    <string name="receipt_gather_google_checking">Checking Google account…</string>
+    <string name="receipt_gather_fetch">Fetch Receipt</string>
+    <string name="receipt_gather_scan">Scan Receipt</string>
+</resources>

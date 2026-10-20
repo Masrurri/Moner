@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/bg_rounded_bottom"
         android:backgroundTint="@color/white"
-        android:paddingHorizontal="16dp"
+        android:paddingHorizontal="@dimen/spacing_lg"
         android:translationZ="22dp"
         android:outlineSpotShadowColor="@color/color_shadow"
         android:outlineAmbientShadowColor="@color/color_shadow"
@@ -27,17 +27,17 @@
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.Moner.Bold"
             android:textSize="22sp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/spacing_lg"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingConstraints"
-            android:text="Receipt Gather" />
+            android:text="@string/receipt_gather_title" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_subtitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Manual Scan Receipt and Fetched Receipt from Google Account will appear here, click item to record as spending."
+            android:text="@string/receipt_gather_subtitle"
             android:textAppearance="@style/TextAppearance.Moner.Regular"
             android:textColor="@color/color_text_secondary"
             android:textSize="@dimen/text_size_sm"
@@ -46,52 +46,62 @@
             app:layout_constraintStart_toStartOf="@id/tv_title"
             app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
+        <!-- Google account chip: shows the email when connected, tap to connect otherwise. -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/mcv_google"
             style="@style/Widget.Moner.MaterialCardView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="20dp"
-            app:cardBackgroundColor="#EBEAEA"
+            android:layout_marginTop="@dimen/spacing_md"
+            android:layout_marginBottom="@dimen/spacing_xl"
+            app:cardBackgroundColor="@color/color_bg_google_chip"
             app:cardCornerRadius="20dp"
+            app:rippleColor="@color/color_ripple_grey"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_subtitle">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
+            <com.alviy.moner.core.designsystem.ShimmerLayout
+                android:id="@+id/shimmer_google"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:rippleColor="@color/color_ripple_grey"
-                android:paddingVertical="8dp"
-                android:paddingHorizontal="10dp">
+                app:shimmer_maskToContent="false">
 
-                <ImageView
-                    android:id="@+id/iv_google"
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:src="@drawable/ic_google"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_google_desc"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/tv_google_desc"
-                    app:tint="#8E8E8E" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_google_desc"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:text="Connect your google account to fetch."
-                    android:textAppearance="@style/TextAppearance.Moner.SemiBold"
-                    android:textColor="@color/color_text_secondary"
-                    android:textSize="10sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/iv_google"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:paddingVertical="@dimen/spacing_sm"
+                    android:paddingHorizontal="10dp">
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    <ImageView
+                        android:id="@+id/iv_google"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_google"
+                        app:layout_constraintBottom_toBottomOf="@id/tv_google_desc"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/tv_google_desc"
+                        app:tint="@color/color_icon_muted" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tv_google_desc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_xs"
+                        android:text="@string/receipt_gather_google_connect"
+                        android:textAppearance="@style/TextAppearance.Moner.SemiBold"
+                        android:textColor="@color/color_text_secondary"
+                        android:textSize="@dimen/text_size_xs"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/iv_google"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.alviy.moner.core.designsystem.ShimmerLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -114,25 +124,57 @@
         tools:itemCount="4"
         tools:listitem="@layout/item_receipt" />
 
+    <!-- Skeleton shown over the list while receipts are being fetched. -->
+    <com.alviy.moner.core.designsystem.ShimmerLayout
+        android:id="@+id/shimmer_receipts"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="@dimen/spacing_lg"
+        android:layout_marginTop="120dp"
+        android:paddingTop="30dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include layout="@layout/item_receipt_skeleton" />
+            <include layout="@layout/item_receipt_skeleton" />
+            <include layout="@layout/item_receipt_skeleton" />
+            <include layout="@layout/item_receipt_skeleton" />
+            <include layout="@layout/item_receipt_skeleton" />
+            <include layout="@layout/item_receipt_skeleton" />
+
+        </LinearLayout>
+
+    </com.alviy.moner.core.designsystem.ShimmerLayout>
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_fetch"
         style="@style/Widget.Material3.Button.IconButton.Filled"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="4dp"
+        android:layout_marginStart="@dimen/spacing_lg"
+        android:layout_marginEnd="@dimen/spacing_xs"
         android:layout_marginBottom="32dp"
-        android:backgroundTint="@color/color_surface_dark"
-        android:text="Fetch Receipt"
+        android:backgroundTint="@color/color_btn_dark"
+        android:enabled="false"
+        android:text="@string/receipt_gather_fetch"
         android:textAppearance="@style/TextAppearance.Moner.SemiBold"
-        android:textColor="@color/white"
-        app:backgroundTint="@color/color_surface_dark"
+        android:textColor="@color/color_btn_dark_content"
+        app:backgroundTint="@color/color_btn_dark"
         app:cornerRadius="@dimen/radius_md"
         app:icon="@drawable/ic_fetch_square"
         app:iconGravity="textStart"
         app:iconPadding="6dp"
         app:iconSize="20dp"
-        app:iconTint="@color/white"
+        app:iconTint="@color/color_btn_dark_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/btn_scan"
         app:layout_constraintHorizontal_bias="0"
@@ -144,11 +186,11 @@
         style="@style/Widget.Material3.Button.IconButton.Filled"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="@dimen/spacing_xs"
+        android:layout_marginEnd="@dimen/spacing_lg"
         android:layout_marginBottom="32dp"
         android:backgroundTint="@color/color_surface_dark"
-        android:text="Scan Receipt"
+        android:text="@string/receipt_gather_scan"
         android:textAppearance="@style/TextAppearance.Moner.SemiBold"
         android:textColor="@color/white"
         app:backgroundTint="@color/color_surface_dark"

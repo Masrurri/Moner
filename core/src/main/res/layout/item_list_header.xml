@@ -8,5 +8,5 @@
     android:layout_marginBottom="10dp"
     android:textAppearance="@style/TextAppearance.Moner.SemiBold"
     android:textColor="@color/white_grey"
-    android:textSize="@dimen/text_size_sm"
+    android:textSize="@dimen/text_size_md"
     tools:text="Today" />

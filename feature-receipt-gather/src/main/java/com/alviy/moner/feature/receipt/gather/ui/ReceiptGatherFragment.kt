@@ -93,6 +93,7 @@ class ReceiptGatherFragment : BaseFragment<FragmentReceiptGatherBinding>() {
         shimmerReceipts.isVisible = isLoading
         shimmerReceipts.setShimmering(isLoading)
         rvReceipts.isVisible = !isLoading
+        tvTitleEmailReceipt.isVisible = !isLoading
         btnFetch.setIconSpinning(isLoading)
     }
 

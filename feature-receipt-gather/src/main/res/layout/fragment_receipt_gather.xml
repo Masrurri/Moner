@@ -126,6 +126,7 @@
                 android:textAppearance="@style/TextAppearance.Moner.Bold"
                 android:textColor="@color/color_text_secondary"
                 android:textSize="18sp"
+                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="MissingConstraints" />

@@ -33,9 +33,9 @@ class ReceiptGatherFragment : BaseFragment<FragmentReceiptGatherBinding>() {
             try {
                 val auth = Identity.getAuthorizationClient(requireActivity())
                     .getAuthorizationResultFromIntent(result.data)
-                auth.accessToken?.let(viewModel::onAuthGoogleSuccess) ?: viewModel.onAuthGoogleFailed()
+                auth.accessToken?.let(viewModel::onGmailAuthorized) ?: viewModel.onGmailNotAuthorized()
             } catch (e: Exception) {
-                viewModel.onAuthGoogleFailed()
+                viewModel.onGmailNotAuthorized()
             }
         }
 
@@ -50,12 +50,26 @@ class ReceiptGatherFragment : BaseFragment<FragmentReceiptGatherBinding>() {
         setStatusBarColor(binding.getColor(CoreR.color.white))
         rvReceipts.adapter = receiptListAdapter
         rvReceipts.layoutManager = LinearLayoutManager(requireContext())
-        btnFetch.setOnClickListener { viewModel.fetchGmailReceipts() }
+        btnFetch.setOnClickListener {
+            if (viewModel.isGmailAuthorized.value) viewModel.fetchGmailReceipts() else authorizeGmail()
+        }
         checkGoogleAuthStatus()
     }
 
     override fun observeData() {
+        observeState(viewModel.isGmailAuthorized, onChange = ::renderFetchButton)
         observeFetchedReceipts()
+    }
+
+    /** Not authorized yet → "Auth Gmail" with the Google icon; authorized → "Fetch Receipt". */
+    private fun renderFetchButton(isAuthorized: Boolean) = with(binding.btnFetch) {
+        if (isAuthorized) {
+            setText(R.string.receipt_gather_fetch)
+            setIconResource(CoreR.drawable.ic_fetch_square)
+        } else {
+            setText(R.string.receipt_gather_auth_gmail)
+            setIconResource(CoreR.drawable.ic_google)
+        }
     }
 
     private fun observeFetchedReceipts() {
@@ -93,18 +107,31 @@ class ReceiptGatherFragment : BaseFragment<FragmentReceiptGatherBinding>() {
         .setRequestedScopes(listOf(Scope(GMAIL_READONLY)))
         .build()
 
-    /** Silent check on open: never launches UI, only loads the profile when already authorized. */
+    /** Silent check on open: never launches UI, only decides which label the button shows. */
     private fun checkGoogleAuthStatus() {
         Identity.getAuthorizationClient(requireActivity()).authorize(buildAuthRequest())
             .addOnSuccessListener { result ->
                 val token = result.accessToken
                 if (!result.hasResolution() && token != null) {
-                    viewModel.onGoogleAlreadyAuthorized(token)
+                    viewModel.onGmailAuthorized(token)
                 } else {
-                    viewModel.onGoogleNotAuthorized()          // needs consent → not connected
+                    viewModel.onGmailNotAuthorized()           // needs consent → show "Auth Gmail"
                 }
             }
-            .addOnFailureListener { viewModel.onGoogleNotAuthorized() }
+            .addOnFailureListener { viewModel.onGmailNotAuthorized() }
+    }
+
+    /** Interactive auth from the button; shows the consent screen when needed. */
+    private fun authorizeGmail() {
+        Identity.getAuthorizationClient(requireActivity()).authorize(buildAuthRequest())
+            .addOnSuccessListener { result ->
+                if (result.hasResolution()) {
+                    authLauncher.launch(IntentSenderRequest.Builder(result.pendingIntent!!.intentSender).build())
+                } else {
+                    result.accessToken?.let(viewModel::onGmailAuthorized) ?: viewModel.onGmailNotAuthorized()
+                }
+            }
+            .addOnFailureListener { viewModel.onGmailNotAuthorized() }
     }
 
     private companion object {

@@ -33,9 +33,9 @@ class ReceiptGatherFragment : BaseFragment<FragmentReceiptGatherBinding>() {
             try {
                 val auth = Identity.getAuthorizationClient(requireActivity())
                     .getAuthorizationResultFromIntent(result.data)
-                auth.accessToken?.let(viewModel::onAuthGoogleSuccess) ?: viewModel.onAuthGoogleFailed("No access token")
+                auth.accessToken?.let(viewModel::onAuthGoogleSuccess) ?: viewModel.onAuthGoogleFailed()
             } catch (e: Exception) {
-                viewModel.onAuthGoogleFailed(e.message)
+                viewModel.onAuthGoogleFailed()
             }
         }
 
@@ -50,34 +50,12 @@ class ReceiptGatherFragment : BaseFragment<FragmentReceiptGatherBinding>() {
         setStatusBarColor(binding.getColor(CoreR.color.white))
         rvReceipts.adapter = receiptListAdapter
         rvReceipts.layoutManager = LinearLayoutManager(requireContext())
-        mcvGoogle.setOnClickListener { connectGoogleAccount() }
         btnFetch.setOnClickListener { viewModel.fetchGmailReceipts() }
         checkGoogleAuthStatus()
     }
 
     override fun observeData() {
-        observeGoogleProfile()
         observeFetchedReceipts()
-    }
-
-    // ---------------------------------------------------------------- Rendering
-
-    private fun observeGoogleProfile() {
-        observeStateFlow(
-            flow = viewModel.googleProfile,
-            onLoading = { renderGoogleAccount(getString(R.string.receipt_gather_google_checking), GoogleState.LOADING) },
-            onError = { renderGoogleAccount(getString(R.string.receipt_gather_google_connect), GoogleState.NOT_CONNECTED) }
-        ) { profile ->
-            renderGoogleAccount(profile.emailAddress, GoogleState.CONNECTED)
-        }
-    }
-
-    /** Connected → email shown and fetch enabled; not connected → chip is tappable to connect. */
-    private fun renderGoogleAccount(description: String?, state: GoogleState) = with(binding) {
-        tvGoogleDesc.text = description
-        shimmerGoogle.setShimmering(state == GoogleState.LOADING)
-        mcvGoogle.isClickable = state == GoogleState.NOT_CONNECTED
-        btnFetch.isEnabled = state == GoogleState.CONNECTED
     }
 
     private fun observeFetchedReceipts() {
@@ -117,7 +95,6 @@ class ReceiptGatherFragment : BaseFragment<FragmentReceiptGatherBinding>() {
 
     /** Silent check on open: never launches UI, only loads the profile when already authorized. */
     private fun checkGoogleAuthStatus() {
-        viewModel.onCheckingGoogleAuth()
         Identity.getAuthorizationClient(requireActivity()).authorize(buildAuthRequest())
             .addOnSuccessListener { result ->
                 val token = result.accessToken
@@ -129,21 +106,6 @@ class ReceiptGatherFragment : BaseFragment<FragmentReceiptGatherBinding>() {
             }
             .addOnFailureListener { viewModel.onGoogleNotAuthorized() }
     }
-
-    /** Interactive connect from the Google chip; shows the consent screen when needed. */
-    private fun connectGoogleAccount() {
-        Identity.getAuthorizationClient(requireActivity()).authorize(buildAuthRequest())
-            .addOnSuccessListener { result ->
-                if (result.hasResolution()) {
-                    authLauncher.launch(IntentSenderRequest.Builder(result.pendingIntent!!.intentSender).build())
-                } else {
-                    result.accessToken?.let(viewModel::onAuthGoogleSuccess)
-                }
-            }
-            .addOnFailureListener { viewModel.onAuthGoogleFailed(it.message) }
-    }
-
-    private enum class GoogleState { LOADING, CONNECTED, NOT_CONNECTED }
 
     private companion object {
         const val GMAIL_READONLY = "https://www.googleapis.com/auth/gmail.readonly"

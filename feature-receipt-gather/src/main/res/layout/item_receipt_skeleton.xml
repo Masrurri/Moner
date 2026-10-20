@@ -13,7 +13,7 @@
         android:id="@+id/skeleton_icon"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:background="@drawable/bg_avatar_circle"
+        android:background="@drawable/bg_medium_rounded"
         android:backgroundTint="@color/color_skeleton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

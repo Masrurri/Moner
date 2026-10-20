@@ -95,7 +95,6 @@
             app:layout_constraintTop_toBottomOf="@id/btn_selected_month"
             tools:text="Rp 4.250.000" />
 
-
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_spend"
             style="@style/Widget.Material3.Button.IconButton.Filled"

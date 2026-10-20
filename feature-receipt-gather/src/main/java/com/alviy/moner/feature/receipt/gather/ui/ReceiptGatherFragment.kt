@@ -66,7 +66,7 @@ class ReceiptGatherFragment : BaseFragment<FragmentReceiptGatherBinding>() {
     private fun renderFetchButton(isAuthorized: Boolean) = with(binding.btnFetch) {
         if (isAuthorized) {
             setText(R.string.receipt_gather_fetch)
-            setIconResource(CoreR.drawable.ic_fetch_square)
+            setIconResource(CoreR.drawable.ic_fetch)
         } else {
             setText(R.string.receipt_gather_auth_gmail)
             setIconResource(CoreR.drawable.ic_google)

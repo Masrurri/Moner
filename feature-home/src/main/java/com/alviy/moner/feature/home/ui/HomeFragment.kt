@@ -66,7 +66,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         val remaining = summary.remainingLimit
         lpv.progress = summary.limitProgress
         tvLimitTotal.isVisible = limit != null
-        tvLimitTotal.text = limit?.let { getString(R.string.home_limit_of, it.toIDR()) }
+        tvLimitTotal.text = limit?.toIDR()
         tvLimitValue.isVisible = limit != null
         btnSetLimit.isVisible = limit == null
         tvLimitValue.text = when {

@@ -12,6 +12,7 @@ import com.alviy.moner.core.common.ext.getColor
 import com.alviy.moner.core.common.ext.setStatusBarColor
 import com.alviy.moner.core.common.ext.showDialog
 import com.alviy.moner.core.designsystem.TransactionListDialog
+import com.alviy.moner.core.designsystem.setIconSpinning
 import com.alviy.moner.feature.receipt.gather.R
 import com.alviy.moner.feature.receipt.gather.databinding.FragmentReceiptGatherBinding
 import com.alviy.moner.feature.receipt.gather.ui.model.toReceiptListUi
@@ -92,6 +93,7 @@ class ReceiptGatherFragment : BaseFragment<FragmentReceiptGatherBinding>() {
         shimmerReceipts.isVisible = isLoading
         shimmerReceipts.setShimmering(isLoading)
         rvReceipts.isVisible = !isLoading
+        btnFetch.setIconSpinning(isLoading)
     }
 
     private fun receiptMessage(id: String, channel: String = "", title: String = "", destination: String = "") =

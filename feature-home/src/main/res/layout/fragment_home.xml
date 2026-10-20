@@ -365,22 +365,6 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!--    &lt;!&ndash; Category filter pills &ndash;&gt;-->
-    <!--    <androidx.recyclerview.widget.RecyclerView-->
-    <!--        android:id="@+id/rv_category"-->
-    <!--        android:layout_width="0dp"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginHorizontal="@dimen/spacing_lg"-->
-    <!--        android:layout_marginTop="@dimen/spacing_md"-->
-    <!--        android:layout_marginBottom="@dimen/spacing_lg"-->
-    <!--        android:clipToPadding="false"-->
-    <!--        android:orientation="horizontal"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@id/cl_header"-->
-    <!--        tools:itemCount="4"-->
-    <!--        tools:listitem="@layout/item_pills" />-->
-
     <!-- Recent transactions header row -->
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_recent_header"

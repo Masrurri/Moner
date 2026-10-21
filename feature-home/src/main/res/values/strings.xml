@@ -10,7 +10,7 @@
     <string name="home_spend_limit">Spending Limit</string>
     <string name="home_see_all">See all</string>
     <string name="home_total_spend">Total Spending</string>
-    <string name="home_recent_transactions">Recent Transactions</string>
+    <string name="home_recent_transactions">Recent Expenses</string>
     <string name="home_empty_state">No transactions this month. Tap Spend to add one.</string>
     <string name="home_select_time_default">This Month</string>
     <string name="home_limit_not_set">Tap to set</string>

@@ -5,19 +5,18 @@
     <color name="black">#111111</color>
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>
-    <color name="white_grey">#EDEEF0</color>
+    <color name="white_grey">#F4F4F4</color>
 
     <!-- Surfaces -->
     <color name="color_bg_app">#F7F7F5</color>
     <color name="color_bg_surface">#FFFFFF</color>
     <color name="color_bg_field">#F1F1EF</color>
-    <color name="color_bg_chip">#DCDDDE</color>
-    <color name="color_bg_google_chip">#EBEAEA</color>
+    <color name="color_bg_chip">#E7E7E7</color>
     <color name="color_bg_dark">#151515</color>
-    <color name="color_surface_dark">#1C1C1C</color>
+    <color name="color_surface_dark">#1B1C1E</color>
     <color name="color_surface_ink">#111111</color>
     <color name="color_stroke_hairline">#EAEAEA</color>
-    <color name="color_stroke_dark">#313131</color>
+    <color name="color_stroke_dark">#373737</color>
     <color name="color_shadow">#29000000</color>
 
     <!-- Ripples -->

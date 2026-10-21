@@ -20,7 +20,6 @@ class ReceiptListAdapter : ListAdapter<ReceiptListModel, RecyclerView.ViewHolder
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(row: ReceiptListModel.DateHeader) {
             binding.tvListHeader.text = row.label
-            binding.tvListHeader.setTextColor(binding.getColor(R.color.color_text_secondary))
         }
     }
 

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_bg_dark"
+    android:background="#F4F4F4"
     tools:context=".ui.HomeFragment">
 
     <!-- Total expense card -->
@@ -13,6 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_rounded_bottom"
+        android:backgroundTint="@color/color_surface_dark"
+        android:translationZ="2dp"
         android:padding="@dimen/spacing_lg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,6 +36,7 @@
             android:textAppearance="@style/TextAppearance.Moner.SemiBold"
             android:textSize="@dimen/text_size_lg"
             android:layout_marginStart="@dimen/spacing_sm"
+            android:textColor="@color/white_grey"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@id/iv_avatar"
@@ -48,7 +51,7 @@
             android:layout_marginStart="@dimen/spacing_sm"
             android:text="@string/home_welcome_back"
             android:textAppearance="@style/TextAppearance.Moner.Regular"
-            android:textColor="@color/color_text_secondary"
+            android:textColor="@color/color_text_on_dark_secondary"
             android:textSize="@dimen/text_size_sm"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
@@ -63,7 +66,7 @@
             android:letterSpacing="0.02"
             android:text="@string/home_total_spend"
             android:textAppearance="@style/TextAppearance.Moner.SemiBold"
-            android:textColor="@color/color_text_secondary"
+            android:textColor="@color/color_text_on_dark_secondary"
             android:textSize="@dimen/text_size_lg"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_welcome" />
@@ -74,9 +77,9 @@
             android:layout_width="wrap_content"
             android:text="@string/home_select_time_default"
             android:textSize="@dimen/text_size_sm"
-            app:iconTint="@color/color_text_secondary"
-            android:textColor="@color/color_text_secondary"
-            android:backgroundTint="@color/color_bg_chip"
+            app:iconTint="#2A2A2A"
+            android:textColor="@color/color_text_on_dark_secondary"
+            android:backgroundTint="#2A2A2A"
             app:rippleColor="@color/color_ripple_grey"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/tv_total_label"
@@ -88,7 +91,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_2xs"
             android:textAppearance="@style/TextAppearance.Moner.Bold"
-            android:textColor="@color/color_text_heading"
+            android:textColor="@color/white_grey"
             android:textSize="@dimen/text_size_display"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -101,18 +104,20 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lg"
-            android:backgroundTint="@color/color_surface_dark"
             android:text="@string/home_action_spend"
+            android:backgroundTint="#2D2E32"
             android:textAppearance="@style/TextAppearance.Moner.SemiBold"
             android:textColor="@color/white"
-            app:backgroundTint="@color/color_surface_dark"
+            app:backgroundTint="#2D2E32"
             app:cornerRadius="@dimen/radius_field"
+            app:strokeWidth="1dp"
+            app:strokeColor="#4E4F53"
             app:icon="@drawable/ic_add_square"
             app:iconGravity="textStart"
             app:iconPadding="6dp"
             app:iconSize="16dp"
-            app:layout_constraintHorizontal_bias="0"
             app:iconTint="@color/white"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/btn_stats"
             app:layout_constraintTop_toBottomOf="@id/tv_total_amount"
@@ -124,17 +129,19 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lg"
-            android:backgroundTint="@color/white"
             android:text="@string/home_action_receipt"
+            android:backgroundTint="#2D2E32"
             android:textAppearance="@style/TextAppearance.Moner.SemiBold"
-            android:textColor="@color/black"
-            app:backgroundTint="@color/white"
+            android:textColor="@color/white"
+            app:backgroundTint="#2D2E32"
             app:cornerRadius="@dimen/radius_field"
+            app:strokeWidth="1dp"
+            app:strokeColor="#4E4F53"
             app:icon="@drawable/ic_receipt"
             app:iconGravity="textStart"
             app:iconPadding="6dp"
             app:iconSize="16dp"
-            app:iconTint="@color/black"
+            app:iconTint="@color/white"
             app:layout_constraintEnd_toStartOf="@id/btn_stats"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_total_amount"
@@ -147,17 +154,19 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lg"
             android:layout_marginHorizontal="@dimen/spacing_2xs"
-            android:backgroundTint="@color/white"
             android:text="@string/home_action_scan"
+            android:backgroundTint="#2D2E32"
             android:textAppearance="@style/TextAppearance.Moner.SemiBold"
-            android:textColor="@color/black"
-            app:backgroundTint="@color/white"
+            android:textColor="@color/white"
+            app:backgroundTint="#2D2E32"
             app:cornerRadius="@dimen/radius_field"
+            app:strokeWidth="1dp"
+            app:strokeColor="#4E4F53"
             app:icon="@drawable/ic_scan"
             app:iconGravity="textStart"
             app:iconPadding="6dp"
             app:iconSize="16dp"
-            app:iconTint="@color/black"
+            app:iconTint="@color/white"
             app:layout_constraintEnd_toStartOf="@id/btn_spend"
             app:layout_constraintStart_toEndOf="@id/btn_receipt"
             app:layout_constraintTop_toBottomOf="@id/tv_total_amount"
@@ -169,7 +178,7 @@
             android:layout_height="50dp"
             android:layout_marginTop="@dimen/spacing_md"
             android:layout_marginEnd="6dp"
-            android:background="@drawable/bg_rounded"
+            android:background="@drawable/bg_rounded_md"
             app:layout_constraintEnd_toStartOf="@+id/second_stat_container"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
@@ -177,11 +186,10 @@
 
             <ImageView
                 android:id="@+id/iv_spend_today"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
                 android:layout_marginStart="@dimen/spacing_md"
-                android:src="@drawable/ic_money_out"
-                app:tint="#383838"
+                android:src="@drawable/ic_money_out_red"
                 app:layout_constraintBottom_toBottomOf="@id/tv_spend_today_value"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tv_spend_today_label" />
@@ -223,7 +231,7 @@
             android:layout_height="50dp"
             android:layout_marginTop="@dimen/spacing_sm"
             android:layout_marginEnd="@dimen/spacing_md"
-            android:background="@drawable/bg_rounded"
+            android:background="@drawable/bg_rounded_md"
             app:layout_constraintEnd_toStartOf="@+id/second_stat_container"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
@@ -231,14 +239,13 @@
 
             <ImageView
                 android:id="@+id/iv_spend_week"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
                 android:layout_marginStart="@dimen/spacing_md"
-                android:src="@drawable/ic_money_out"
+                android:src="@drawable/ic_money_out_blue"
                 app:layout_constraintBottom_toBottomOf="@id/tv_spend_week_value"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/tv_spend_week_label"
-                app:tint="#383838" />
+                app:layout_constraintTop_toTopOf="@id/tv_spend_week_label" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_spend_week_label"
@@ -276,7 +283,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="6dp"
-            android:background="@drawable/bg_rounded"
+            android:background="@drawable/bg_rounded_md"
             app:layout_constraintBottom_toBottomOf="@id/week_stat_container"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/first_stat_container"
@@ -290,7 +297,8 @@
                 android:src="@drawable/ic_signpost"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tv_limit_label"
-                app:layout_constraintBottom_toBottomOf="@id/tv_limit_label"/>
+                app:layout_constraintBottom_toBottomOf="@id/tv_limit_label"
+                app:tint="@color/white_grey" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_limit_label"
@@ -301,7 +309,7 @@
                 android:layout_marginTop="@dimen/spacing_md"
                 android:text="@string/home_spend_limit"
                 android:textAppearance="@style/TextAppearance.Moner.Regular"
-                android:textColor="@color/color_text_secondary"
+                android:textColor="@color/white_grey"
                 android:textSize="11sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/iv_limit"
@@ -317,9 +325,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_limit_label"
                 app:lpv_progress="0.2"
-                app:lpv_progressColor="@color/color_text_heading"
                 app:lpv_strokeWidth="6dp"
-                app:lpv_trackColor="@color/color_progress_track" />
+                app:lpv_trackColor="#333333" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_limit_value"
@@ -330,7 +337,7 @@
                 android:layout_marginBottom="@dimen/spacing_md"
                 tools:text="Rp 4.250.000"
                 android:textAppearance="@style/TextAppearance.Moner.Bold"
-                android:textColor="@color/color_text_heading"
+                android:textColor="@color/white_grey"
                 android:textSize="@dimen/text_size_md"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -346,9 +353,10 @@
                 android:textSize="@dimen/text_size_sm"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginBottom="12dp"
-                android:textColor="@color/color_text_secondary"
-                android:backgroundTint="#EBEAEA"
+                android:textColor="@color/white_grey"
+                android:backgroundTint="#333333"
                 app:rippleColor="@color/color_ripple_grey"
+                app:cornerRadius="8dp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -365,7 +373,7 @@
                 android:gravity="right"
                 tools:text="Rp 5.000.000"
                 android:textAppearance="@style/TextAppearance.Moner.Regular"
-                android:textColor="@color/color_text_secondary"
+                android:textColor="@color/white_grey"
                 android:textSize="11sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -375,64 +383,90 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Recent transactions header row -->
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_recent_header"
+    <!-- Anchor: how far the scroll area overlaps up into cl_header -->
+    <Space
+        android:id="@+id/space_header_overlap"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lg"
-        android:text="@string/home_recent_transactions"
-        android:textAppearance="@style/TextAppearance.Moner.SemiBold"
-        android:textColor="@color/white"
-        android:textSize="@dimen/text_size_lg"
-        app:layout_constraintBottom_toBottomOf="@id/btn_see_all"
-        app:layout_constraintEnd_toStartOf="@id/btn_see_all"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/btn_see_all" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_see_all"
-        style="@style/Widget.Moner.Button.PillsIcon"
-        android:layout_width="90dp"
-        android:layout_marginTop="@dimen/spacing_lg"
-        android:layout_marginEnd="@dimen/spacing_lg"
-        android:text="@string/home_see_all"
-        app:strokeWidth="1dp"
-        app:strokeColor="@color/color_stroke_dark"
+        android:layout_height="24dp"
+        app:layout_constraintBottom_toBottomOf="@id/cl_header"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cl_header" />
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- Transactions RecyclerView — only scrollable element -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_transactions"
+    <!-- Scrollable content below the header -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nsv_content"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginHorizontal="@dimen/spacing_lg"
-        android:layout_marginTop="@dimen/spacing_xs"
         android:clipToPadding="false"
-        android:nestedScrollingEnabled="false"
+        android:fillViewport="true"
+        android:paddingTop="24dp"
         android:paddingBottom="96dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_see_all"
-        tools:itemCount="4"
-        tools:listitem="@layout/item_recent_transaction" />
+        app:layout_constraintTop_toTopOf="@id/space_header_overlap">
 
-    <!-- Empty state (overlaps rv_transactions area) -->
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_empty_state"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_marginTop="20dp"
-        android:padding="@dimen/spacing_2xl"
-        android:text="@string/home_empty_state"
-        android:textAppearance="@style/TextAppearance.Moner.Regular"
-        android:textColor="@color/color_text_secondary"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_see_all" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- Recent transactions header row -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_recent_header"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lg"
+                android:layout_marginTop="@dimen/spacing_lg"
+                android:text="@string/home_recent_transactions"
+                android:textAppearance="@style/TextAppearance.Moner.SemiBold"
+                android:textColor="@color/color_text_secondary"
+                android:textSize="@dimen/text_size_lg"
+                app:layout_constraintEnd_toStartOf="@id/btn_see_all"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_see_all"
+                style="@style/Widget.Moner.Button.PillsIcon"
+                android:layout_width="90dp"
+                android:layout_marginEnd="@dimen/spacing_lg"
+                android:text="@string/home_see_all"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/tv_recent_header"
+                app:layout_constraintTop_toTopOf="@id/tv_recent_header" />
+
+            <!-- Transactions list (scrolls with the NestedScrollView) -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_transactions"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/spacing_lg"
+                android:layout_marginTop="6dp"
+                android:nestedScrollingEnabled="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_recent_header"
+                tools:itemCount="4"
+                tools:listitem="@layout/item_recent_transaction" />
+
+            <!-- Empty state (overlaps rv_transactions area) -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_empty_state"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:padding="@dimen/spacing_2xl"
+                android:text="@string/home_empty_state"
+                android:textAppearance="@style/TextAppearance.Moner.Regular"
+                android:textColor="@color/color_text_secondary"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btn_see_all" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

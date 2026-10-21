@@ -38,7 +38,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     override fun initView() = with(binding) {
         observeNavigation(viewModel)
-        setStatusBarColor(getColor(R.color.white_grey))
+        setStatusBarColor(getColor(R.color.color_surface_dark), false)
         rvTransactions.adapter = transactionAdapter
         rvTransactions.layoutManager = LinearLayoutManager(requireContext())
         btnSelectedMonth.setOnClickListener { showSelectMonthDialog() }

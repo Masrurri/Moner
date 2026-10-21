@@ -16,8 +16,14 @@ class AppPreferences @Inject constructor(
         get() = prefs.getBoolean(KEY_NOTIFICATIONS, false)
         set(value) = prefs.edit { putBoolean(KEY_NOTIFICATIONS, value) }
 
+    /** Gmail receive time (epoch millis) of the newest email already fetched; 0 = never fetched. */
+    var receiptsFetchedUntil: Long
+        get() = prefs.getLong(KEY_RECEIPTS_FETCHED_UNTIL, 0L)
+        set(value) = prefs.edit { putLong(KEY_RECEIPTS_FETCHED_UNTIL, value) }
+
     companion object {
         private const val PREFS_NAME = "moner_prefs"
         private const val KEY_NOTIFICATIONS = "notifications_enabled"
+        private const val KEY_RECEIPTS_FETCHED_UNTIL = "receipts_fetched_until"
     }
 }

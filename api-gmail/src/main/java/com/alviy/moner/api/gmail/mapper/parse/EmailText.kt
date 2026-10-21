@@ -62,7 +62,7 @@ class EmailText(val rows: List<List<String>>) {
      */
     fun rowsAfter(label: String, max: Int, stopAtPair: Boolean = true): List<List<String>> {
         val want = norm(label)
-        val i = rows.indexOfFirst { norm(it.first()) == want }
+        val i = rows.indexOfFirst { it.size == 1 && norm(it[0]) == want }   // "Penerima | Budi" is a pair, not a card
         if (i < 0) return emptyList()
         val after = rows.drop(i + 1)
         return (if (stopAtPair) after.takeWhile { it.size == 1 } else after).take(max)

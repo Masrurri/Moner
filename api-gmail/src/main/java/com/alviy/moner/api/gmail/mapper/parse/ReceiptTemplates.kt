@@ -1,98 +1,132 @@
 package com.alviy.moner.api.gmail.mapper.parse
 
-import com.alviy.moner.api.gmail.model.PaymentMethod
-import com.alviy.moner.api.gmail.model.ReceiptTransaction
-
+import com.alviy.moner.core.domain.model.PaymentMethod
+import com.alviy.moner.core.domain.model.Receipt
+import com.alviy.moner.core.domain.model.ReceiptActivity
 
 class MessageContext(
     val id: String,                 // Gmail message id
     val from: String,
     val subject: String,
     val text: EmailText,
-    val fallbackMillis: Long,       // Gmail's own receive time; used when the email has no parseable date
-)
+    val receivedAt: Long,           // Gmail's receive time; fills in a missing date or time
+) {
+    /** Why a field is missing or fell back; GmailReceiptParser logs these for debugging. */
+    val notes = mutableListOf<String>()
 
-/** One template per sender/layout. Return null when the email is not a payment (it is then skipped). */
+    /** Records why the email was skipped and returns null, for `?: return ctx.skip("...")`. */
+    fun skip(reason: String): Receipt? {
+        notes += "skipped: $reason"
+        return null
+    }
+}
+
+/** One template per sender/layout. Return null (via [MessageContext.skip]) when the email is not a payment. */
 fun interface ReceiptTemplate {
-    fun parse(ctx: MessageContext, channel: String): ReceiptTransaction?
+    fun parse(ctx: MessageContext, channel: String): Receipt?
 }
 
 private fun String?.meaningful(): String? = this?.trim()?.takeIf { it.isNotEmpty() && it != "-" && it != "–" }
 
-/** The email's own date when parsed, otherwise Gmail's receive time. */
-private fun MessageContext.whenMillis(parsed: ParsedDate?): Long = parsed?.millis ?: fallbackMillis
+private fun String.hasWord(vararg words: String): Boolean =
+    words.any { Regex("""\b${Regex.escape(it)}\b""", RegexOption.IGNORE_CASE).containsMatchIn(this) }
 
-private fun MessageContext.build(
+/** Whole words only, so "dana" doesn't match "pendanaan" and "atm" doesn't match inside a name. */
+internal fun paymentMethodOf(text: String?): PaymentMethod? {
+    val s = text ?: return null
+    return when {
+        s.hasWord("qris", "qr") -> PaymentMethod.QRIS
+        s.hasWord("debit") -> PaymentMethod.DEBIT
+        s.hasWord("kredit", "credit", "kartu kredit", "credit card", "cc", "visa", "mastercard", "jcb") -> PaymentMethod.CREDIT_CARD
+        s.hasWord("atm") -> PaymentMethod.ATM
+        s.hasWord("ovo", "gopay", "dana", "shopeepay", "linkaja", "grabpay", "e-wallet", "ewallet", "wallet") -> PaymentMethod.EWALLET
+        else -> null
+    }
+}
+
+/** Top-up first: "Pembayaran Top Up GoPay" is a top-up, not a payment. */
+internal fun activityOf(text: String?): ReceiptActivity? {
+    val s = text ?: return null
+    return when {
+        s.hasWord("top-up", "top up", "topup") -> ReceiptActivity.TOP_UP
+        s.hasWord("transfer") -> ReceiptActivity.TRANSFER
+        s.hasWord("pembayaran", "payment", "bayar", "purchase") -> ReceiptActivity.PAYMENT
+        else -> null
+    }
+}
+
+/** Shared by every template so blank fields, date fallback and logging behave the same everywhere. */
+private fun MessageContext.receipt(
     channel: String,
-    title: String,
-    destination: String,
+    activity: ReceiptActivity,
+    destination: String?,
+    reference: String?,
     money: Money,
-    parsedDate: ParsedDate?,
+    date: ParsedDate?,
     method: PaymentMethod?,
     note: String?,
-) = ReceiptTransaction(
-    id = id,
-    channel = channel,
-    title = title,
-    destination = destination,
-    amount = money.value,
-    date = ReceiptDateFormat.date(whenMillis(parsedDate)),
-    time = if (parsedDate == null || parsedDate.hasTime) ReceiptDateFormat.time(whenMillis(parsedDate)) else null,
-    method = method,
-    note = note,
-)
+): Receipt {
+    when {
+        date == null -> notes += "date+time: using received time"
+        date.time == null -> notes += "time: using received time"
+    }
+    if (destination.meaningful() == null) notes += "destination: using channel"
+    if (method == null) notes += "method: unknown"
+    return Receipt(
+        id = id,
+        channel = channel,
+        activity = activity,
+        destination = destination.meaningful() ?: channel,
+        reference = reference.meaningful(),
+        amount = money.value,
+        transactionAt = date?.toMillis(receivedAt) ?: receivedAt,
+        receivedAt = receivedAt,
+        method = method,
+        note = note.meaningful(),
+    )
+}
 
 /** BCA "Internet Transaction Journal": "Label : value" rows, amount like "IDR 4,000.00". */
 object BcaTemplate : ReceiptTemplate {
-    override fun parse(ctx: MessageContext, channel: String): ReceiptTransaction? {
+    override fun parse(ctx: MessageContext, channel: String): Receipt? {
         val t = ctx.text
         val status = t.value("Status")
-        if (status != null && !status.contains("berhasil", true) && !status.contains("success", true)) return null
-
+        if (status != null && !status.contains("berhasil", true) && !status.contains("success", true)) {
+            return ctx.skip("status \"$status\"")
+        }
         val money = AmountParser.parse(
             t.value("Total Bayar", "Nominal Tujuan", "Nominal Transfer", "Jumlah Transfer", "Jumlah", "Nominal")
-        ) ?: return null
+        ) ?: return ctx.skip("no amount")
         val jenis = t.value("Jenis Transaksi")                      // payments, e.g. "Pembayaran QRIS"
         val transferKind = t.value("Jenis Transfer")                // transfers; the text describes the schedule
 
-        return ctx.build(
+        return ctx.receipt(
             channel = channel,
-            title = jenis ?: if (transferKind != null) "Transfer" else "Transaksi BCA",
-            destination = t.value("Pembayaran Ke", "Nama Penerima", "Penerima", "Tujuan") ?: channel,
+            activity = activityOf(jenis) ?: if (transferKind != null) ReceiptActivity.TRANSFER else ReceiptActivity.PAYMENT,
+            destination = t.value("Pembayaran Ke", "Nama Penerima", "Penerima", "Tujuan"),
+            reference = t.value("No. Referensi", "Nomor Referensi", "No. Ref", "Rekening Tujuan", "No. Rekening Tujuan"),
             money = money,
-            parsedDate = ReceiptDateParser.parseDetailed(t.value("Tanggal Transaksi", "Tanggal")),
-            method = PaymentMethod.fromText(jenis ?: transferKind ?: ctx.subject),
-            note = t.value("Keterangan", "Berita").meaningful(),
+            date = ReceiptDateParser.parse(t.value("Tanggal Transaksi", "Tanggal")),
+            method = paymentMethodOf(jenis ?: transferKind),
+            note = t.value("Keterangan", "Berita"),
         )
     }
 }
 
 /**
- * Livin' by Mandiri: the heading decides the kind (Transfer / Top-up / Pembayaran Berhasil).
+ * Livin' by Mandiri. The subject decides the activity: "Pembayaran Berhasil" / "Transfer Berhasil" / "Top-up Berhasil".
  * Transfer and Top-up layouts come from screenshots; the Pembayaran layout is a best guess.
  */
 object LivinTemplate : ReceiptTemplate {
-    private val PARTY_LABELS = listOf("Penerima", "Penyedia Jasa", "Merchant", "Nama Merchant", "Tujuan Pembayaran")
+    private val PARTY_LABELS = arrayOf("Penerima", "Penyedia Jasa", "Merchant", "Nama Merchant", "Tujuan Pembayaran")
 
     /** Livin uses two layouts: "label | value" in one row, or the value on the row below the label. */
     private fun EmailText.field(vararg labels: String): String? =
         labels.firstNotNullOfOrNull { value(it) ?: below(it) }
 
-    override fun parse(ctx: MessageContext, channel: String): ReceiptTransaction? {
+    override fun parse(ctx: MessageContext, channel: String): Receipt? {
         val t = ctx.text
-        val haystack = (ctx.subject + " " + t.flat).lowercase()
-        val (title, method) = when {
-            "top-up berhasil" in haystack || "top up berhasil" in haystack -> "Top-up" to PaymentMethod.TOPUP
-            "transfer berhasil" in haystack -> "Transfer" to PaymentMethod.TRANSFER
-            "pembayaran berhasil" in haystack || "payment successful" in haystack -> {
-                // The QR payment email says "dengan QR" and has an "No. Ref. QRIS" row, but no "Jenis" label.
-                val isQr = "qris" in haystack || "dengan qr" in haystack
-                val m = PaymentMethod.fromText(t.field("Jenis Transaksi", "Metode Pembayaran"))
-                    ?: if (isQr) PaymentMethod.QRIS else null
-                (if (m == PaymentMethod.QRIS) "Pembayaran QRIS" else "Pembayaran") to m
-            }
-            else -> return null                                      // not a payment email
-        }
+        val activity = activityOf(ctx.subject) ?: return ctx.skip("subject is not Pembayaran/Transfer/Top-up")
 
         // "Total Transaksi" (incl. fee) wins over the base amount.
         val money = AmountParser.parse(
@@ -101,21 +135,28 @@ object LivinTemplate : ReceiptTemplate {
                 "Nominal Pembayaran", "Nominal Transaksi",
                 "Jumlah Transfer", "Nominal Top-up", "Nominal Top up", "Nominal",
             )
-        ) ?: return null
+        ) ?: return ctx.skip("no amount")
 
-        // Card layout: label, then name / number / bank on their own lines. Only the name is kept.
-        val destination = PARTY_LABELS
-            .firstNotNullOfOrNull { label -> t.lines(label, 3).firstOrNull() }
-            ?: channel
+        // Labelled fields first; the body is only scanned for QR, since ads in the footer mention cards too.
+        // The QR payment email says "dengan QR" and has a "No. Ref. QRIS" row, but no "Jenis" label.
+        val method = paymentMethodOf(t.field("Jenis Transaksi", "Metode Pembayaran", "Sumber Dana", "Jenis Kartu"))
+            ?: PaymentMethod.QRIS.takeIf {
+                activity == ReceiptActivity.PAYMENT && t.flat.hasWord("qris", "dengan qr")
+            }
 
-        return ctx.build(
+        // Card layout: label, then name / account number / bank on their own lines.
+        val card = PARTY_LABELS.firstNotNullOfOrNull { label -> t.lines(label, 3).takeIf { it.isNotEmpty() } }
+
+        return ctx.receipt(
             channel = channel,
-            title = title,
-            destination = destination,
+            activity = activity,
+            destination = card?.firstOrNull() ?: t.field(*PARTY_LABELS),
+            reference = t.field("No. Referensi", "Nomor Referensi", "No. Ref. QRIS", "No. Ref", "ID Transaksi")
+                ?: card?.getOrNull(1),
             money = money,
-            parsedDate = ReceiptDateParser.parseDetailed(t.field("Tanggal"), t.field("Jam")),
+            date = ReceiptDateParser.parse(t.field("Tanggal"), t.field("Jam")),
             method = method,
-            note = t.field("Keterangan").meaningful(),
+            note = t.field("Keterangan", "Catatan"),
         )
     }
 }
@@ -126,44 +167,52 @@ object LivinTemplate : ReceiptTemplate {
  *    then the stops: pickup name, pickup time, drop-off name, drop-off time.
  *  - GrabFood (Indonesian): "Kamu membayar" / "Rp 29983", "TANGGAL | WAKTU" / "12 Oct 26 10:55 +0700",
  *    "Pesanan Dari:" / restaurant. For group orders "Kamu membayar" is the user's own share, not the order total.
+ * Payment method defaults to E-Wallet when the email doesn't name one.
  */
 object GrabTemplate : ReceiptTemplate {
     private val STOP_TIME = Regex("""^\d{1,2}:\d{2}\s*[AaPp][Mm]$""")
+    private val REFERENCE_LABELS = arrayOf("Booking ID", "Kode Booking", "ID Pesanan", "Order ID")
 
     private class TripStops(val pickupTime: String, val dropoffName: String)
 
-    override fun parse(ctx: MessageContext, channel: String): ReceiptTransaction? =
+    override fun parse(ctx: MessageContext, channel: String): Receipt? =
         if (ctx.text.below("Pesanan Dari") != null) parseFood(ctx, channel) else parseRide(ctx, channel)
 
-    private fun parseFood(ctx: MessageContext, channel: String): ReceiptTransaction? {
+    private fun parseFood(ctx: MessageContext, channel: String): Receipt? {
         val t = ctx.text
-        val money = AmountParser.parse(t.below("Kamu membayar") ?: t.below("TOTAL")) ?: return null
-        val vehicle = t.below("Jenis Kendaraan")                     // "Group Order GrabFood"
-        return ctx.build(
+        val money = AmountParser.parse(t.below("Kamu membayar") ?: t.below("TOTAL")) ?: return ctx.skip("no amount")
+        return ctx.receipt(
             channel = channel,
-            title = if (vehicle == null || "grabfood" in vehicle.lowercase()) "GrabFood" else vehicle,
-            destination = t.below("Pesanan Dari") ?: channel,        // the restaurant
+            activity = ReceiptActivity.GRAB_FOOD,
+            destination = t.below("Pesanan Dari"),                   // the restaurant
+            reference = t.below(*REFERENCE_LABELS),
             money = money,
-            parsedDate = ReceiptDateParser.parseDetailed(t.below("Tanggal")),
-            method = null,                                           // the email doesn't say how it was paid
+            date = ReceiptDateParser.parse(t.below("Tanggal")),
+            method = paymentMethodOf(t.below("Metode Pembayaran", "Dibayar dengan")) ?: PaymentMethod.EWALLET,
             note = null,
         )
     }
 
-    private fun parseRide(ctx: MessageContext, channel: String): ReceiptTransaction? {
+    private fun parseRide(ctx: MessageContext, channel: String): Receipt? {
         val t = ctx.text
-        val money = AmountParser.parse(t.below("Total Paid", "Total Dibayar")) ?: return null
+        val money = AmountParser.parse(t.below("Total Paid", "Total Dibayar")) ?: return ctx.skip("no amount")
         val stops = tripStops(t)
         val pickedUp = t.rows.firstOrNull { it.first().startsWith("Picked up on", ignoreCase = true) }?.joinToString(" ")
-        val service = t.rows.firstOrNull()?.firstOrNull()
-            ?.takeIf { it.startsWith("Grab", ignoreCase = true) && it.length <= 30 }      // "Grab Bike"
-        return ctx.build(
+        // "Grab Bike" / "GrabCar Plus": compare without spaces.
+        val service = t.rows.firstOrNull()?.firstOrNull()?.lowercase()?.replace(" ", "").orEmpty()
+        val activity = when {
+            "grabbike" in service -> ReceiptActivity.GRAB_BIKE
+            "grabcar" in service -> ReceiptActivity.GRAB_CAR
+            else -> ReceiptActivity.OTHER.also { ctx.notes += "activity: unknown Grab service \"$service\"" }
+        }
+        return ctx.receipt(
             channel = channel,
-            title = service ?: "Grab ride",
-            destination = stops?.dropoffName ?: channel,
+            activity = activity,
+            destination = stops?.dropoffName,
+            reference = t.below(*REFERENCE_LABELS),
             money = money,
-            parsedDate = ReceiptDateParser.parseDetailed(pickedUp, stops?.pickupTime),
-            method = PaymentMethod.fromText(t.below("Paid by")),     // "OVO" -> E-wallet
+            date = ReceiptDateParser.parse(pickedUp, stops?.pickupTime),
+            method = paymentMethodOf(t.below("Paid by")) ?: PaymentMethod.EWALLET,   // "OVO" -> E-Wallet
             note = null,
         )
     }
@@ -179,29 +228,27 @@ object GrabTemplate : ReceiptTemplate {
 }
 
 /**
- * For senders without a dedicated template yet (OVO, Shopee...): label-based and forgiving.
+ * For senders without a dedicated template yet: label-based and forgiving.
  * Skips the email when it finds no total, so marketing mail from the same sender is ignored.
  */
-class GenericTemplate(
-    private val title: String,
-    private val method: PaymentMethod? = null,
-) : ReceiptTemplate {
-    override fun parse(ctx: MessageContext, channel: String): ReceiptTransaction? {
+object GenericTemplate : ReceiptTemplate {
+    override fun parse(ctx: MessageContext, channel: String): Receipt? {
         val t = ctx.text
         val money = AmountParser.parse(
             t.value(
                 "Total Pembayaran", "Total Bayar", "Total Belanja", "Total Transaksi",
                 "Total Payment", "Total Paid", "Total", "Jumlah", "Nominal",
             )
-        ) ?: return null
-        return ctx.build(
+        ) ?: return ctx.skip("no amount")
+        return ctx.receipt(
             channel = channel,
-            title = title,
-            destination = t.value("Penerima", "Merchant", "Nama Toko", "Toko", "Pembayaran Ke", "Tujuan") ?: channel,
+            activity = activityOf(t.value("Jenis Transaksi") ?: ctx.subject) ?: ReceiptActivity.PAYMENT,
+            destination = t.value("Penerima", "Merchant", "Nama Toko", "Toko", "Pembayaran Ke", "Tujuan"),
+            reference = t.value("No. Referensi", "Nomor Referensi", "No. Ref", "Order ID", "No. Pesanan", "ID Transaksi"),
             money = money,
-            parsedDate = ReceiptDateParser.parseDetailed(t.value("Tanggal Transaksi", "Tanggal", "Waktu", "Date"), t.value("Jam")),
-            method = method ?: PaymentMethod.fromText(t.value("Metode Pembayaran", "Payment Method")),
-            note = t.value("Keterangan", "Catatan", "Note").meaningful(),
+            date = ReceiptDateParser.parse(t.value("Tanggal Transaksi", "Tanggal", "Waktu", "Date"), t.value("Jam")),
+            method = paymentMethodOf(t.value("Metode Pembayaran", "Payment Method")),
+            note = t.value("Keterangan", "Catatan", "Note"),
         )
     }
 }

@@ -9,6 +9,7 @@ import com.alviy.moner.core.data.local.dao.SpendCategoryDao
 import com.alviy.moner.core.data.local.dao.SpendLimitDao
 import com.alviy.moner.core.data.local.dao.SpendSummaryDao
 import com.alviy.moner.core.data.local.dao.ProfileDao
+import com.alviy.moner.core.data.local.dao.ReceiptDao
 import com.alviy.moner.core.data.local.dao.TransactionDao
 import dagger.Module
 import dagger.Provides
@@ -31,7 +32,7 @@ object DatabaseModule {
             MonerDatabase::class.java,
             "expense_db"
         )
-            .addMigrations(MonerDatabase.MIGRATION_13_14, MonerDatabase.MIGRATION_14_15)
+            .addMigrations(MonerDatabase.MIGRATION_13_14, MonerDatabase.MIGRATION_14_15, MonerDatabase.MIGRATION_15_16)
             .fallbackToDestructiveMigration()
             .build()
 
@@ -55,5 +56,8 @@ object DatabaseModule {
 
     @Provides
     fun provideSpendLimitDao(db: MonerDatabase): SpendLimitDao = db.spendLimitDao()
+
+    @Provides
+    fun provideReceiptDao(db: MonerDatabase): ReceiptDao = db.receiptDao()
 
 }

@@ -7,6 +7,7 @@ import com.alviy.moner.core.data.local.MonerDatabase
 import com.alviy.moner.core.data.local.dao.CategoryBudgetDao
 import com.alviy.moner.core.data.local.dao.CategorySummaryDao
 import com.alviy.moner.core.data.local.dao.ProfileDao
+import com.alviy.moner.core.data.local.dao.ReceiptDao
 import com.alviy.moner.core.data.local.dao.SpendCategoryDao
 import com.alviy.moner.core.data.local.dao.SpendLimitDao
 import com.alviy.moner.core.data.local.dao.SpendSummaryDao
@@ -41,7 +42,8 @@ class SpendRepositoryImpl @Inject constructor(
     private val spendSummaryDao: SpendSummaryDao,
     private val spendLimitDao: SpendLimitDao,
     private val categorySummaryDao: CategorySummaryDao,
-    private val categoryBudgetDao: CategoryBudgetDao
+    private val categoryBudgetDao: CategoryBudgetDao,
+    private val receiptDao: ReceiptDao
 ) : SpendRepository {
 
     override fun getSpendHistory(monthYear: String, limit: Int): Flow<List<TransactionItem>> =
@@ -74,7 +76,8 @@ class SpendRepositoryImpl @Inject constructor(
         desc: String,
         source: String,
         amount: BigDecimal,
-        note: String?
+        note: String?,
+        receiptId: String?
     ) = database.withTransaction {
         val monthYear = LocalDateTime.parse(date).toFullMonthYear()
 
@@ -89,9 +92,11 @@ class SpendRepositoryImpl @Inject constructor(
                 desc = desc,
                 source = source,
                 amount = amount,
-                note = note
+                note = note,
+                receiptId = receiptId
             )
         )
+        receiptId?.let { receiptDao.markRecorded(it) }
 
         // Keep the per-category and per-month running totals in sync (update, or insert the first row).
         if (categorySummaryDao.updateCategorySummary(monthYear, categoryId, amount, date) == 0) {
@@ -117,6 +122,7 @@ class SpendRepositoryImpl @Inject constructor(
         spendLimitDao.clearSpendLimits()
         categorySummaryDao.clearCategorySummary()
         categoryBudgetDao.clearCategoryBudgets()
+        receiptDao.clearReceipts()
     }
 
     // Same format as stored transaction dates (LocalDateTime.toString()), so range bounds compare correctly.

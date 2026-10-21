@@ -1,10 +1,10 @@
 package com.alviy.moner.feature.receipt.gather.viewmodel
 
 import com.alviy.moner.api.gmail.data.repository.GmailRepository
-import com.alviy.moner.api.gmail.model.ReceiptTransaction
 import com.alviy.moner.core.common.base.BaseViewModel
 import com.alviy.moner.core.common.entity.ErrorCodes
 import com.alviy.moner.core.common.entity.Result
+import com.alviy.moner.core.domain.model.Receipt
 import com.alviy.moner.core.network.GoogleAuthTokenHolder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,8 +22,17 @@ class ReceiptGatherViewModel @Inject constructor(
     private val _isGmailAuthorized = MutableStateFlow(googleAuthTokens.accessToken != null)
     val isGmailAuthorized: StateFlow<Boolean> = _isGmailAuthorized.asStateFlow()
 
-    private val _fetchedReceipts = MutableStateFlow<Result<List<ReceiptTransaction>>?>(null)
-    val fetchedReceipts = _fetchedReceipts.asStateFlow()
+    /** Saved receipts (from the DB), so the list survives restarts and fills in as a fetch saves. */
+    private val _receipts = MutableStateFlow<List<Receipt>>(emptyList())
+    val receipts: StateFlow<List<Receipt>> = _receipts.asStateFlow()
+
+    /** Progress of the last fetch: SUCCESS holds the number of new receipts saved. */
+    private val _fetchResult = MutableStateFlow<Result<Int>?>(null)
+    val fetchResult: StateFlow<Result<Int>?> = _fetchResult.asStateFlow()
+
+    init {
+        gmailRepository.getReceipts().collectFlow(_receipts)
+    }
 
     // ---------------------------------------------------------------- Gmail auth
 
@@ -43,7 +52,7 @@ class ReceiptGatherViewModel @Inject constructor(
 
     /** Only offered while authorized; an expired token flips the button back to "Auth Gmail". */
     fun fetchGmailReceipts() {
-        gmailRepository.getGmailReceipts().collectFlow(_fetchedReceipts) { result ->
+        gmailRepository.fetchNewReceipts().collectFlow(_fetchResult) { result ->
             if (result.code == ErrorCodes.UNAUTHORIZED) onGmailNotAuthorized()
         }
     }

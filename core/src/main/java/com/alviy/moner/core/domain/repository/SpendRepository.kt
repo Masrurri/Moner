@@ -18,13 +18,15 @@ interface SpendRepository {
     /** Months that already have categories, newest first. */
     fun getMonthYears(): Flow<List<String>>
 
+    /** [receiptId] set = the spend comes from a fetched receipt, which is marked recorded in the same transaction. */
     suspend fun addSpend(
         categoryName: String,
         date: String,
         desc: String,
         source: String,
         amount: BigDecimal,
-        note: String? = null
+        note: String? = null,
+        receiptId: String? = null
     )
 
     suspend fun clearAllTable()

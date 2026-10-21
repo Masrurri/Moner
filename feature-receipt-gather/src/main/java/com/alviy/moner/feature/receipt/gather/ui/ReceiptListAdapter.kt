@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.alviy.moner.api.gmail.mapper.parse.ReceiptDateFormat
 import com.alviy.moner.core.common.ext.getColor
 import com.alviy.moner.core.common.ext.toIDR
 import com.alviy.moner.core.databinding.ItemListHeaderBinding
@@ -30,7 +31,11 @@ class ReceiptListAdapter : ListAdapter<ReceiptListModel, RecyclerView.ViewHolder
             val item = row.item
             binding.ivIcon.setImageResource(iconForCahannel(item.channel))
             binding.tvTitle.text = item.destination
-            binding.tvSubtitle.text = "${item.method} · ${item.date} · ${item.time}"
+            binding.tvSubtitle.text = listOfNotNull(
+                item.activity.label,
+                item.method?.label,
+                ReceiptDateFormat.time(item.transactionAt),
+            ).joinToString(" · ")
             binding.tvSpendAmount.text = "- ${item.amount.toIDR()}"
         }
     }

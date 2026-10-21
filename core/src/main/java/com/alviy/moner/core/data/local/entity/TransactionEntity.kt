@@ -29,5 +29,6 @@ data class TransactionEntity(
     val desc: String,
     val source: String,
     val amount: BigDecimal,
-    val note: String? = null
+    val note: String? = null,
+    val receiptId: String? = null     // ReceiptEntity.id when recorded from a fetched receipt
 )

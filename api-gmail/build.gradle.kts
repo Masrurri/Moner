@@ -49,4 +49,6 @@ dependencies {
     implementation(libs.okhttp.core)
     implementation(libs.okhttp.logging)
     implementation(libs.moshi)
+
+    testImplementation(libs.junit)
 }

@@ -8,12 +8,14 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-/**
- * "14 Okt 2026" + "10:07:03 WIB"  /  "12 Okt 2026 09:47:58"  ->  epoch millis (UTC).
- * Understands Indonesian and English month names, 24h and AM/PM time, WIB/WITA/WIT.
- * No zone in the text -> WIB. Date without time -> 00:00. Unparseable -> null (caller falls back).
- */
-data class ParsedDate(val millis: Long, val hasTime: Boolean)
+/** A date read from the email; [time] is null when the email only has the day. */
+data class ParsedDate(val date: LocalDate, val time: LocalTime?, val zone: ZoneId) {
+    /** Epoch millis; a missing time of day is taken from [fallbackMillis] (Gmail's receive time) in the same zone. */
+    fun toMillis(fallbackMillis: Long): Long {
+        val t = time ?: Instant.ofEpochMilli(fallbackMillis).atZone(zone).toLocalTime()
+        return ZonedDateTime.of(date, t, zone).toInstant().toEpochMilli()
+    }
+}
 
 /** One display format for every receipt, independent of the phone's locale and time zone. */
 object ReceiptDateFormat {
@@ -25,9 +27,13 @@ object ReceiptDateFormat {
     fun time(millis: Long): String = Instant.ofEpochMilli(millis).atZone(ZONE).format(TIME)
 }
 
+/**
+ * "14 Okt 2026" + "10:07:03 WIB"  /  "12 Okt 2026 09:47:58"  ->  ParsedDate.
+ * Understands Indonesian and English month names, 24h and AM/PM time, WIB/WITA/WIT and "+0700".
+ * No zone in the text -> WIB. Unparseable -> null (caller falls back to the receive time).
+ */
 object ReceiptDateParser {
     private val WIB = ZoneId.of("Asia/Jakarta")
-
     private val MONTHS = mapOf(
         "jan" to 1, "januari" to 1, "january" to 1,
         "feb" to 2, "februari" to 2, "february" to 2,
@@ -50,10 +56,7 @@ object ReceiptDateParser {
     private val ZONE = Regex("""\b(WIB|WITA|WIT)\b""")
     private val OFFSET = Regex("""(?:^|\s)([+-])(\d{2}):?(\d{2})\b""")             // "+0700"
 
-    fun parse(date: String?, time: String? = null, defaultZone: ZoneId = WIB): Long? =
-        parseDetailed(date, time, defaultZone)?.millis
-
-    fun parseDetailed(date: String?, time: String? = null, defaultZone: ZoneId = WIB): ParsedDate? {
+    fun parse(date: String?, time: String? = null, defaultZone: ZoneId = WIB): ParsedDate? {
         val text = listOfNotNull(date, time).joinToString(" ").trim()
         if (text.isEmpty()) return null
         return runCatching {
@@ -62,16 +65,15 @@ object ReceiptDateParser {
             val zone = ZONE.find(rest)?.value?.let(::zoneOf)
                 ?: OFFSET.find(rest)?.let { ZoneId.of("${it.groupValues[1]}${it.groupValues[2]}:${it.groupValues[3]}") }
                 ?: defaultZone
-            val timeMatch = TIME.find(rest)
-            val localTime = timeMatch?.let { m ->
+            val localTime = TIME.find(rest)?.let { m ->
                 var hour = m.groupValues[1].toInt()
                 when (m.groupValues[4].lowercase()) {
                     "pm" -> if (hour < 12) hour += 12
                     "am" -> if (hour == 12) hour = 0
                 }
                 LocalTime.of(hour, m.groupValues[2].toInt(), m.groupValues[3].ifEmpty { "0" }.toInt())
-            } ?: LocalTime.MIDNIGHT
-            ParsedDate(ZonedDateTime.of(localDate, localTime, zone).toInstant().toEpochMilli(), hasTime = timeMatch != null)
+            }
+            ParsedDate(localDate, localTime, zone)
         }.getOrNull()
     }
 

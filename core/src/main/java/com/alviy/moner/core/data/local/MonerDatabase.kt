@@ -11,6 +11,7 @@ import com.alviy.moner.core.data.local.dao.SpendCategoryDao
 import com.alviy.moner.core.data.local.dao.SpendLimitDao
 import com.alviy.moner.core.data.local.dao.SpendSummaryDao
 import com.alviy.moner.core.data.local.dao.ProfileDao
+import com.alviy.moner.core.data.local.dao.ReceiptDao
 import com.alviy.moner.core.data.local.dao.TransactionDao
 import com.alviy.moner.core.data.local.entity.CategoryBudgetEntity
 import com.alviy.moner.core.data.local.entity.CategorySummaryEntity
@@ -18,6 +19,7 @@ import com.alviy.moner.core.data.local.entity.SpendCategoryEntity
 import com.alviy.moner.core.data.local.entity.SpendLimitEntity
 import com.alviy.moner.core.data.local.entity.SpendSummaryEntity
 import com.alviy.moner.core.data.local.entity.ProfileEntity
+import com.alviy.moner.core.data.local.entity.ReceiptEntity
 import com.alviy.moner.core.data.local.entity.TransactionEntity
 
 @Database(
@@ -28,9 +30,10 @@ import com.alviy.moner.core.data.local.entity.TransactionEntity
         SpendSummaryEntity::class,
         CategorySummaryEntity::class,
         CategoryBudgetEntity::class,
-        SpendLimitEntity::class
+        SpendLimitEntity::class,
+        ReceiptEntity::class
     ],
-    version = 15
+    version = 16
 )
 @TypeConverters(Converters::class)
 abstract class MonerDatabase : RoomDatabase() {
@@ -42,6 +45,7 @@ abstract class MonerDatabase : RoomDatabase() {
     abstract fun categorySummaryDao(): CategorySummaryDao
     abstract fun categoryBudgetDao(): CategoryBudgetDao
     abstract fun spendLimitDao(): SpendLimitDao
+    abstract fun receiptDao(): ReceiptDao
 
     companion object {
         /** Drops expense_summary.latestExpense / latestTransactionDate; today/week spend is now queried live. */
@@ -67,6 +71,20 @@ abstract class MonerDatabase : RoomDatabase() {
                     "CREATE TABLE IF NOT EXISTS `spend_limit` " +
                         "(`monthYear` TEXT NOT NULL, `amount` TEXT NOT NULL, PRIMARY KEY(`monthYear`))"
                 )
+            }
+        }
+
+        /** Adds receipt (fetched email receipts) and expense_transaction.receiptId (the receipt a spend came from). */
+        val MIGRATION_15_16 = object : Migration(15, 16) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `receipt` (`id` TEXT NOT NULL, `channel` TEXT NOT NULL, " +
+                        "`activity` TEXT NOT NULL, `destination` TEXT NOT NULL, `reference` TEXT, " +
+                        "`amount` TEXT NOT NULL, `transactionAt` INTEGER NOT NULL, `receivedAt` INTEGER NOT NULL, " +
+                        "`method` TEXT, `note` TEXT, `isRecorded` INTEGER NOT NULL, `isDeleted` INTEGER NOT NULL, " +
+                        "PRIMARY KEY(`id`))"
+                )
+                db.execSQL("ALTER TABLE `expense_transaction` ADD COLUMN `receiptId` TEXT")
             }
         }
     }

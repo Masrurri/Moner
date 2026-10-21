@@ -3,12 +3,13 @@ package com.alviy.moner.api.gmail.mapper
 import android.util.Base64
 import android.util.Log
 import com.alviy.moner.api.gmail.mapper.parse.EmailText
+import com.alviy.moner.api.gmail.mapper.parse.GenericTemplate
 import com.alviy.moner.api.gmail.mapper.parse.MessageContext
 import com.alviy.moner.api.gmail.mapper.parse.ReceiptSourceConfig
 import com.alviy.moner.api.gmail.mapper.parse.ReceiptSourceRegistry
 import com.alviy.moner.api.gmail.model.GmailMessage
 import com.alviy.moner.api.gmail.model.MessagePart
-import com.alviy.moner.api.gmail.model.ReceiptTransaction
+import com.alviy.moner.core.domain.model.Receipt
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -17,38 +18,39 @@ import javax.inject.Singleton
 class GmailReceiptParser @Inject constructor(
     private val registry: ReceiptSourceRegistry,
 ) {
-    /** Gmail search query built from the senders/subjects configured in ReceiptSourceConfig. */
-    fun searchQuery(): String = registry.searchQuery()
+    /** Gmail search query for mail received after [afterMillis] (null = first fetch). */
+    fun searchQuery(afterMillis: Long?): String = registry.searchQuery(afterMillis)
 
-    /** null = not a payment, unknown sender, or unparseable. Never throws. */
-    fun parse(message: GmailMessage): ReceiptTransaction? {
+    /** null = not a payment or unparseable; the reason is logged. Never throws. */
+    fun parse(message: GmailMessage): Receipt? {
         val from = message.header("From").orEmpty()
         val subject = message.header("Subject").orEmpty()
         val text = message.emailText()
-
-        if (ReceiptSourceConfig.DEBUG_LOG) {
-            Log.d(TAG, "from=[$from] subject=[$subject]\n" + text.rows.joinToString("\n") { it.joinToString(" | ") })
-        }
-
-        val source = registry.match(from, subject) ?: run {
-            Log.w(TAG, "No source matches from=[$from] subject=[$subject]")
-            return null
-        }
+        val source = registry.match(from, subject)
+        val channel = source?.name ?: ReceiptSourceConfig.GENERIC_CHANNEL
         val ctx = MessageContext(
             id = message.id,
             from = from,
             subject = subject,
             text = text,
-            fallbackMillis = message.internalDate?.toLongOrNull() ?: 0L,
+            receivedAt = message.internalDate?.toLongOrNull() ?: System.currentTimeMillis(),
         )
-        val parsed = try {
-            source.template.parse(ctx, source.name)
+        if (source == null) ctx.notes += "no source matches, using generic template"
+
+        val receipt = try {
+            (source?.template ?: GenericTemplate).parse(ctx, channel)
         } catch (e: Exception) {
-            Log.w(TAG, "${source.name} template crashed on ${message.id}", e)
+            Log.w(TAG, "$channel template crashed on ${message.id}", e)
             null
         }
-        if (parsed == null) Log.w(TAG, "${source.name}: could not parse \"$subject\" (${message.id})")
-        return parsed
+
+        if (ReceiptSourceConfig.DEBUG_LOG) {
+            Log.d(TAG, "from=[$from] subject=[$subject] (${message.id})\n" +
+                text.rows.joinToString("\n") { it.joinToString(" | ") })
+            Log.d(TAG, "parsed=$receipt notes=${ctx.notes}")
+        }
+        if (receipt == null) Log.w(TAG, "$channel: no receipt from \"$subject\" (${message.id}): ${ctx.notes}")
+        return receipt
     }
 
     private fun GmailMessage.header(name: String): String? =

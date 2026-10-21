@@ -59,7 +59,8 @@ class ReceiptGatherFragment : BaseFragment<FragmentReceiptGatherBinding>() {
 
     override fun observeData() {
         observeState(viewModel.isGmailAuthorized, onChange = ::renderFetchButton)
-        observeFetchedReceipts()
+        observeState(viewModel.receipts) { receiptListAdapter.submitList(it.toReceiptListUi()) }
+        observeFetchResult()
     }
 
     /** Not authorized yet → "Auth Gmail" with the Google icon; authorized → "Fetch Receipt". */
@@ -73,9 +74,9 @@ class ReceiptGatherFragment : BaseFragment<FragmentReceiptGatherBinding>() {
         }
     }
 
-    private fun observeFetchedReceipts() {
+    private fun observeFetchResult() {
         observeStateFlow(
-            flow = viewModel.fetchedReceipts,
+            flow = viewModel.fetchResult,
             onLoading = { renderReceiptsLoading(true) },
             onError = { error ->
                 renderReceiptsLoading(false)
@@ -83,9 +84,8 @@ class ReceiptGatherFragment : BaseFragment<FragmentReceiptGatherBinding>() {
                     listOf(receiptMessage("Error Fetch", error.code.toString(), error.title.toString(), error.message.toString()))
                 )
             }
-        ) { receipts ->
-            renderReceiptsLoading(false)
-            receiptListAdapter.submitList(receipts.toReceiptListUi())
+        ) {
+            renderReceiptsLoading(false)   // the list itself updates from viewModel.receipts
         }
     }
 

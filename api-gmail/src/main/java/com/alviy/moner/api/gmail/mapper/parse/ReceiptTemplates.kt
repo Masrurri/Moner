@@ -82,7 +82,7 @@ object LivinTemplate : ReceiptTemplate {
         val t = ctx.text
         val haystack = (ctx.subject + " " + t.flat).lowercase()
         val (title, method) = when {
-            "top-up berhasil" in haystack || "top up berhasil" in haystack -> "Top-up" to PaymentMethod.TRANSFER
+            "top-up berhasil" in haystack || "top up berhasil" in haystack -> "Top-up" to PaymentMethod.TOPUP
             "transfer berhasil" in haystack -> "Transfer" to PaymentMethod.TRANSFER
             "pembayaran berhasil" in haystack || "payment successful" in haystack -> {
                 // The QR payment email says "dengan QR" and has an "No. Ref. QRIS" row, but no "Jenis" label.

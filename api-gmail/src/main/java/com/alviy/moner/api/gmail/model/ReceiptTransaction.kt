@@ -25,7 +25,7 @@ enum class PaymentMethod(val label: String) {
                 "qris" in s -> QRIS
                 "debit" in s -> DEBIT
                 "kredit" in s || "credit" in s || "visa" in s || "mastercard" in s -> CREDIT
-                "top-up" in s || "top up" in s || "transfer" in s -> TRANSFER
+                "transfer" in s -> TRANSFER
                 "top-up" in s || "top up" in s -> TOPUP
                 "ovo" in s || "gopay" in s || "dana" in s || "shopeepay" in s || "linkaja" in s || "wallet" in s -> EWALLET
                 else -> null

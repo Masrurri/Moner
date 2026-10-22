@@ -10,11 +10,14 @@ import com.alviy.moner.core.common.ext.getColor
 import com.alviy.moner.core.common.ext.toIDR
 import com.alviy.moner.core.databinding.ItemListHeaderBinding
 import com.alviy.moner.core.designsystem.iconForCahannel
+import com.alviy.moner.core.domain.model.Receipt
 import com.alviy.moner.feature.receipt.gather.R
 import com.alviy.moner.feature.receipt.gather.databinding.ItemReceiptBinding
 import com.alviy.moner.feature.receipt.gather.ui.model.ReceiptListModel
 
-class ReceiptListAdapter : ListAdapter<ReceiptListModel, RecyclerView.ViewHolder>(Diff) {
+class ReceiptListAdapter(
+    private val onItemClick: (Receipt) -> Unit
+) : ListAdapter<ReceiptListModel, RecyclerView.ViewHolder>(Diff) {
 
     class HeaderViewHolder(
         private val binding: ItemListHeaderBinding
@@ -25,10 +28,19 @@ class ReceiptListAdapter : ListAdapter<ReceiptListModel, RecyclerView.ViewHolder
     }
 
     class TransactionViewHolder(
-        private val binding: ItemReceiptBinding
+        private val binding: ItemReceiptBinding,
+        private val onItemClick: (Receipt) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
+
+        private var current: Receipt? = null
+
+        init {
+            binding.clContainer.setOnClickListener { current?.let(onItemClick) }
+        }
+
         fun bind(row: ReceiptListModel.ReceiptItem) {
             val item = row.item
+            current = item
             binding.ivIcon.setImageResource(iconForCahannel(item.channel))
             binding.tvTitle.text = item.destination
             binding.tvSubtitle.text = listOfNotNull(
@@ -47,17 +59,20 @@ class ReceiptListAdapter : ListAdapter<ReceiptListModel, RecyclerView.ViewHolder
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return if (viewType == VIEW_TYPE_HEADER) {
-            HeaderViewHolder(ItemListHeaderBinding.inflate(inflater, parent, false))
-        } else {
-            TransactionViewHolder(ItemReceiptBinding.inflate(inflater, parent, false))
+        return when (viewType) {
+            VIEW_TYPE_HEADER -> HeaderViewHolder(ItemListHeaderBinding.inflate(inflater, parent, false))
+            VIEW_TYPE_TRANSACTION -> TransactionViewHolder(
+                ItemReceiptBinding.inflate(inflater, parent, false), onItemClick
+            )
+            else -> error("Unknown view type $viewType")
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (val row = getItem(position)) {
-            is ReceiptListModel.DateHeader -> (holder as HeaderViewHolder).bind(row)
-            is ReceiptListModel.ReceiptItem -> (holder as TransactionViewHolder).bind(row)
+        val row = getItem(position)
+        when (holder) {
+            is HeaderViewHolder -> holder.bind(row as ReceiptListModel.DateHeader)
+            is TransactionViewHolder -> holder.bind(row as ReceiptListModel.ReceiptItem)
         }
     }
 

@@ -11,8 +11,10 @@ import com.alviy.moner.core.common.base.BaseFragment
 import com.alviy.moner.core.common.ext.getColor
 import com.alviy.moner.core.common.ext.setStatusBarColor
 import com.alviy.moner.core.common.ext.showDialog
+import com.alviy.moner.core.designsystem.ReceiptDetailSheet
 import com.alviy.moner.core.designsystem.TransactionListDialog
 import com.alviy.moner.core.designsystem.setIconSpinning
+import com.alviy.moner.core.domain.model.Receipt
 import com.alviy.moner.feature.receipt.gather.R
 import com.alviy.moner.feature.receipt.gather.databinding.FragmentReceiptGatherBinding
 import com.alviy.moner.feature.receipt.gather.ui.model.toReceiptListUi
@@ -27,7 +29,7 @@ import com.alviy.moner.core.R as CoreR
 class ReceiptGatherFragment : BaseFragment<FragmentReceiptGatherBinding>() {
 
     private val viewModel: ReceiptGatherViewModel by viewModels()
-    private val receiptListAdapter = ReceiptListAdapter()
+    private val receiptListAdapter = ReceiptListAdapter(onItemClick = ::openReceiptDetail)
 
     private val authLauncher =
         registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
@@ -55,6 +57,13 @@ class ReceiptGatherFragment : BaseFragment<FragmentReceiptGatherBinding>() {
             if (viewModel.isGmailAuthorized.value) viewModel.fetchGmailReceipts() else authorizeGmail()
         }
         checkGoogleAuthStatus()
+        childFragmentManager.setFragmentResultListener(ReceiptDetailSheet.REQUEST_KEY, viewLifecycleOwner) { _, bundle ->
+            val result = ReceiptDetailSheet.parseResult(bundle)
+            when (result.action) {
+                ReceiptDetailSheet.Action.RECORD -> viewModel.recordReceipt(result.receiptId, result.category)
+                ReceiptDetailSheet.Action.DELETE -> viewModel.deleteReceipt(result.receiptId)
+            }
+        }
     }
 
     override fun observeData() {
@@ -140,6 +149,10 @@ class ReceiptGatherFragment : BaseFragment<FragmentReceiptGatherBinding>() {
                 }
             }
             .addOnFailureListener { viewModel.onGmailNotAuthorized() }
+    }
+
+    private fun openReceiptDetail(receipt: Receipt) {
+        ReceiptDetailSheet.newInstance(receipt).showDialog(childFragmentManager, ReceiptDetailSheet.TAG)
     }
 
     private companion object {

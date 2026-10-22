@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- core: res/layout/view_swipe_to_confirm.xml — sizes, colors and padding are applied from code/attrs -->
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:layout_height="56dp"
+    tools:layout_width="match_parent"
+    tools:parentTag="android.widget.FrameLayout">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_label"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:importantForAccessibility="no"
+        android:maxLines="1"
+        tools:text="Swipe to Confirm" />
+
+    <ImageView
+        android:id="@+id/iv_thumb"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="start|center_vertical"
+        android:importantForAccessibility="yes"
+        android:scaleType="center"
+        tools:ignore="ContentDescription" />
+
+</merge>

@@ -5,7 +5,10 @@ import com.alviy.moner.api.gmail.data.repository.GmailRepository
 import com.alviy.moner.core.common.base.BaseViewModel
 import com.alviy.moner.core.common.entity.ErrorCodes
 import com.alviy.moner.core.common.entity.Result
+import com.alviy.moner.core.data.mapper.toNewSpend
+import com.alviy.moner.core.designsystem.SpendCategory
 import com.alviy.moner.core.domain.model.Receipt
+import com.alviy.moner.core.domain.repository.SpendRepository
 import com.alviy.moner.core.network.GoogleAuthTokenHolder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ReceiptGatherViewModel @Inject constructor(
     private val gmailRepository: GmailRepository,
-    private val googleAuthTokens: GoogleAuthTokenHolder
+    private val googleAuthTokens: GoogleAuthTokenHolder,
+    private val spendRepository: SpendRepository
 ) : BaseViewModel() {
 
     /** true = a Gmail token is held, so the button fetches; false = the button starts Gmail auth. */
@@ -61,4 +65,23 @@ class ReceiptGatherViewModel @Inject constructor(
             if (result.code == ErrorCodes.UNAUTHORIZED) onGmailNotAuthorized()
         }
     }
+
+    fun recordReceipt(receiptId: String, category: SpendCategory) {
+        val receipt = _receipts.value?.firstOrNull { it.id == receiptId } ?: return
+        if (receipt.isRecorded) return
+        val spend = receipt.toNewSpend(category)
+        viewModelScope.launch {
+            spendRepository.addSpend(
+                categoryName = spend.categoryName,
+                date = spend.date,
+                desc = spend.desc,
+                source = spend.source,
+                amount = spend.amount,
+                note = spend.note,
+                receiptId = spend.receiptId,
+            )
+        }
+    }
+
+    fun deleteReceipt(id: String) = Unit
 }

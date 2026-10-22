@@ -25,4 +25,30 @@
         <attr name="lpv_progressColor" format="color" />
     </declare-styleable>
 
+    <declare-styleable name="SwipeToConfirmView">
+        <!-- Label -->
+        <attr name="stc_text" format="string" />
+        <attr name="stc_textAppearance" format="reference" />
+        <attr name="stc_textColor" format="color" />
+        <attr name="stc_textSize" format="dimension" />
+        <!-- Defaults to thumb size + content padding on both sides, so the text stays centered and clear of the thumb. -->
+        <attr name="stc_labelPaddingHorizontal" format="dimension" />
+
+        <!-- Track -->
+        <attr name="stc_trackColor" format="color" />
+        <!-- Omit for a full pill (half the height). -->
+        <attr name="stc_cornerRadius" format="dimension" />
+        <!-- Gap between the track edge and the thumb. -->
+        <attr name="stc_contentPadding" format="dimension" />
+
+        <!-- Thumb -->
+        <attr name="stc_thumbSize" format="dimension" />
+        <attr name="stc_thumbColor" format="color" />
+        <attr name="stc_thumbIcon" format="reference" />
+        <attr name="stc_thumbIconTint" format="color" />
+
+        <!-- 0.1–1: how far the thumb must travel for a release to confirm. Default 0.85. -->
+        <attr name="stc_confirmThreshold" format="float" />
+    </declare-styleable>
+
 </resources>

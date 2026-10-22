@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- feature/receipt/gather: res/layout/item_receipt_detail_row.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingVertical="@dimen/spacing_xs">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="0.6"
+        android:textAppearance="@style/TextAppearance.Moner.Regular"
+        android:textColor="@color/color_text_primary"
+        android:textSize="13sp"
+        tools:text="Reference" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_md"
+        android:layout_weight="1"
+        android:gravity="end"
+        android:textAppearance="@style/TextAppearance.Moner.Regular"
+        android:textColor="@color/color_text_primary"
+        android:textIsSelectable="true"
+        android:textSize="13sp"
+        tools:text="1234567890" />
+
+</LinearLayout>

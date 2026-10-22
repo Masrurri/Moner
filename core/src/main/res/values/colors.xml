@@ -65,4 +65,21 @@
     <color name="color_nav_active_pill_bg">#111111</color>
     <color name="color_nav_active_content">#FFFFFF</color>
     <color name="color_nav_active_indicator">#333333</color>
+
+    <color name="receipt_delete">#E5484D</color>
+
+    <color name="category_food_container">#FFE6D5</color>
+    <color name="category_food_content">#FF6A1A</color>
+    <color name="category_transport_container">#DFEBFF</color>
+    <color name="category_transport_content">#2F7BFF</color>
+    <color name="category_shopping_container">#FFF0CC</color>
+    <color name="category_shopping_content">#EE9E00</color>
+    <color name="category_vehicle_container">#E1F7D5</color>
+    <color name="category_vehicle_content">#2FAE22</color>
+    <color name="category_entertainment_container">#ECE2FF</color>
+    <color name="category_entertainment_content">#8A4DFF</color>
+    <color name="category_bills_container">#FFE0E6</color>
+    <color name="category_bills_content">#FF3D63</color>
+    <color name="category_others_container">#D8F6F2</color>
+    <color name="category_others_content">#0FAE9D</color>
 </resources>

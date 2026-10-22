@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?><!-- feature/receipt/gather: res/layout/sheet_receipt_detail.xml -->
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".designsystem.ReceiptDetailSheet">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_lg">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_channel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:alpha="0.6"
+            android:textAppearance="@style/TextAppearance.Moner.Regular"
+            android:textColor="@color/color_text_primary"
+            android:textSize="12sp"
+            tools:text="Mandiri · Pembayaran" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_amount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_2xs"
+            android:textAppearance="@style/TextAppearance.Moner.Bold"
+            android:textColor="@color/color_text_primary"
+            android:textSize="28sp"
+            tools:text="Rp 125.000" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_destination"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_2xs"
+            android:textAppearance="@style/TextAppearance.Moner.Regular"
+            android:textColor="@color/color_text_primary"
+            android:textSize="@dimen/text_size_md"
+            tools:text="Kopi Kenangan" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginVertical="@dimen/spacing_md"
+            android:background="@color/color_stroke_hairline" />
+
+        <!-- Label/value rows are added from code; empty values are skipped. -->
+        <LinearLayout
+            android:id="@+id/ll_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/cg_category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lg"
+            app:chipSpacingHorizontal="@dimen/spacing_xs"
+            app:selectionRequired="true"
+            app:singleSelection="true" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_recorded"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lg"
+            android:background="@drawable/bg_medium_rounded"
+            android:gravity="center"
+            android:padding="@dimen/spacing_md"
+            android:text="Recorded"
+            android:textAppearance="@style/TextAppearance.Moner.Regular"
+            android:textColor="@color/color_text_primary"
+            android:textSize="@dimen/text_size_sm"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <com.alviy.moner.core.designsystem.SwipeToConfirmView
+            android:id="@+id/swipe_record"
+            android:layout_width="match_parent"
+            android:layout_height="66dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="60dp"
+            app:stc_contentPadding="10dp"
+            app:stc_text="@string/receipt_detail_swipe_record"
+            app:stc_textAppearance="@style/TextAppearance.Moner.SemiBold"
+            app:stc_textColor="@color/white_grey"
+            app:stc_textSize="16sp"
+            app:stc_thumbColor="@color/color_accent_neon"
+            app:stc_thumbIcon="@drawable/ic_arrow_right_circle"
+            app:stc_thumbIconTint="@color/color_bg_dark"
+            app:stc_thumbSize="48dp"
+            app:stc_trackColor="@color/color_bg_dark" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_delete"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="38dp"
+            android:layout_marginTop="@dimen/spacing_md"
+            android:paddingVertical="16dp"
+            android:text="@string/receipt_detail_delete"
+            android:textAppearance="@style/TextAppearance.Moner.SemiBold"
+            android:textColor="@color/receipt_delete"
+            android:textSize="@dimen/text_size_lg"
+            app:cornerRadius="40dp"
+            app:rippleColor="@color/color_ripple_grey" />
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

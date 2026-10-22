@@ -19,4 +19,14 @@
     <string name="add_expense_error_title">Enter a title</string>
     <string name="add_expense_error_source">Select a payment source</string>
     <string name="add_expense_error_amount">Enter an amount</string>
+
+    <string name="receipt_detail_channel_activity">%1$s · %2$s</string>
+    <string name="receipt_detail_reference">Reference</string>
+    <string name="receipt_detail_method">Method</string>
+    <string name="receipt_detail_transaction_at">Transaction time</string>
+    <string name="receipt_detail_received_at">Received</string>
+    <string name="receipt_detail_note">Note</string>
+    <string name="receipt_detail_swipe_record">Swipe to record</string>
+    <string name="receipt_detail_recorded">Already recorded</string>
+    <string name="receipt_detail_delete">Delete receipt</string>
 </resources>

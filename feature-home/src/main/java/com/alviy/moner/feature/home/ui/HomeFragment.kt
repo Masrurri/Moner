@@ -2,8 +2,6 @@ package com.alviy.moner.feature.home.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.activity.result.IntentSenderRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,17 +12,12 @@ import com.alviy.moner.core.common.ext.showDialog
 import com.alviy.moner.core.common.ext.toIDR
 import com.alviy.moner.core.designsystem.AddSpendDialog
 import com.alviy.moner.core.designsystem.AmountFieldDialog
-import com.alviy.moner.core.designsystem.TransactionListDialog
 import com.alviy.moner.core.designsystem.WheelDialog
 import com.alviy.moner.core.domain.model.SpendSummary
 import com.alviy.moner.feature.home.R
 import com.alviy.moner.feature.home.databinding.FragmentHomeBinding
 import com.alviy.moner.feature.home.viewmodel.HomeViewModel
-import com.google.android.gms.auth.api.identity.AuthorizationRequest
-import com.google.android.gms.auth.api.identity.Identity
-import com.google.android.gms.common.api.Scope
 import dagger.hilt.android.AndroidEntryPoint
-import java.math.BigDecimal
 
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>() {
@@ -64,16 +57,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
         val limit = summary.spendLimit
         val remaining = summary.remainingLimit
-        lpv.progress = summary.limitProgress
-        tvLimitTotal.isVisible = limit != null
+        val isOverLimit = remaining != null && remaining.signum() < 0
+        lpv.progress = summary.remainingProgress
         tvLimitTotal.text = limit?.toIDR()
-        tvLimitValue.isVisible = limit != null
         btnSetLimit.isVisible = limit == null
-        tvLimitValue.text = when {
-            remaining == null -> ""
-            remaining < BigDecimal.ZERO -> getString(R.string.home_limit_over, remaining.negate().toIDR())
-            else -> remaining.toIDR()
-        }
+        tvLimitValue.text =
+            if (isOverLimit) getString(R.string.home_limit_over, remaining!!.negate().toIDR())
+            else remaining.toIDR()
     }
 
     private fun showSelectMonthDialog() {

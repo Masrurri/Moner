@@ -87,6 +87,6 @@ class GmailRepositoryImpl @Inject constructor(
     private companion object {
         const val MAX_PARALLEL = 5
         const val PAGE_SIZE = 100
-        const val MAX_MESSAGES = 500    // also keeps getExistingIds under SQLite's 999-argument limit
+        const val MAX_MESSAGES = 800    // also keeps getExistingIds under SQLite's 999-argument limit
     }
 }

@@ -14,8 +14,8 @@
         android:layout_height="wrap_content"
         android:background="@drawable/bg_rounded_bottom"
         android:backgroundTint="@color/color_surface_dark"
-        android:translationZ="2dp"
         android:padding="@dimen/spacing_lg"
+        android:translationZ="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -25,24 +25,24 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:src="@drawable/ic_avatar"
+            app:layout_constraintBottom_toBottomOf="@id/tv_welcome"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tv_greeting"
-            app:layout_constraintBottom_toBottomOf="@id/tv_welcome"/>
+            app:layout_constraintTop_toTopOf="@id/tv_greeting" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_greeting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.Moner.SemiBold"
-            android:textSize="@dimen/text_size_lg"
             android:layout_marginStart="@dimen/spacing_sm"
+            android:text="@string/home_greeting"
+            android:textAppearance="@style/TextAppearance.Moner.SemiBold"
             android:textColor="@color/white_grey"
+            android:textSize="@dimen/text_size_lg"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@id/iv_avatar"
             app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="MissingConstraints"
-            android:text="@string/home_greeting" />
+            tools:ignore="MissingConstraints" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_welcome"
@@ -75,15 +75,15 @@
             android:id="@+id/btn_selected_month"
             style="@style/Widget.Moner.Button.PillsIcon"
             android:layout_width="wrap_content"
+            android:backgroundTint="#2A2A2A"
             android:text="@string/home_select_time_default"
+            android:textColor="@color/color_text_on_dark_secondary"
             android:textSize="@dimen/text_size_sm"
             app:iconTint="#2A2A2A"
-            android:textColor="@color/color_text_on_dark_secondary"
-            android:backgroundTint="#2A2A2A"
-            app:rippleColor="@color/color_ripple_grey"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/tv_total_label"
-            app:layout_constraintTop_toTopOf="@id/tv_total_label" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_total_label"
+            app:rippleColor="@color/color_ripple_grey" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_total_amount"
@@ -104,24 +104,24 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lg"
-            android:text="@string/home_action_spend"
             android:backgroundTint="#2D2E32"
+            android:text="@string/home_action_spend"
             android:textAppearance="@style/TextAppearance.Moner.SemiBold"
             android:textColor="@color/white"
             app:backgroundTint="#2D2E32"
             app:cornerRadius="@dimen/radius_field"
-            app:strokeWidth="1dp"
-            app:strokeColor="#4E4F53"
             app:icon="@drawable/ic_add_square"
             app:iconGravity="textStart"
             app:iconPadding="6dp"
             app:iconSize="16dp"
             app:iconTint="@color/white"
-            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/btn_stats"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@id/btn_scan"
             app:layout_constraintTop_toBottomOf="@id/tv_total_amount"
-            app:rippleColor="@color/color_ripple_light" />
+            app:rippleColor="@color/color_ripple_light"
+            app:strokeColor="#4E4F53"
+            app:strokeWidth="1dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_receipt"
@@ -129,39 +129,37 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lg"
-            android:text="@string/home_action_receipt"
             android:backgroundTint="#2D2E32"
+            android:text="@string/home_action_receipt"
             android:textAppearance="@style/TextAppearance.Moner.SemiBold"
             android:textColor="@color/white"
             app:backgroundTint="#2D2E32"
             app:cornerRadius="@dimen/radius_field"
-            app:strokeWidth="1dp"
-            app:strokeColor="#4E4F53"
             app:icon="@drawable/ic_receipt"
             app:iconGravity="textStart"
             app:iconPadding="6dp"
             app:iconSize="16dp"
             app:iconTint="@color/white"
-            app:layout_constraintEnd_toStartOf="@id/btn_stats"
+            app:layout_constraintEnd_toStartOf="@id/btn_scan"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_total_amount"
-            app:rippleColor="@color/color_ripple_light" />
+            app:rippleColor="@color/color_ripple_light"
+            app:strokeColor="#4E4F53"
+            app:strokeWidth="1dp" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_stats"
+            android:id="@+id/btn_scan"
             style="@style/Widget.Material3.Button.IconButton.Filled"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lg"
             android:layout_marginHorizontal="@dimen/spacing_2xs"
-            android:text="@string/home_action_scan"
+            android:layout_marginTop="@dimen/spacing_lg"
             android:backgroundTint="#2D2E32"
+            android:text="@string/home_action_scan"
             android:textAppearance="@style/TextAppearance.Moner.SemiBold"
             android:textColor="@color/white"
             app:backgroundTint="#2D2E32"
             app:cornerRadius="@dimen/radius_field"
-            app:strokeWidth="1dp"
-            app:strokeColor="#4E4F53"
             app:icon="@drawable/ic_scan"
             app:iconGravity="textStart"
             app:iconPadding="6dp"
@@ -170,19 +168,21 @@
             app:layout_constraintEnd_toStartOf="@id/btn_spend"
             app:layout_constraintStart_toEndOf="@id/btn_receipt"
             app:layout_constraintTop_toBottomOf="@id/tv_total_amount"
-            app:rippleColor="@color/color_ripple_light" />
+            app:rippleColor="@color/color_ripple_light"
+            app:strokeColor="#4E4F53"
+            app:strokeWidth="1dp" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/first_stat_container"
+            android:id="@+id/cl_money_today"
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_md"
             android:layout_marginEnd="6dp"
             android:background="@drawable/bg_rounded_md"
-            app:layout_constraintEnd_toStartOf="@+id/second_stat_container"
+            app:layout_constraintEnd_toStartOf="@+id/cl_money_week"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_receipt">
+            app:layout_constraintTop_toBottomOf="@id/btn_scan">
 
             <ImageView
                 android:id="@+id/iv_spend_today"
@@ -196,46 +196,45 @@
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_spend_today_label"
+                style="@style/Widget.Moner.StatLabel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="@dimen/spacing_sm"
+                android:layout_marginTop="@dimen/spacing_md"
                 android:layout_marginEnd="@dimen/spacing_md"
                 android:text="@string/home_spend_today"
-                style="@style/Widget.Moner.StatLabel"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/iv_spend_today"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_spend_today_value"
+                style="@style/Widget.Moner.StatValue"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="@dimen/spacing_2xs"
                 android:layout_marginEnd="@dimen/spacing_md"
-                android:layout_marginBottom="@dimen/spacing_sm"
-                tools:text="Rp 4.250.000"
-                style="@style/Widget.Moner.StatValue"
+                android:layout_marginBottom="@dimen/spacing_md"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/iv_spend_today"
                 app:layout_constraintTop_toBottomOf="@id/tv_spend_today_label"
-                app:layout_constraintVertical_bias="1" />
+                app:layout_constraintVertical_bias="1"
+                tools:text="Rp 4.250.000" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/week_stat_container"
+            android:id="@+id/cl_money_week"
             android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="@dimen/spacing_sm"
-            android:layout_marginEnd="@dimen/spacing_md"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_md"
             android:background="@drawable/bg_rounded_md"
-            app:layout_constraintEnd_toStartOf="@+id/second_stat_container"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/first_stat_container">
+            app:layout_constraintStart_toEndOf="@id/cl_money_today"
+            app:layout_constraintTop_toBottomOf="@id/btn_scan">
 
             <ImageView
                 android:id="@+id/iv_spend_week"
@@ -249,135 +248,135 @@
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_spend_week_label"
+                style="@style/Widget.Moner.StatLabel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="@dimen/spacing_sm"
+                android:layout_marginTop="@dimen/spacing_md"
                 android:layout_marginEnd="@dimen/spacing_md"
                 android:text="@string/home_spend_week"
-                style="@style/Widget.Moner.StatLabel"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/iv_spend_week"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_spend_week_value"
+                style="@style/Widget.Moner.StatValue"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="@dimen/spacing_2xs"
                 android:layout_marginEnd="@dimen/spacing_md"
-                android:layout_marginBottom="@dimen/spacing_sm"
-                tools:text="Rp 4.250.000"
-                style="@style/Widget.Moner.StatValue"
+                android:layout_marginBottom="@dimen/spacing_md"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/iv_spend_week"
                 app:layout_constraintTop_toBottomOf="@id/tv_spend_week_label"
-                app:layout_constraintVertical_bias="1" />
+                app:layout_constraintVertical_bias="1"
+                tools:text="Rp 4.250.000" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/second_stat_container"
+            android:id="@+id/cl_spend_limit"
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="6dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_md"
             android:background="@drawable/bg_rounded_md"
-            app:layout_constraintBottom_toBottomOf="@id/week_stat_container"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/first_stat_container"
-            app:layout_constraintTop_toTopOf="@id/first_stat_container">
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/cl_money_week"
+            app:layout_constraintStart_toStartOf="@id/cl_money_today"
+            app:layout_constraintTop_toBottomOf="@id/cl_money_today">
 
             <ImageView
                 android:id="@+id/iv_limit"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_marginHorizontal="@dimen/spacing_md"
-                android:src="@drawable/ic_signpost"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/tv_limit_label"
-                app:layout_constraintBottom_toBottomOf="@id/tv_limit_label"
-                app:tint="@color/white_grey" />
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginTop="@dimen/spacing_lg"
+                android:layout_marginEnd="@dimen/spacing_lg"
+                android:src="@drawable/ic_limit_square"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_limit_label"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:layout_marginEnd="@dimen/spacing_md"
-                android:layout_marginTop="@dimen/spacing_md"
+                android:layout_marginHorizontal="@dimen/spacing_lg"
+                android:layout_marginTop="@dimen/spacing_lg"
                 android:text="@string/home_spend_limit"
                 android:textAppearance="@style/TextAppearance.Moner.Regular"
-                android:textColor="@color/white_grey"
-                android:textSize="11sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/iv_limit"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <com.alviy.moner.core.designsystem.LinearProgressView
-                android:id="@+id/lpv"
-                android:layout_width="0dp"
-                android:layout_height="12dp"
-                android:layout_marginHorizontal="@dimen/spacing_md"
-                android:layout_marginTop="@dimen/spacing_xs"
+                android:textColor="@color/color_text_on_dark_secondary"
+                android:textSize="@dimen/text_size_sm"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_limit_label"
-                app:lpv_progress="0.2"
-                app:lpv_strokeWidth="6dp"
-                app:lpv_trackColor="#333333" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_limit_value"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/spacing_md"
+                android:layout_marginHorizontal="@dimen/spacing_lg"
                 android:layout_marginTop="@dimen/spacing_2xs"
-                android:layout_marginBottom="@dimen/spacing_md"
-                tools:text="Rp 4.250.000"
                 android:textAppearance="@style/TextAppearance.Moner.Bold"
                 android:textColor="@color/white_grey"
                 android:textSize="@dimen/text_size_md"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_limit_total"
-                app:layout_constraintVertical_bias="1" />
+                app:layout_constraintTop_toBottomOf="@id/tv_limit_label"
+                tools:text="Rp 4.250.000" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_set_limit"
-                style="@style/Widget.Moner.Button.PillsIcon"
+            <com.alviy.moner.core.designsystem.LinearProgressView
+                android:id="@+id/lpv"
                 android:layout_width="0dp"
-                android:text="Set Limit"
-                android:textSize="@dimen/text_size_sm"
-                android:layout_marginHorizontal="10dp"
-                android:layout_marginBottom="12dp"
-                android:textColor="@color/white_grey"
-                android:backgroundTint="#333333"
-                app:rippleColor="@color/color_ripple_grey"
-                app:cornerRadius="8dp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_height="12dp"
+                android:layout_marginHorizontal="@dimen/spacing_lg"
+                android:layout_marginTop="@dimen/spacing_md"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_limit_total"
-                app:layout_constraintVertical_bias="1" />
+                app:layout_constraintTop_toBottomOf="@id/tv_limit_value"
+                app:lpv_progress="0.2"
+                app:lpv_strokeWidth="6dp"
+                app:lpv_trackColor="#333333" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_limit_total"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/spacing_md"
-                android:layout_marginBottom="@dimen/spacing_md"
-                android:gravity="right"
-                tools:text="Rp 5.000.000"
-                android:textAppearance="@style/TextAppearance.Moner.Regular"
-                android:textColor="@color/white_grey"
-                android:textSize="11sp"
+                android:layout_marginHorizontal="@dimen/spacing_lg"
+                android:layout_marginTop="@dimen/spacing_2xs"
+                android:layout_marginBottom="@dimen/spacing_lg"
+                android:gravity="end"
+                android:textAppearance="@style/TextAppearance.Moner.SemiBold"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_md"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/lpv" />
+                app:layout_constraintTop_toBottomOf="@id/lpv"
+                app:layout_constraintVertical_bias="0"
+                app:layout_goneMarginBottom="@dimen/spacing_lg"
+                tools:text="Rp 5.000.000" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_set_limit"
+                style="@style/Widget.Moner.Button.PillsIcon"
+                android:layout_width="100dp"
+                android:layout_height="30dp"
+                android:layout_marginHorizontal="@dimen/spacing_lg"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="@dimen/spacing_lg"
+                android:backgroundTint="#333333"
+                android:text="Set Limit"
+                android:textColor="@color/white_grey"
+                android:textSize="@dimen/text_size_sm"
+                android:visibility="gone"
+                app:cornerRadius="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/lpv"
+                app:layout_constraintVertical_bias="0"
+                app:rippleColor="@color/color_ripple_grey" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -431,8 +430,8 @@
                 android:layout_width="90dp"
                 android:layout_marginEnd="@dimen/spacing_lg"
                 android:text="@string/home_see_all"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="@id/tv_recent_header"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tv_recent_header" />
 
             <!-- Transactions list (scrolls with the NestedScrollView) -->

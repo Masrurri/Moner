@@ -59,7 +59,10 @@ class ReceiptGatherFragment : BaseFragment<FragmentReceiptGatherBinding>() {
 
     override fun observeData() {
         observeState(viewModel.isGmailAuthorized, onChange = ::renderFetchButton)
-        observeState(viewModel.receipts) { receiptListAdapter.submitList(it.toReceiptListUi()) }
+        observeState(viewModel.receipts) { receipts ->
+            onReceiptsLoading(receipts == null)
+            receipts?.let { receiptListAdapter.submitList(it.toReceiptListUi()) }
+        }
         observeFetchResult()
     }
 
@@ -77,23 +80,25 @@ class ReceiptGatherFragment : BaseFragment<FragmentReceiptGatherBinding>() {
     private fun observeFetchResult() {
         observeStateFlow(
             flow = viewModel.fetchResult,
-            onLoading = { renderReceiptsLoading(true) },
+            onLoading = {
+                onReceiptsLoading(true)
+            },
             onError = { error ->
-                renderReceiptsLoading(false)
+                onReceiptsLoading(false)
                 showReceipts(
                     listOf(receiptMessage("Error Fetch", error.code.toString(), error.title.toString(), error.message.toString()))
                 )
             }
         ) {
-            renderReceiptsLoading(false)   // the list itself updates from viewModel.receipts
+            onReceiptsLoading(false)   // the list itself updates from viewModel.receipts
         }
     }
 
-    private fun renderReceiptsLoading(isLoading: Boolean) = with(binding) {
+    private fun onReceiptsLoading(isLoading: Boolean) = with(binding) {
         shimmerReceipts.isVisible = isLoading
         shimmerReceipts.setShimmering(isLoading)
         rvReceipts.isVisible = !isLoading
-        tvTitleEmailReceipt.isVisible = !isLoading
+        tvTitleEmailReceipt.isVisible = !isLoading && !viewModel.receipts.value.isNullOrEmpty()
         btnFetch.setIconSpinning(isLoading)
     }
 

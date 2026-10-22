@@ -201,6 +201,7 @@ object GrabTemplate : ReceiptTemplate {
         // "Grab Bike" / "GrabCar Plus": compare without spaces.
         val service = t.rows.firstOrNull()?.firstOrNull()?.lowercase()?.replace(" ", "").orEmpty()
         val activity = when {
+            "bikestandard" in service -> ReceiptActivity.GRAB_BIKE
             "grabbike" in service -> ReceiptActivity.GRAB_BIKE
             "grabcar" in service -> ReceiptActivity.GRAB_CAR
             else -> ReceiptActivity.OTHER.also { ctx.notes += "activity: unknown Grab service \"$service\"" }

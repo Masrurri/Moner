@@ -1,5 +1,6 @@
 package com.alviy.moner.feature.receipt.gather.viewmodel
 
+import androidx.lifecycle.viewModelScope
 import com.alviy.moner.api.gmail.data.repository.GmailRepository
 import com.alviy.moner.core.common.base.BaseViewModel
 import com.alviy.moner.core.common.entity.ErrorCodes
@@ -10,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,15 +25,18 @@ class ReceiptGatherViewModel @Inject constructor(
     val isGmailAuthorized: StateFlow<Boolean> = _isGmailAuthorized.asStateFlow()
 
     /** Saved receipts (from the DB), so the list survives restarts and fills in as a fetch saves. */
-    private val _receipts = MutableStateFlow<List<Receipt>>(emptyList())
-    val receipts: StateFlow<List<Receipt>> = _receipts.asStateFlow()
+    /** null = first DB load hasn't emitted yet (shimmer); a list = loaded (may be empty). */
+    private val _receipts = MutableStateFlow<List<Receipt>?>(null)
+    val receipts: StateFlow<List<Receipt>?> = _receipts.asStateFlow()
 
     /** Progress of the last fetch: SUCCESS holds the number of new receipts saved. */
     private val _fetchResult = MutableStateFlow<Result<Int>?>(null)
     val fetchResult: StateFlow<Result<Int>?> = _fetchResult.asStateFlow()
 
     init {
-        gmailRepository.getReceipts().collectFlow(_receipts)
+        viewModelScope.launch {
+            gmailRepository.getReceipts().collect { _receipts.value = it }
+        }
     }
 
     // ---------------------------------------------------------------- Gmail auth

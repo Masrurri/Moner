@@ -16,10 +16,10 @@ data class SpendSummary(
     val remainingLimit: BigDecimal?
         get() = spendLimit?.subtract(totalSpend)
 
-    /** Share of the limit already spent, clamped to 0..1. */
-    val limitProgress: Float
+    val remainingProgress: Float
         get() {
             val limit = spendLimit?.takeIf { it > BigDecimal.ZERO } ?: return 0f
-            return totalSpend.divide(limit, 4, RoundingMode.HALF_UP).toFloat().coerceIn(0f, 1f)
+            val remaining = limit - totalSpend
+            return remaining.divide(limit, 4, RoundingMode.HALF_UP).toFloat().coerceIn(0f, 1f)
         }
 }
